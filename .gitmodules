@@ -1,0 +1,9 @@
+[submodule "social-model"]
+	path = social-model
+	url = https://github.com/Kotlang/social-model.git
+[submodule "auth-model"]
+	path = auth-model
+	url = https://github.com/Kotlang/auth-model.git
+[submodule "localization-model"]
+	path = localization-model
+	url = https://github.com/Kotlang/localization-model.git

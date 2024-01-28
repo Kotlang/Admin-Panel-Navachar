@@ -1,0 +1,52 @@
+.sublist-bg {
+    background-color: #fde047; /* This is a light purple color, similar to 'lavender' */
+    width: calc(100% + 20px); /* Assuming the menu has 10px of padding on each side */
+    box-sizing: border-box;
+}
+
+.hide-button {
+    position: sticky;
+    top: 10px; /* Adjust this value according to your desired margin */
+    z-index: 10; /* Ensure it's above other content */
+    background-color: #9b0303; /* Your existing button color, for example, red */
+    /* rest of your styling */
+}
+
+.delete-comment-button {
+    position: absolute;
+    top: 0.25rem; /* Adjust as needed */
+    right: 0.25rem; /* Adjust as needed */
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem; /* Small font size for a small button */
+    /* Additional styling */
+  }
+
+  .custom-grid-cols {
+    grid-template-columns: 1fr 7fr; /* Adjust the fraction as per your requirement */
+}
+
+.verified-status {
+    display: inline-block; /* Makes the element inline but still block-like */
+    padding: .2em .6em; /* Example padding; adjust as needed */
+    font-weight: bold;
+    color: #fff; /* Adjust text color as needed */
+    background-color: #d9534f; /* Adjust background color as needed */
+    border-radius: .25em; /* Optional: Rounds the corners of the background */
+    text-align: center;
+}
+
+.border-gradient {
+    position: relative;
+  }
+  
+  .border-gradient::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    bottom: -2px;
+    left: -2px;
+    background: linear-gradient(to right, #ff7e5f, #feb47b);
+    z-index: -1;
+  }
+  
