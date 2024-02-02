@@ -61,7 +61,7 @@ module.exports = {
             },
             fontFamily: {
                 // add new font family
-                mainfont: ["Barlow", "sans-serif", "poppins"],
+                mainfont: ["Barlow"],
                 primary: ["DM Sans"],
             },
             borderColor: (theme) => ({
