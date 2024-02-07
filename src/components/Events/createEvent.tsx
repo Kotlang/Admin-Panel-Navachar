@@ -6,10 +6,16 @@ import clients from "src/clients";
 import dayjs from "dayjs";
 import { IEvent } from "src/types";
 import HandleImageUpload from "src/components/Events/mediaUpload";
-
+import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
 
 export default function CreateEventForm({ formData, setFormData }: any) {
+    const { isLoaded, loadError } = useLoadScript({
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || "",
+        libraries: ['places'],
+    });
+    const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null);
     const [uploadedImageLinks, setUploadedImageLinks] = useState<string[]>([]);
+    const [suggestions, setSuggestions] = useState<google.maps.places.PlaceResult[]>([]);
 
     const handleChange = (e: { target: any; }) => {
         const { id, value, type, files } = e.target;
@@ -19,12 +25,27 @@ export default function CreateEventForm({ formData, setFormData }: any) {
         }));
     };
 
+    if (loadError) {
+        console.log(`Maps loading error: ${loadError}`)
+    }
+
+    const onLoad = (ref: google.maps.places.SearchBox) => {
+        setSearchBox(ref);
+    };
+
+    const onPlacesChanged = () => {
+        if (searchBox) {
+            const places = searchBox.getPlaces();
+            setSuggestions(places || []);
+        }
+    };
+
     const onUpload = (e: any) => {
         handleChange(e);
         HandleImageUpload(formData.posters, setUploadedImageLinks);
     }
 
-
+    
     const handleSubmit = (e: any) => {
         // const event: IEvent = {
         //     startAt: dayjs(dayjs().add(5, "hour").toDate()),
@@ -252,14 +273,22 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                     >
                         Address :{" "}
                     </label>
-                    <input
-                        type="text"
-                        id="address"
-                        value={formData.address}
-                        onChange={handleChange}
-                        className="p-1 rounded w-full bg-main_black shadow-inputShadow"
-                        required={formData.mode === "Offline"}
-                    />
+                    {isLoaded && (
+                        <StandaloneSearchBox onLoad={onLoad} onPlacesChanged={onPlacesChanged}>
+                            <input
+                                type="text"
+                                placeholder="Search for places..."
+                                className="p-1 rounded w-full bg-main_black shadow-inputShadow"
+                            />
+                        </StandaloneSearchBox>
+                    )}
+                    {suggestions.map((suggestion, index) => (
+                        <div key={index}>
+                            {suggestion.address_components?.map((component, index) => (
+                                <div key={index}>{component.long_name}</div>
+                            ))}
+                        </div>
+                    ))}
                 </div>
 
                 <div className="flex flex-col items-start gap-1 mt-3">
