@@ -11,7 +11,9 @@ import {
 	FetchProfilesRequest,
 	IdRequest,
 	ProfileListResponse,
-	Userfilters
+	Userfilters,
+	ProfileImageUploadRequest,
+	ProfileImageUploadURL
 } from 'src/generated/profile_pb';
 import { ProfileClient } from 'src/generated/ProfileServiceClientPb';
 import { IFetchProfiles, IUserProfile } from 'src/types/index';
@@ -75,6 +77,13 @@ const getProfileRequest = (userId: string) => {
 	return profile;
 };
 
+
+const getProfileImageUploadUrl = (mediaExtension: string) => {
+	const mediaUploadRequest = new ProfileImageUploadRequest();
+	mediaUploadRequest.setMediaextension(mediaExtension);
+	return mediaUploadRequest;
+}
+
 const profileClient = {
 	BulkGetProfileByIds: (userIds: string[], metaData: Metadata | null, callback: (err: RpcError, response: ProfileListResponse) => void) => {
 		getProfileClient().bulkGetProfileByIds(getBulkProfileRequest(userIds), addJwtToken(metaData), callback);
@@ -87,6 +96,9 @@ const profileClient = {
 	},
 	GetProfileByID: (userId: string, metaData: Metadata | null, callback: (err: RpcError, response: UserProfileProto) => void) => {
 		getProfileClient().getProfileById(getProfileRequest(userId), addJwtToken(metaData), callback);
+	},
+	GetProfileImageUploadURL: (mediaExtension: string, metaData: Metadata | null, callback: (err: RpcError, response: ProfileImageUploadURL) => void) => {
+		getProfileClient().getProfileImageUploadUrl(getProfileImageUploadUrl(mediaExtension), addJwtToken(metaData), callback);
 	}
 };
 
