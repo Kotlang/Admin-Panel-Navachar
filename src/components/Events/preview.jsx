@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React from "react";
-
+import moment from "moment";
 import eyeIcons from "src/assets/icons/eyeIcons.png";
 import locationIcon from "src/assets/icons/locationIcon.png";
 import durationIcon from "src/assets/icons/durationIcon.png";
@@ -13,6 +13,10 @@ import logo from "src/assets/logo.png";
 function Preview({ formData }) {
     const { startDate, hostName, mode, slots, description, posters, endDate } =
         formData;
+    const start = moment(startDate);
+    const end = moment(endDate);
+    const duration = moment.duration(end.diff(start));
+    const hours = parseFloat(duration.asHours().toFixed(1));
 
     return (
         <>
@@ -62,7 +66,7 @@ function Preview({ formData }) {
                                     src={durationIcon}
                                     alt=""
                                 />
-                                1 Hr
+                                {`${hours} Hr` || null}
                             </p>
                         </div>
                     </div>

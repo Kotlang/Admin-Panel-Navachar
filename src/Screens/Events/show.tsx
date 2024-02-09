@@ -32,6 +32,7 @@ function convertUnixTimeToDateTime(unixTimeInSeconds: number): string {
 
 const EventsTable: React.FC = () => {
 	const navigate = useNavigate();
+
 	const [isDialogOpen, setDialogOpen] = useState(false);
 	const [selectedEventId, setSelectedEventId] = useState("");
 
@@ -217,216 +218,16 @@ const EventsTable: React.FC = () => {
 									<button className="bg-[#34C06E] hover:opacity-90 text-white py-1 px-4 rounded uppercase ">
 										Update
 									</button>
-								</div>
-							</td>
-						</tr>
-						<tr className="bg-inherit  text-w_text h-full text-base font-mainfont">
-							<td className="px-3 py-4">
-								Discussion of organic framing
-							</td>
-							<td className="px-3 py-4">
-								12/02/2024
-								<br />
-								12:30pm
-							</td>
-							<td className="px-3 py-4">Online</td>
-							<td className="px-3 py-4">2 Hr</td>
-							<td className="px-3 py-4">2000</td>
-							<td className="px-3 py-2 ">
-								<div className="flex flex-row items-center justify-start gap-2">
-									<button className="bg-[#F75260] hover:opacity-90 text-white  py-1 px-4 rounded uppercase">
-										Delete
-									</button>
-									<button className="bg-[#34C06E] hover:opacity-90 text-white py-1 px-4 rounded uppercase ">
-										Update
+									<button onClick={() => {
+										navigate('/eventDetail')
+									}}>
+										➡️
 									</button>
 								</div>
 							</td>
 						</tr>
-						<tr className="bg-inherit  text-w_text h-full text-base font-mainfont">
-							<td className="px-3 py-4">
-								Discussion of organic framing
-							</td>
-							<td className="px-3 py-4">
-								12/02/2024
-								<br />
-								12:30pm
-							</td>
-							<td className="px-3 py-4">Online</td>
-							<td className="px-3 py-4">2 Hr</td>
-							<td className="px-3 py-4">2000</td>
-							<td className="px-3 py-2 ">
-								<div className="flex flex-row items-center justify-start gap-2">
-									<button className="bg-[#F75260] hover:opacity-90 text-white  py-1 px-4 rounded uppercase">
-										Delete
-									</button>
-									<button className="bg-[#34C06E] hover:opacity-90 text-white py-1 px-4 rounded uppercase ">
-										Update
-									</button>
-								</div>
-							</td>
-						</tr>
-						<tr className="bg-inherit  text-w_text h-full text-base font-mainfont">
-							<td className="px-3 py-4">
-								Discussion of organic framing
-							</td>
-							<td className="px-3 py-4">
-								12/02/2024
-								<br />
-								12:30pm
-							</td>
-							<td className="px-3 py-4">Online</td>
-							<td className="px-3 py-4">2 Hr</td>
-							<td className="px-3 py-4">2000</td>
-							<td className="px-3 py-2 ">
-								<div className="flex flex-row items-center justify-start gap-2">
-									<button className="bg-[#F75260] hover:opacity-90 text-white  py-1 px-4 rounded uppercase">
-										Delete
-									</button>
-									<button className="bg-[#34C06E] hover:opacity-90 text-white py-1 px-4 rounded uppercase ">
-										Update
-									</button>
-								</div>
-							</td>
-						</tr>
-						<tr className="bg-inherit  text-w_text h-full text-base font-mainfont">
-							<td className="px-3 py-4">
-								Discussion of organic framing
-							</td>
-							<td className="px-3 py-4">
-								12/02/2024
-								<br />
-								12:30pm
-							</td>
-							<td className="px-3 py-4">Online</td>
-							<td className="px-3 py-4">2 Hr</td>
-							<td className="px-3 py-4">2000</td>
-							<td className="px-3 py-2 ">
-								<div className="flex flex-row items-center justify-start gap-2">
-									<button className="bg-[#F75260] hover:opacity-90 text-white  py-1 px-4 rounded uppercase">
-										Delete
-									</button>
-									<button className="bg-[#34C06E] hover:opacity-90 text-white py-1 px-4 rounded uppercase ">
-										Update
-									</button>
-								</div>
-							</td>
-						</tr>
-						<tr className="bg-inherit  text-w_text h-full text-base font-mainfont">
-							<td className="px-3 py-4">
-								Discussion of organic framing
-							</td>
-							<td className="px-3 py-4">
-								12/02/2024
-								<br />
-								12:30pm
-							</td>
-							<td className="px-3 py-4">Online</td>
-							<td className="px-3 py-4">2 Hr</td>
-							<td className="px-3 py-4">2000</td>
-							<td className="px-3 py-2 ">
-								<div className="flex flex-row items-center justify-start gap-2">
-									<button className="bg-[#F75260] hover:opacity-90 text-white  py-1 px-4 rounded uppercase">
-										Delete
-									</button>
-									<button className="bg-[#34C06E] hover:opacity-90 text-white py-1 px-4 rounded uppercase ">
-										Update
-									</button>
-								</div>
-							</td>
-						</tr>
-						<tr className="bg-inherit  text-w_text h-full text-base font-mainfont">
-							<td className="px-3 py-4">
-								Discussion of organic framing
-							</td>
-							<td className="px-3 py-4">
-								12/02/2024
-								<br />
-								12:30pm
-							</td>
-							<td className="px-3 py-4">Online</td>
-							<td className="px-3 py-4">2 Hr</td>
-							<td className="px-3 py-4">2000</td>
-							<td className="px-3 py-2 ">
-								<div className="flex flex-row items-center justify-start gap-2">
-									<button className="bg-[#F75260] hover:opacity-90 text-white  py-1 px-4 rounded uppercase">
-										Delete
-									</button>
-									<button className="bg-[#34C06E] hover:opacity-90 text-white py-1 px-4 rounded uppercase ">
-										Update
-									</button>
-								</div>
-							</td>
-						</tr>
-						<tr className="bg-inherit  text-w_text h-full text-base font-mainfont">
-							<td className="px-3 py-4">
-								Discussion of organic framing
-							</td>
-							<td className="px-3 py-4">
-								12/02/2024
-								<br />
-								12:30pm
-							</td>
-							<td className="px-3 py-4">Online</td>
-							<td className="px-3 py-4">2 Hr</td>
-							<td className="px-3 py-4">2000</td>
-							<td className="px-3 py-2 ">
-								<div className="flex flex-row items-center justify-start gap-2">
-									<button className="bg-[#F75260] hover:opacity-90 text-white  py-1 px-4 rounded uppercase">
-										Delete
-									</button>
-									<button className="bg-[#34C06E] hover:opacity-90 text-white py-1 px-4 rounded uppercase ">
-										Update
-									</button>
-								</div>
-							</td>
-						</tr>
-						<tr className="bg-inherit  text-w_text h-full text-base font-mainfont">
-							<td className="px-3 py-4">
-								Discussion of organic framing
-							</td>
-							<td className="px-3 py-4">
-								12/02/2024
-								<br />
-								12:30pm
-							</td>
-							<td className="px-3 py-4">Online</td>
-							<td className="px-3 py-4">2 Hr</td>
-							<td className="px-3 py-4">2000</td>
-							<td className="px-3 py-2 ">
-								<div className="flex flex-row items-center justify-start gap-2">
-									<button className="bg-[#F75260] hover:opacity-90 text-white  py-1 px-4 rounded uppercase">
-										Delete
-									</button>
-									<button className="bg-[#34C06E] hover:opacity-90 text-white py-1 px-4 rounded uppercase ">
-										Update
-									</button>
-								</div>
-							</td>
-						</tr>
-						<tr className="bg-inherit  text-w_text h-full text-base font-mainfont">
-							<td className="px-3 py-4">
-								Discussion of organic framing
-							</td>
-							<td className="px-3 py-4">
-								12/02/2024
-								<br />
-								12:30pm
-							</td>
-							<td className="px-3 py-4">Online</td>
-							<td className="px-3 py-4">2 Hr</td>
-							<td className="px-3 py-4">2000</td>
-							<td className="px-3 py-2 ">
-								<div className="flex flex-row items-center justify-start gap-2">
-									<button className="bg-[#F75260] hover:opacity-90 text-white  py-1 px-4 rounded uppercase">
-										Delete
-									</button>
-									<button className="bg-[#34C06E] hover:opacity-90 text-white py-1 px-4 rounded uppercase ">
-										Update
-									</button>
-								</div>
-							</td>
-						</tr>
+
+
 					</tbody>
 				</table>
 			</div>

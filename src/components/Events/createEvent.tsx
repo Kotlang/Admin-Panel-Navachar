@@ -1,12 +1,16 @@
 /* eslint-disable */
 import React, { useState } from "react";
-
+import dayjs, { Dayjs } from 'dayjs';
 import "react-datepicker/dist/react-datepicker.css";
 import clients from "src/clients";
-import dayjs from "dayjs";
+
 import { IEvent } from "src/types";
 import HandleImageUpload from "src/components/Events/mediaUpload";
-
+import { DatePicker } from "antd";
+import { DurationInputArg1 } from "moment";
+import moment from "moment";
+const { RangePicker } = DatePicker;
+// import './App.css';
 
 export default function CreateEventForm({ formData, setFormData }: any) {
     const [uploadedImageLinks, setUploadedImageLinks] = useState<string[]>([]);
@@ -19,9 +23,23 @@ export default function CreateEventForm({ formData, setFormData }: any) {
         }));
     };
 
+
+
     const onUpload = (e: any) => {
         handleChange(e);
         HandleImageUpload(formData.posters, setUploadedImageLinks);
+    }
+
+    function handleDateChange(dates: any, dateStrings: any[]) {
+        if (dates) {
+            setFormData((prevState: any) => ({
+                ...prevState,
+                startDate: dateStrings[0],
+                endDate: dateStrings[1]
+            }));
+
+
+        }
     }
 
 
@@ -101,7 +119,7 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                 </div>
 
                 <div className="flex item-center justify-between gap-5 w-[100%]">
-                    <div className="flex flex-col items-start gap-1 mt-3 w-[33%]">
+                    {/* <div className="flex flex-col items-start gap-1 mt-3 w-[33%]">
                         <label
                             htmlFor="startDate"
                             className="text-w_text text-[16px]"
@@ -117,24 +135,33 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                             required
                         />
 
-                    </div>
+                    </div> */}
 
-                    <div className="flex flex-col items-start gap-1 mt-3 w-[33%]">
+
+                    <div className="flex flex-col items-start gap-1 mt-3 w-[66%]">
                         <label
                             htmlFor="endDate"
                             className="text-w_text text-[16px] "
                         >
-                            End Date :{" "}
+                            Event Date :{" "}
                         </label>
+                        <RangePicker
+                            showTime
+                            id=""
+                            className="p-1 rounded w-[100%] bg-main_black shadow-inputShadow text-white border-none white-placeholder ant-picker-input"
+                            onChange={handleDateChange}
+                        />
 
-                        <input
+
+
+                        {/* <input
                             type="datetime-local"
                             id="endDate"
                             value={formData.endDate}
                             onChange={handleChange}
                             className="p-1 rounded w-[100%] bg-main_black shadow-inputShadow"
                             required
-                        />
+                        /> */}
 
                     </div>
 
