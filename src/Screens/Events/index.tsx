@@ -35,7 +35,7 @@ const Events = () => {
 		name: "",
 		hostName: "",
 		description: "",
-		startDate: "2018-06-12T19:30",
+		startDate: "",
 		endDate: "",
 		tag: "",
 		mode: "",
