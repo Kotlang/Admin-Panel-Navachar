@@ -25,6 +25,7 @@ export interface IEventData {
 	posters: FileList;
 	address: ILocation;
 	link: string;
+	numAttendees: number;
 }
 
 
@@ -37,6 +38,7 @@ const Events = () => {
 		description: "",
 		startDate: "",
 		endDate: "",
+		numAttendees: 0,
 		tag: "",
 		mode: "",
 		slots: 0,
@@ -49,7 +51,6 @@ const Events = () => {
 		link: "",
 
 	});
-
 
 	return <>
 		<div className="mt-14">

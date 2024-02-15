@@ -30,6 +30,18 @@ function convertUnixTimeToDateTime(unixTimeInSeconds: number): string {
 	return formattedDateTime;
 }
 
+function calculateTimeDifference(startUnixTime: number, endUnixTime: number): string {
+	// Calculate the difference in milliseconds
+	const differenceInMilliseconds = endUnixTime - startUnixTime;
+	const minutes = Math.floor(differenceInMilliseconds / 60);
+	const hours = Math.floor(minutes / 60);
+	const remainingMinutes = minutes % 60;
+	const formattedHours = hours.toString().padStart(2, '0');
+	const formattedMinutes = remainingMinutes.toString().padStart(2, '0');
+
+	return `${formattedHours}:${formattedMinutes}`;
+}
+
 const EventsTable: React.FC = () => {
 	const navigate = useNavigate();
 
@@ -152,82 +164,31 @@ const EventsTable: React.FC = () => {
 						</tr>
 					</thead>
 					<tbody className=" ">
-						<tr className="bg-inherit  text-w_text h-full text-base font-mainfont">
-							<td className="px-3 py-4">
-								Discussion of organic framing
-							</td>
-							<td className="px-3 py-4">
-								12/02/2024
-								<br />
-								12:30pm
-							</td>
-							<td className="px-3 py-4">Online</td>
-							<td className="px-3 py-4">2 Hr</td>
-							<td className="px-3 py-4">2000</td>
-							<td className="px-3 py-2 ">
-								<div className="flex flex-row items-center justify-start gap-2">
-									<button className="bg-[#F75260] hover:opacity-90 text-white  py-1 px-4 rounded uppercase">
-										Delete
-									</button>
-									<button className="bg-[#34C06E] hover:opacity-90 text-white py-1 px-4 rounded uppercase ">
-										Update
-									</button>
-								</div>
-							</td>
-						</tr>
-						<tr className="bg-inherit  text-w_text h-full text-base font-mainfont">
-							<td className="px-3 py-4">
-								Discussion of organic framing
-							</td>
-							<td className="px-3 py-4">
-								12/02/2024
-								<br />
-								12:30pm
-							</td>
-							<td className="px-3 py-4">Online</td>
-							<td className="px-3 py-4">2 Hr</td>
-							<td className="px-3 py-4">2000</td>
-							<td className="px-3 py-2 ">
-								<div className="flex flex-row items-center justify-start gap-2">
-									<button className="bg-[#F75260] hover:opacity-90 text-white  py-1 px-4 rounded uppercase">
-										Delete
-									</button>
-									<button className="bg-[#34C06E] hover:opacity-90 text-white py-1 px-4 rounded uppercase ">
-										Update
-									</button>
-								</div>
-							</td>
-						</tr>
-						<tr className="bg-inherit  text-w_text h-full text-base font-mainfont">
-							<td className="px-3 py-4">
-								Discussion of organic framing
-							</td>
-							<td className="px-3 py-4">
-								12/02/2024
-								<br />
-								12:30pm
-							</td>
-							<td className="px-3 py-4">Online</td>
-							<td className="px-3 py-4">2 Hr</td>
-							<td className="px-3 py-4">2000</td>
-							<td className="px-3 py-2 ">
-								<div className="flex flex-row items-center justify-start gap-2">
-									<button className="bg-[#F75260] hover:opacity-90 text-white  py-1 px-4 rounded uppercase">
-										Delete
-									</button>
-									<button className="bg-[#34C06E] hover:opacity-90 text-white py-1 px-4 rounded uppercase ">
-										Update
-									</button>
-									<button onClick={() => {
-										navigate('/eventDetail')
-									}}>
-										➡️
-									</button>
-								</div>
-							</td>
-						</tr>
-
-
+						{events.map((event, index) => (
+							<React.Fragment key={index}>
+								<tr className="bg-inherit  text-w_text h-full text-base font-mainfont">
+									<td className="px-3 py-4">{event.getTitle()}</td>
+									<td className="px-3 py-4">
+										{convertUnixTimeToDateTime(event.getStartat())}
+									</td>
+									<td className="px-3 py-4">{event.getType() === 0 ? 'Online' : 'Offline'}</td>
+									<td className="px-3 py-4">{calculateTimeDifference(event.getStartat(), event.getEndat())}</td>
+									<td className="px-3 py-4">{event.getNumattendees()}</td>
+									<td className="px-3 py-2 ">
+										<div className="flex flex-row items-center justify-start gap-2">
+											<button className="bg-[#F75260] hover:opacity-90 text-white  py-1 px-4 rounded uppercase"
+												onClick={() => handleDelete(event)}>
+												Delete
+											</button>
+											<button className="bg-[#34C06E] hover:opacity-90 text-white py-1 px-4 rounded uppercase"
+												onClick={() => handleEdit(event.getEventid())}>
+												Update
+											</button>
+										</div>
+									</td>
+								</tr>
+							</React.Fragment>
+						))}
 					</tbody>
 				</table>
 			</div>

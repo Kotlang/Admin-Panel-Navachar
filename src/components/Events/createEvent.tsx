@@ -1,22 +1,39 @@
 /* eslint-disable */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import clients from "src/clients";
 import { IEvent, MediaUrl } from "src/types";
 import HandleImageUpload from "src/components/Events/mediaUpload";
-import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
+// import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
+import { useParams } from 'react-router-dom';
 import { DatePicker } from "antd";
 const { RangePicker } = DatePicker;
-// import './App.css';
+import { Metadata, RpcError } from "grpc-web";
+import { EventProto } from "src/generated/events_pb";
+
 
 export default function CreateEventForm({ formData, setFormData }: any) {
-    const { isLoaded, loadError } = useLoadScript({
-        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || "",
-        libraries: ['places'],
-    });
-    const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null);
+    // const { isLoaded, loadError } = useLoadScript({
+    //     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || "",
+    //     libraries: ['places'],
+    // });
+    // const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null);
     const [uploadedImageLinks, setUploadedImageLinks] = useState<MediaUrl[]>([]);
-    const [suggestions, setSuggestions] = useState<google.maps.places.PlaceResult[]>([]);
+    // const [suggestions, setSuggestions] = useState<google.maps.places.PlaceResult[]>([]);
+	const { eventId } = useParams();
+	const isEditMode = eventId != null;
+
+	const fetchEventById = (eventId: string, metaData: Metadata | null): Promise<EventProto> => {
+		return new Promise((resolve, reject) => {
+			clients.social.event.GetEvent(eventId, metaData, (err: RpcError, response: EventProto) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(response);
+				}
+			});
+		});
+	};
 
     const handleChange = (e: { target: any; }) => {
         const { id, value, type, files } = e.target;
@@ -26,20 +43,20 @@ export default function CreateEventForm({ formData, setFormData }: any) {
         }));
     };
 
-    if (loadError) {
-        console.log(`Maps loading error: ${loadError}`)
-    }
+    // if (loadError) {
+    //     console.log(`Maps loading error: ${loadError}`)
+    // }
 
-    const onLoad = (ref: google.maps.places.SearchBox) => {
-        setSearchBox(ref);
-    };
+    // const onLoad = (ref: google.maps.places.SearchBox) => {
+    //     setSearchBox(ref);
+    // };
 
-    const onPlacesChanged = () => {
-        if (searchBox) {
-            const places = searchBox.getPlaces();
-            setSuggestions(places || []);
-        }
-    };
+    // const onPlacesChanged = () => {
+    //     if (searchBox) {
+    //         const places = searchBox.getPlaces();
+    //         setSuggestions(places || []);
+    //     }
+    // };
 
     const onUpload = (e: any) => {
         handleChange(e);
@@ -53,20 +70,18 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                 startDate: dateStrings[0],
                 endDate: dateStrings[1]
             }));
-
-
         }
     }
 
-    const toUnix = (date: string) => {
-        const dateObj = new Date(formData.startDate);
-        const unixTime = dateObj.getTime() / 1000;
-        return unixTime;
+    const toUnix = (dateStr: string) => {
+        const dateObj = new Date(dateStr);
+        return dateObj.getTime() / 1000;
     }
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
         const event: IEvent = {
+            id: eventId,
             authorName: formData.hostName,
             startAt: toUnix(formData.startDate),
             endAt: toUnix(formData.endDate),
@@ -78,14 +93,49 @@ export default function CreateEventForm({ formData, setFormData }: any) {
             title: formData.name,
             type: formData.mode === 'Online' ? 1 : 0,
         };
-        clients.social.event.CreateEvent(event, {}, (err, response) => {
-            if (err) {
-                console.log("Before:-", err);
-            } else {
-                console.log(response);
-            }
-        });
+        if (isEditMode) {
+            clients.social.event.EditEvent(event, {}, (err, response) => {
+                if (err) {
+                    console.log('Before:-', err);
+                } else {
+                    console.log(response);
+                }
+            })
+        }else{
+            clients.social.event.CreateEvent(event, {}, (err, response) => {
+                if (err) {
+                    console.log("Before:-", err);
+                } else {
+                    console.log(response);
+                }
+            });
+        }
     };
+
+	useEffect(() => {
+		const fetchData = async () => {
+			if (isEditMode) {
+				try {
+					const eventData = await fetchEventById(eventId, {});
+					console.log(eventData);
+                    setFormData((prevState: any) => ({
+                        ...prevState,
+                        hostName: eventData.getAuthorinfo()?.getName(),
+						description: eventData.getDescription(),
+						mode: eventData.getType(),
+						numAttendees: eventData.getNumattendees(),
+						slots: eventData.getNumslots(),
+						link: eventData.getOnlinelink(),
+						name: eventData.getTitle(),
+                    }));
+				} catch (error) {
+					console.error('Error fetching event data:', error);
+				}
+			}
+		};
+		fetchData();
+	}, [isEditMode, eventId]);
+
 
     return (
         <div>
@@ -272,7 +322,7 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                         className="p-1 rounded w-[100%] bg-main_black shadow-inputShadow"
                     />
                 </div>
-                <div className="flex flex-col items-start gap-1 mt-3">
+                {/* <div className="flex flex-col items-start gap-1 mt-3">
                     <label
                         htmlFor="address"
                         className="text-w_text text-[16px]"
@@ -295,7 +345,7 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                             ))}
                         </div>
                     ))}
-                </div>
+                </div> */}
 
                 <div className="flex flex-col items-start gap-1 mt-3">
                     <label htmlFor="link" className="text-w_text text-[16px]">
