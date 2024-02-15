@@ -70,8 +70,8 @@ export interface IEvent {
     id?: string;
     title?: string;
     type?: EventType;
-    startAt?: dayjs.Dayjs;
-    endAt?: dayjs.Dayjs;
+    startAt: number;
+    endAt: number;
     mediaUrls?: MediaUrl[];
     webPreviews?: {
         title?: string;
@@ -86,6 +86,8 @@ export interface IEvent {
         lat?: number;
         long?: number;
     };
+    authorName?: string;
+    authorUserId?: string;
     onlineLink?: string;
     tags?: string[];
 }

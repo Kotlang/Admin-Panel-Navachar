@@ -1,6 +1,8 @@
 .sublist-bg {
     background-color: #fde047; /* This is a light purple color, similar to 'lavender' */
-    width: calc(100% + 20px); /* Assuming the menu has 10px of padding on each side */
+    width: calc(
+        100% + 20px
+    ); /* Assuming the menu has 10px of padding on each side */
     box-sizing: border-box;
 }
 
@@ -19,28 +21,28 @@
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem; /* Small font size for a small button */
     /* Additional styling */
-  }
+}
 
-  .custom-grid-cols {
+.custom-grid-cols {
     grid-template-columns: 1fr 7fr; /* Adjust the fraction as per your requirement */
 }
 
 .verified-status {
     display: inline-block; /* Makes the element inline but still block-like */
-    padding: .2em .6em; /* Example padding; adjust as needed */
+    padding: 0.2em 0.6em; /* Example padding; adjust as needed */
     font-weight: bold;
     color: #fff; /* Adjust text color as needed */
     background-color: #d9534f; /* Adjust background color as needed */
-    border-radius: .25em; /* Optional: Rounds the corners of the background */
+    border-radius: 0.25em; /* Optional: Rounds the corners of the background */
     text-align: center;
 }
 
 .border-gradient {
     position: relative;
-  }
-  
-  .border-gradient::before {
-    content: '';
+}
+
+.border-gradient::before {
+    content: "";
     position: absolute;
     top: -2px;
     right: -2px;
@@ -48,5 +50,15 @@
     left: -2px;
     background: linear-gradient(to right, #ff7e5f, #feb47b);
     z-index: -1;
-  }
-  
+}
+
+/*for   datepicker in createform component */
+.white-placeholder ::placeholder {
+    color: #868a8b !important;
+}
+.white-placeholder {
+    color: white;
+}
+.ant-picker-input > input {
+  color: white !important;
+}

@@ -1,21 +1,39 @@
 /* eslint-disable */
-import React, { useState } from "react";
-
+import { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import clients from "src/clients";
-import dayjs from "dayjs";
-import { IEvent } from "src/types";
+import { IEvent, MediaUrl } from "src/types";
 import HandleImageUpload from "src/components/Events/mediaUpload";
-import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
+// import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
+import { useParams } from 'react-router-dom';
+import { DatePicker } from "antd";
+const { RangePicker } = DatePicker;
+import { Metadata, RpcError } from "grpc-web";
+import { EventProto } from "src/generated/events_pb";
+
 
 export default function CreateEventForm({ formData, setFormData }: any) {
-    const { isLoaded, loadError } = useLoadScript({
-        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || "",
-        libraries: ['places'],
-    });
-    const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null);
-    const [uploadedImageLinks, setUploadedImageLinks] = useState<string[]>([]);
-    const [suggestions, setSuggestions] = useState<google.maps.places.PlaceResult[]>([]);
+    // const { isLoaded, loadError } = useLoadScript({
+    //     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || "",
+    //     libraries: ['places'],
+    // });
+    // const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null);
+    const [uploadedImageLinks, setUploadedImageLinks] = useState<MediaUrl[]>([]);
+    // const [suggestions, setSuggestions] = useState<google.maps.places.PlaceResult[]>([]);
+	const { eventId } = useParams();
+	const isEditMode = eventId != null;
+
+	const fetchEventById = (eventId: string, metaData: Metadata | null): Promise<EventProto> => {
+		return new Promise((resolve, reject) => {
+			clients.social.event.GetEvent(eventId, metaData, (err: RpcError, response: EventProto) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(response);
+				}
+			});
+		});
+	};
 
     const handleChange = (e: { target: any; }) => {
         const { id, value, type, files } = e.target;
@@ -25,53 +43,99 @@ export default function CreateEventForm({ formData, setFormData }: any) {
         }));
     };
 
-    if (loadError) {
-        console.log(`Maps loading error: ${loadError}`)
-    }
+    // if (loadError) {
+    //     console.log(`Maps loading error: ${loadError}`)
+    // }
 
-    const onLoad = (ref: google.maps.places.SearchBox) => {
-        setSearchBox(ref);
-    };
+    // const onLoad = (ref: google.maps.places.SearchBox) => {
+    //     setSearchBox(ref);
+    // };
 
-    const onPlacesChanged = () => {
-        if (searchBox) {
-            const places = searchBox.getPlaces();
-            setSuggestions(places || []);
-        }
-    };
+    // const onPlacesChanged = () => {
+    //     if (searchBox) {
+    //         const places = searchBox.getPlaces();
+    //         setSuggestions(places || []);
+    //     }
+    // };
 
     const onUpload = (e: any) => {
         handleChange(e);
         HandleImageUpload(formData.posters, setUploadedImageLinks);
     }
 
-    
-    const handleSubmit = (e: any) => {
-        // const event: IEvent = {
-        //     startAt: dayjs(dayjs().add(5, "hour").toDate()),
-        //     endAt: dayjs(dayjs().add(2, "hour").toDate()),
-        //     description: formData.description,
-        //     location: {
-        //         lat: 12341,
-        //         long: 1234,
-        //     },
-        //     numAttendees: 1234,
-        //     numSlots: Number(formData.slots),
-        //     onlineLink: formData.link,
-        //     title: formData.name,
-        //     type: 1,
-        // };
-        // clients.social.event.CreateEvent(event, {}, (err, response) => {
-        //     if (err) {
-        //         console.log("Before:-", err);
-        //     } else {
-        //         console.log(response);
-        //     }
-        // });
+    function handleDateChange(dates: any, dateStrings: any[]) {
+        if (dates) {
+            setFormData((prevState: any) => ({
+                ...prevState,
+                startDate: dateStrings[0],
+                endDate: dateStrings[1]
+            }));
+        }
+    }
 
+    const toUnix = (dateStr: string) => {
+        const dateObj = new Date(dateStr);
+        return dateObj.getTime() / 1000;
+    }
+
+    const handleSubmit = (e: any) => {
         e.preventDefault();
-        console.log("Form Data:", formData);
+        const event: IEvent = {
+            id: eventId,
+            authorName: formData.hostName,
+            startAt: toUnix(formData.startDate),
+            endAt: toUnix(formData.endDate),
+            mediaUrls: uploadedImageLinks,
+            description: formData.description,
+            numAttendees: Number(formData.numAttendees),
+            numSlots: Number(formData.slots),
+            onlineLink: formData.link,
+            title: formData.name,
+            type: formData.mode === 'Online' ? 1 : 0,
+        };
+        if (isEditMode) {
+            clients.social.event.EditEvent(event, {}, (err, response) => {
+                if (err) {
+                    console.log('Before:-', err);
+                } else {
+                    console.log(response);
+                }
+            })
+        }else{
+            clients.social.event.CreateEvent(event, {}, (err, response) => {
+                if (err) {
+                    console.log("Before:-", err);
+                } else {
+                    console.log(response);
+                }
+            });
+        }
     };
+
+	useEffect(() => {
+		const fetchData = async () => {
+			if (isEditMode) {
+				try {
+					const eventData = await fetchEventById(eventId, {});
+					console.log(eventData);
+                    setFormData((prevState: any) => ({
+                        ...prevState,
+                        hostName: eventData.getAuthorinfo()?.getName(),
+						description: eventData.getDescription(),
+						mode: eventData.getType(),
+						numAttendees: eventData.getNumattendees(),
+						slots: eventData.getNumslots(),
+						link: eventData.getOnlinelink(),
+						name: eventData.getTitle(),
+                    }));
+				} catch (error) {
+					console.error('Error fetching event data:', error);
+				}
+			}
+		};
+		fetchData();
+	}, [isEditMode, eventId]);
+
 
     return (
         <div>
@@ -122,41 +186,19 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                 </div>
 
                 <div className="flex item-center justify-between gap-5 w-[100%]">
-                    <div className="flex flex-col items-start gap-1 mt-3 w-[33%]">
+                    <div className="flex flex-col items-start gap-1 mt-3 w-[66%]">
                         <label
-                            htmlFor="startDate"
-                            className="text-w_text text-[16px]"
-                        >
-                            Start Date:{" "}
-                        </label>
-                        <input
-                            type="datetime-local"
-                            id="startDate"
-                            value={formData.startDate}
-                            onChange={handleChange}
-                            className="p-1 rounded w-[100%] bg-main_black shadow-inputShadow"
-                            required
-                        />
-
-                    </div>
-
-                    <div className="flex flex-col items-start gap-1 mt-3 w-[33%]">
-                        <label
-                            htmlFor="endDate"
+                            htmlFor="Eventdate"
                             className="text-w_text text-[16px] "
                         >
-                            End Date :{" "}
+                            Event Date :{" "}
                         </label>
-
-                        <input
-                            type="datetime-local"
-                            id="endDate"
-                            value={formData.endDate}
-                            onChange={handleChange}
-                            className="p-1 rounded w-[100%] bg-main_black shadow-inputShadow"
-                            required
+                        <RangePicker
+                            showTime
+                            id=""
+                            className="p-1 rounded w-[100%] bg-main_black shadow-inputShadow text-white border-none white-placeholder ant-picker-input"
+                            onChange={handleDateChange}
                         />
-
                     </div>
 
                     <div className="flex flex-col items-start gap-1 mt-3 w-[33%]">
@@ -256,7 +298,6 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                             Event Posters :{" "}
                         </label>
                         <input
-                            required
                             multiple
                             type="file"
                             id="posters"
@@ -265,8 +306,23 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                         />
                     </div>
                 </div>
-
-                <div className="flex flex-col items-start gap-1 mt-3">
+                <div className="flex flex-col items-start gap-1 mt-3 w-[33%]">
+                    <label
+                        htmlFor="slots"
+                        className="text-w_text text-[16px]"
+                    >
+                        numAttendees :{" "}
+                    </label>
+                    <input
+                        required
+                        type="text"
+                        id="numAttendees"
+                        value={formData.numAttendees}
+                        onChange={handleChange}
+                        className="p-1 rounded w-[100%] bg-main_black shadow-inputShadow"
+                    />
+                </div>
+                {/* <div className="flex flex-col items-start gap-1 mt-3">
                     <label
                         htmlFor="address"
                         className="text-w_text text-[16px]"
@@ -289,7 +345,7 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                             ))}
                         </div>
                     ))}
-                </div>
+                </div> */}
 
                 <div className="flex flex-col items-start gap-1 mt-3">
                     <label htmlFor="link" className="text-w_text text-[16px]">

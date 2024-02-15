@@ -64,16 +64,16 @@ const Menu: FC<Props> = ({ className }) => {
 		<div className={className}>
 			<section>
 				<Link to='/'>
-					<p className='flex items-center gap-7 overflow-hidden h-[75px] justify-center'>
+					<div className='flex items-center gap-7 overflow-hidden h-[75px] justify-center'>
 						<NavaCharIcon className='text-4xl' />
 						<h2 className='text-[#34C06E] font-barlow font-regular text-2xl leading-7 tracking-[4px] '>NAVACHAR</h2>
-					</p>
+					</div>
 				</Link>
 			</section>
 			<section className='mt-3'>
 				<ul className='flex flex-col py-2'>
 					{menuItems.map((item) => (
-						<li className='w-full pr-5' key={item.key}>
+						<li className='w-full pr-5 font-mainfont text-base' key={item.key}>
 							{item.subMenu ? (
 								<>
 									<div
@@ -81,7 +81,7 @@ const Menu: FC<Props> = ({ className }) => {
 										onClick={() => handleSubMenuClick(item.key)}
 									>
 										<p className='w-[5px] h-9'></p>
-										<button className='px-3 py-2.5 font-bold text-base text-white flex items-center gap-x-2 flex-1 rounded-md'>
+										<button className='px-3 py-2.5   font-mainfont text-lg text-white flex items-center gap-x-2 flex-1 rounded-md'>
 											{item.title}
 										</button>
 									</div>
@@ -94,7 +94,7 @@ const Menu: FC<Props> = ({ className }) => {
 														to={subItem.key}
 													>
 														<p className='w-[5px] h-9'></p>
-														<p className='px-8 py-2.5 font-bold text-base text-white flex items-center gap-x-2 flex-1 rounded-md'>
+														<p className='px-8 py-2.5 font-mainfont text-base text-white flex items-center gap-x-2 flex-1 rounded-md'>
 															{subItem.title}
 														</p>
 													</Link>
@@ -109,7 +109,7 @@ const Menu: FC<Props> = ({ className }) => {
 									to={item.key}
 								>
 									<p className='w-[5px] h-9'></p>
-									<p className='px-3 py-2.5 font-bold text-base text-white flex items-center gap-x-2 flex-1 rounded-md'>
+									<p className='px-3 py-2.5 font-mainfont text-lg text-white flex items-center gap-x-2 flex-1 rounded-md'>
 										{item.title}
 									</p>
 								</Link>

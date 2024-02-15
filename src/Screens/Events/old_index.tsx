@@ -28,7 +28,6 @@ import { toast } from 'react-toastify';
 import clients from 'src/clients';
 import { EventProto, EventType } from 'src/generated/events_pb';
 import { IEvent, MediaUrl } from 'src/types';
-import EventPreview from './preview';
 import { useLoginStore } from 'src/store';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -619,7 +618,6 @@ const Events = () => {
 					<button onClick={refreshPreview} className="mb-2 text-white bg-blue-500 hover:bg-blue-700 font-medium py-2 px-4 rounded">
 						Refresh Preview
 					</button>
-					<EventPreview {...formdata} />
 				</div>
 			</div>
 
