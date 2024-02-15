@@ -122,7 +122,8 @@ proto.login.LoginRequest.prototype.toObject = function(opt_includeInstance) {
 proto.login.LoginRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     emailorphone: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    domain: jspb.Message.getFieldWithDefault(msg, 2, "")
+    domain: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    restoreaccountrequest: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
   };
 
   if (includeInstance) {
@@ -167,6 +168,10 @@ proto.login.LoginRequest.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {string} */ (reader.readString());
       msg.setDomain(value);
       break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setRestoreaccountrequest(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -210,6 +215,13 @@ proto.login.LoginRequest.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getRestoreaccountrequest();
+  if (f) {
+    writer.writeBool(
+      3,
+      f
+    );
+  }
 };
 
 
@@ -246,6 +258,24 @@ proto.login.LoginRequest.prototype.getDomain = function() {
  */
 proto.login.LoginRequest.prototype.setDomain = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional bool restoreAccountRequest = 3;
+ * @return {boolean}
+ */
+proto.login.LoginRequest.prototype.getRestoreaccountrequest = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.login.LoginRequest} returns this
+ */
+proto.login.LoginRequest.prototype.setRestoreaccountrequest = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 

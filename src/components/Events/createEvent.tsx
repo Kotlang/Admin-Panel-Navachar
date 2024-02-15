@@ -3,8 +3,7 @@ import React, { useState } from "react";
 
 import "react-datepicker/dist/react-datepicker.css";
 import clients from "src/clients";
-import dayjs from "dayjs";
-import { IEvent } from "src/types";
+import { IEvent, MediaUrl } from "src/types";
 import HandleImageUpload from "src/components/Events/mediaUpload";
 import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
 
@@ -14,7 +13,7 @@ export default function CreateEventForm({ formData, setFormData }: any) {
         libraries: ['places'],
     });
     const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null);
-    const [uploadedImageLinks, setUploadedImageLinks] = useState<string[]>([]);
+    const [uploadedImageLinks, setUploadedImageLinks] = useState<MediaUrl[]>([]);
     const [suggestions, setSuggestions] = useState<google.maps.places.PlaceResult[]>([]);
 
     const handleChange = (e: { target: any; }) => {
@@ -45,32 +44,35 @@ export default function CreateEventForm({ formData, setFormData }: any) {
         HandleImageUpload(formData.posters, setUploadedImageLinks);
     }
 
-    
-    const handleSubmit = (e: any) => {
-        // const event: IEvent = {
-        //     startAt: dayjs(dayjs().add(5, "hour").toDate()),
-        //     endAt: dayjs(dayjs().add(2, "hour").toDate()),
-        //     description: formData.description,
-        //     location: {
-        //         lat: 12341,
-        //         long: 1234,
-        //     },
-        //     numAttendees: 1234,
-        //     numSlots: Number(formData.slots),
-        //     onlineLink: formData.link,
-        //     title: formData.name,
-        //     type: 1,
-        // };
-        // clients.social.event.CreateEvent(event, {}, (err, response) => {
-        //     if (err) {
-        //         console.log("Before:-", err);
-        //     } else {
-        //         console.log(response);
-        //     }
-        // });
 
+    const toUnix = (date: string) => {
+        const dateObj = new Date(formData.startDate);
+        const unixTime = dateObj.getTime() / 1000;
+        return unixTime;
+    }
+
+
+    const handleSubmit = (e: any) => {
         e.preventDefault();
-        console.log("Form Data:", formData);
+        const event: IEvent = {
+            authorName: formData.hostName,
+            startAt: toUnix(formData.startDate),
+            endAt: toUnix(formData.endDate),
+            mediaUrls: uploadedImageLinks,
+            description: formData.description,
+            numAttendees: Number(formData.numAttendees),
+            numSlots: Number(formData.slots),
+            onlineLink: formData.link,
+            title: formData.name,
+            type: formData.mode === 'Online' ? 1 : 0,
+        };
+        clients.social.event.CreateEvent(event, {}, (err, response) => {
+            if (err) {
+                console.log("Before:-", err);
+            } else {
+                console.log(response);
+            }
+        });
     };
 
     return (
@@ -256,7 +258,6 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                             Event Posters :{" "}
                         </label>
                         <input
-                            required
                             multiple
                             type="file"
                             id="posters"
@@ -265,7 +266,22 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                         />
                     </div>
                 </div>
-
+                <div className="flex flex-col items-start gap-1 mt-3 w-[33%]">
+                    <label
+                        htmlFor="slots"
+                        className="text-w_text text-[16px]"
+                    >
+                        numAttendees :{" "}
+                    </label>
+                    <input
+                        required
+                        type="text"
+                        id="numAttendees"
+                        value={formData.numAttendees}
+                        onChange={handleChange}
+                        className="p-1 rounded w-[100%] bg-main_black shadow-inputShadow"
+                    />
+                </div>
                 <div className="flex flex-col items-start gap-1 mt-3">
                     <label
                         htmlFor="address"

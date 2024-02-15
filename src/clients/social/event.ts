@@ -21,7 +21,8 @@ import { IEvent } from 'src/types';
 import { addJwtToken } from '../utils';
 
 export const getEventsClient = (() => {
-	const socialURL = process.env.REACT_APP_SOCIAL_URL;
+	const socialURL = 'http://localhost:8081';
+	console.log(socialURL);
 	let client: EventsClient;
 	if (socialURL) {
 		client = new EventsClient(socialURL);
@@ -36,13 +37,8 @@ const getEditEventRequest = (event: IEvent) => {
 	editEventRequest.setEventid(event.id || '');
 	editEventRequest.setTitle(event.title || '');
 	editEventRequest.setType(event.type || 0);
-	if (typeof event.startAt?.unix === 'function') {
-		editEventRequest.setStartat(event.startAt?.unix());
-	}
-
-	if (typeof event.endAt?.unix === 'function') {
-		editEventRequest.setEndat(event.endAt?.unix());
-	}
+	editEventRequest.setStartat(event.startAt);
+	editEventRequest.setEndat(event.endAt);
 
 	if (event.mediaUrls) {
 		const mediaList: MediaUrl[] = [];
@@ -96,14 +92,8 @@ const getCreatEventRequest = (event: IEvent) => {
 	const createEventRequest = new CreateEventRequest();
 	createEventRequest.setTitle(event.title || '');
 	createEventRequest.setType(event.type || 0);
-
-	if (typeof event.startAt?.unix === 'function') {
-		createEventRequest.setStartat(event.startAt?.unix());
-	}
-
-	if (typeof event.endAt?.unix === 'function') {
-		createEventRequest.setEndat(event.endAt?.unix());
-	}
+	createEventRequest.setStartat(event.startAt);
+	createEventRequest.setEndat(event.endAt);
 
 	if (event.mediaUrls) {
 		const mediaList: MediaUrl[] = [];
@@ -146,7 +136,8 @@ const getCreatEventRequest = (event: IEvent) => {
 		loc.setLong(location?.long || 0);
 		createEventRequest.setLocation(loc);
 	}
-
+	createEventRequest.setAuthorname(event.authorName || '');
+	createEventRequest.setAuthorid(event.authorUserId || '');
 	createEventRequest.setOnlinelink(event.onlineLink || '');
 	createEventRequest.setTagsList(event.tags || []);
 

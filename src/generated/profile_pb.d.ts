@@ -357,3 +357,43 @@ export namespace IsUserAdminResponse {
   }
 }
 
+export class GetProfileDeletionRequest extends jspb.Message {
+  getPagesize(): number;
+  setPagesize(value: number): GetProfileDeletionRequest;
+
+  getPagenumber(): number;
+  setPagenumber(value: number): GetProfileDeletionRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetProfileDeletionRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetProfileDeletionRequest): GetProfileDeletionRequest.AsObject;
+  static serializeBinaryToWriter(message: GetProfileDeletionRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetProfileDeletionRequest;
+  static deserializeBinaryFromReader(message: GetProfileDeletionRequest, reader: jspb.BinaryReader): GetProfileDeletionRequest;
+}
+
+export namespace GetProfileDeletionRequest {
+  export type AsObject = {
+    pagesize: number,
+    pagenumber: number,
+  }
+}
+
+export class ProfileDeletionRequest extends jspb.Message {
+  getReason(): string;
+  setReason(value: string): ProfileDeletionRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ProfileDeletionRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: ProfileDeletionRequest): ProfileDeletionRequest.AsObject;
+  static serializeBinaryToWriter(message: ProfileDeletionRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ProfileDeletionRequest;
+  static deserializeBinaryFromReader(message: ProfileDeletionRequest, reader: jspb.BinaryReader): ProfileDeletionRequest;
+}
+
+export namespace ProfileDeletionRequest {
+  export type AsObject = {
+    reason: string,
+  }
+}
+

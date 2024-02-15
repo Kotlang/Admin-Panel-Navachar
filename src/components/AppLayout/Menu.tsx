@@ -64,10 +64,10 @@ const Menu: FC<Props> = ({ className }) => {
 		<div className={className}>
 			<section>
 				<Link to='/'>
-					<p className='flex items-center gap-7 overflow-hidden h-[75px] justify-center'>
+					<div className='flex items-center gap-7 overflow-hidden h-[75px] justify-center'>
 						<NavaCharIcon className='text-4xl' />
 						<h2 className='text-[#34C06E] font-barlow font-regular text-2xl leading-7 tracking-[4px] '>NAVACHAR</h2>
-					</p>
+					</div>
 				</Link>
 			</section>
 			<section className='mt-3'>

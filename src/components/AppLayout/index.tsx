@@ -28,13 +28,13 @@ const AppLayout: FC<IAppLayoutProps> = ({ className }) => {
 		isLogin
 	}));
 
-	useEffect(() => {
-		console.log(authResponse);
-		if (!isLogin()) {
-			navigate('/login');
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [authResponse?.jwt]);
+	// useEffect(() => {
+	// 	console.log(authResponse);
+	// 	if (!isLogin()) {
+	// 		navigate('/login');
+	// 	}
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [authResponse?.jwt]);
 
 	return (
 		<Layout className={className}>

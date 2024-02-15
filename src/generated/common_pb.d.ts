@@ -84,6 +84,28 @@ export namespace CertificationDetails {
   }
 }
 
+export class DeletionInfo extends jspb.Message {
+  getDeletiontime(): number;
+  setDeletiontime(value: number): DeletionInfo;
+
+  getReason(): string;
+  setReason(value: string): DeletionInfo;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeletionInfo.AsObject;
+  static toObject(includeInstance: boolean, msg: DeletionInfo): DeletionInfo.AsObject;
+  static serializeBinaryToWriter(message: DeletionInfo, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeletionInfo;
+  static deserializeBinaryFromReader(message: DeletionInfo, reader: jspb.BinaryReader): DeletionInfo;
+}
+
+export namespace DeletionInfo {
+  export type AsObject = {
+    deletiontime: number,
+    reason: string,
+  }
+}
+
 export class UserProfileProto extends jspb.Message {
   getLoginid(): string;
   setLoginid(value: string): UserProfileProto;
@@ -141,6 +163,11 @@ export class UserProfileProto extends jspb.Message {
   hasLocation(): boolean;
   clearLocation(): UserProfileProto;
 
+  getDeletioninfo(): DeletionInfo | undefined;
+  setDeletioninfo(value?: DeletionInfo): UserProfileProto;
+  hasDeletioninfo(): boolean;
+  clearDeletioninfo(): UserProfileProto;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UserProfileProto.AsObject;
   static toObject(includeInstance: boolean, msg: UserProfileProto): UserProfileProto.AsObject;
@@ -167,6 +194,7 @@ export namespace UserProfileProto {
     attributesList: Array<string>,
     landsizeinacres: LandSizeInAcres,
     location?: Location.AsObject,
+    deletioninfo?: DeletionInfo.AsObject,
   }
 }
 
