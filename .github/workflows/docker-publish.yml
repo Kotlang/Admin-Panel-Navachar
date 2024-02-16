@@ -1,0 +1,66 @@
+name: Docker-Publish
+
+on:
+  push:
+    # Publish `release` as Docker `latest` image.
+    branches:
+      - main
+
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - v*
+
+  # Run tests for any PRs.
+  pull_request:
+
+env:
+  # TODO: Change variable to your image's name.
+  IMAGE_NAME: kotlang-navachar-website
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  build-service:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install Protocol Buffers Compiler
+        run: |
+          PROTOC_ZIP=protoc-3.15.8-linux-x86_64.zip
+          curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.15.8/$PROTOC_ZIP
+          sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
+          sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
+          rm -f $PROTOC_ZIP
+
+      - name: Install gRPC-Web Plugin
+        run: |
+          GRPC_WEB_PLUGIN_VERSION=1.2.1
+          curl -OL https://github.com/grpc/grpc-web/releases/download/$GRPC_WEB_PLUGIN_VERSION/protoc-gen-grpc-web-$GRPC_WEB_PLUGIN_VERSION-linux-x86_64
+          sudo mv protoc-gen-grpc-web-$GRPC_WEB_PLUGIN_VERSION-linux-x86_64 /usr/local/bin/protoc-gen-grpc-web
+          sudo chmod +x /usr/local/bin/protoc-gen-grpc-web
+
+      - name: Build
+        run: ./build.sh
+
+      - name: Build docker image
+        run: docker build -t navachar/$IMAGE_NAME:$IMAGE_TAG .
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push image
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            docker push navachar/$IMAGE_NAME:$IMAGE_TAG
+          fi
