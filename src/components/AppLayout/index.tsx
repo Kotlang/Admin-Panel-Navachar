@@ -9,9 +9,9 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { useLoginStore } from 'src/store';
 import styled from 'styled-components';
 
-import Footer from './Footer';
+// import Footer from './Footer';
 import Menu from './Menu';
-import NavHeader from './NavHeader';
+// import NavHeader from './NavHeader';
 const { Content, Sider } = Layout;
 
 interface IAppLayoutProps extends PropsWithChildren {
@@ -28,13 +28,13 @@ const AppLayout: FC<IAppLayoutProps> = ({ className }) => {
 		isLogin
 	}));
 
-	// useEffect(() => {
-	// 	console.log(authResponse);
-	// 	if (!isLogin()) {
-	// 		navigate('/login');
-	// 	}
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [authResponse?.jwt]);
+	useEffect(() => {
+		console.log(authResponse);
+		if (!isLogin()) {
+			navigate('/login');
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [authResponse?.jwt]);
 
 	return (
 		<Layout className={className}>

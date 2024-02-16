@@ -23,7 +23,7 @@ export default function CreateEventForm({ formData, setFormData }: any) {
     const [ startDate, setStartDate ] = useState("2024/01/01 00:00:00");
     const [ endDate, setendDate ] = useState("2024/01/02 00:00:00");
 	const isEditMode = eventId != null;
-    const dateFormat = 'YYYY/MM/DD HH:MM:SS';
+    const dateFormat = 'YYYY/MM/DD HH:mm:ss';
 
     // const { isLoaded, loadError } = useLoadScript({
     //     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || "",
