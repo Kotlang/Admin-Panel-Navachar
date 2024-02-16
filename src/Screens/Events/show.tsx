@@ -24,7 +24,6 @@ function convertUnixTimeToDateTime(unixTimeInSeconds: number): string {
 		hour: "numeric",
 		minute: "numeric",
 		second: "numeric",
-		timeZone: "UTC",
 	}).format(dateObject);
 
 	return formattedDateTime;
