@@ -20,7 +20,8 @@ const getLoginClient = (() => {
 
 const getLoginRequest = (emailOrPhone: string) => {
 	const loginRequest = new LoginRequest();
-	const authDomain = process.env.REACT_APP_AUTH_DOMAIN_DEV;
+	const authDomain = localStorage.getItem('DOMAIN_TYPE') === 'PROD' ? process.env.REACT_APP_AUTH_DOMAIN_PROD : process.env.REACT_APP_AUTH_DOMAIN_DEV;
+	console.log(authDomain);
 	if (authDomain) {
 		loginRequest.setDomain(authDomain);
 	}
@@ -30,7 +31,7 @@ const getLoginRequest = (emailOrPhone: string) => {
 
 const getVerifyRequest = (emailOrPhone: string, otp: string) => {
 	const verifyRequest = new VerifyRequest();
-	const authDomain = process.env.REACT_APP_AUTH_DOMAIN_DEV;
+	const authDomain = localStorage.getItem('DOMAIN_TYPE') === 'PROD' ? process.env.REACT_APP_AUTH_DOMAIN_PROD : process.env.REACT_APP_AUTH_DOMAIN_DEV;
 	if (authDomain) {
 		verifyRequest.setDomain(authDomain);
 	}

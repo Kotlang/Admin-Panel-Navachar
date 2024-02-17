@@ -65,9 +65,13 @@ export default function CreateEventForm({ formData, setFormData }: any) {
     //     }
     // };
 
-    const onUpload = (e: any) => {
-        handleChange(e);
-        HandleImageUpload(formData.posters, setUploadedImageLinks);
+    const onUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { type, files } = e.target;
+        if (type === "file") {
+            if (files) {
+                HandleImageUpload(files, setUploadedImageLinks);
+            }
+        }
     }
 
     function handleDateChange(dates: any, dateStrings: any[]) {
