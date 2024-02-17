@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM nginx:1.25.4
 WORKDIR /usr/share/nginx/html
 COPY build/ .
 EXPOSE 80
