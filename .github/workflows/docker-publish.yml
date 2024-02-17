@@ -39,24 +39,24 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Protocol Buffers Compiler
-        run: |
-          PROTOC_ZIP=protoc-3.15.8-linux-x86_64.zip
-          curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.15.8/$PROTOC_ZIP
-          sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
-          sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
-          rm -f $PROTOC_ZIP
-          sudo chmod +x /usr/local/bin/protoc 
+      # - name: Install Protocol Buffers Compiler
+      #   run: |
+      #     PROTOC_ZIP=protoc-3.15.8-linux-x86_64.zip
+      #     curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.15.8/$PROTOC_ZIP
+      #     sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
+      #     sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
+      #     rm -f $PROTOC_ZIP
+      #     sudo chmod +x /usr/local/bin/protoc 
 
-      - name: Install gRPC-Web Plugin
-        run: |
-          GRPC_WEB_PLUGIN_VERSION=1.2.1
-          curl -OL https://github.com/grpc/grpc-web/releases/download/$GRPC_WEB_PLUGIN_VERSION/protoc-gen-grpc-web-$GRPC_WEB_PLUGIN_VERSION-linux-x86_64
-          sudo mv protoc-gen-grpc-web-$GRPC_WEB_PLUGIN_VERSION-linux-x86_64 /usr/local/bin/protoc-gen-grpc-web
-          sudo chmod +x /usr/local/bin/protoc-gen-grpc-web
+      # - name: Install gRPC-Web Plugin
+      #   run: |
+      #     GRPC_WEB_PLUGIN_VERSION=1.5.0
+      #     curl -OL https://github.com/grpc/grpc-web/releases/download/$GRPC_WEB_PLUGIN_VERSION/protoc-gen-grpc-web-$GRPC_WEB_PLUGIN_VERSION-linux-x86_64
+      #     sudo mv protoc-gen-grpc-web-$GRPC_WEB_PLUGIN_VERSION-linux-x86_64 /usr/local/bin/protoc-gen-grpc-web
+      #     sudo chmod +x /usr/local/bin/protoc-gen-grpc-web
 
       - name: Build
-        run: ./build.sh
+        run: yarn build
 
       - name: Build docker image
         run: docker build -t navachar/$IMAGE_NAME:$IMAGE_TAG .
