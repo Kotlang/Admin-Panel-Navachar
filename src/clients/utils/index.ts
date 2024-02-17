@@ -5,7 +5,7 @@
 import { Metadata } from 'grpc-web';
 import { UserProfileProto } from 'src/generated/common_pb';
 import { AuthResponse } from 'src/generated/login_pb';
-// import { useLoginStore } from 'src/store';
+import { useLoginStore } from 'src/store';
 import { IAuthResponse, IUserProfile } from 'src/types';
 
 const getAuthResponse: (authResponse: AuthResponse) => IAuthResponse = (authResponse) => {
@@ -30,8 +30,7 @@ const getUserProfile: (userProfileProto: UserProfileProto) => IUserProfile = (us
 };
 
 const addJwtToken = (metaData: Metadata | null) => {
-	// const jwt = useLoginStore.getState().authResponse.jwt;
-	const jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIyYWRlMDgzNS0wOWJlLTQ5YzItOTEzMi0xOTExOGY2NjhlOWEiLCJqdGkiOiJ4Y2VsZXJhdGUiLCJzdWIiOiJhZG1pbiJ9.6LQgbrDBT6TjIrArLV_RSjv3tbOTCymsge8tDJ9r7o0';
+	const jwt = useLoginStore.getState().authResponse.jwt;
 	const newMetaData: Metadata = {
 		...metaData,
 		'Authorization': `Bearer ${jwt}`

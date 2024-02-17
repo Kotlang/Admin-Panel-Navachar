@@ -29,7 +29,6 @@ export interface IEventData {
 }
 
 
-
 const Events = () => {
 
 	const [formData, setFormData] = useState<IEventData>({
@@ -76,4 +75,3 @@ export default Events;
 function dayjs(arg0: any) {
 	throw new Error('Function not implemented.');
 }
-

@@ -6,16 +6,15 @@ import clients from "src/clients";
 
 const HandleImageUpload = async (files: FileList, callback: (urls: MediaUrl[]) => void) => {
     let updatedLinks: MediaUrl[] = [];
-
     for (let i = 0; i < files.length; i++) {
         const extension = files[i].name.split('.').pop();
         if (extension) {
-            clients.auth.profile.GetProfileImageUploadURL(extension, {}, (err, response) => {
+            clients.auth.profile.GetProfileImageUploadURL(extension, {}, async (err, response) => {
                 if (err) {
                     console.log(err);
                 } else {
-                    const preSignedUrl = response?.getMediaurl;
-                    fetch(preSignedUrl(), {
+                    const preSignedUrl = response.getUploadurl();
+                    await fetch(preSignedUrl, {
                         method: 'PUT',
                         body: files[i],
                         headers: {
@@ -23,7 +22,11 @@ const HandleImageUpload = async (files: FileList, callback: (urls: MediaUrl[]) =
                         },
                     })
                     .then((res) => {
-                        console.log(res);
+                        let mediaUrl: MediaUrl = {
+                            url: response.getMediaurl(),
+                            mimeType: files[i].type,
+                        };
+                        updatedLinks.push(mediaUrl);
                         console.log('File uploaded successfully.');
                     })
                     .catch((error) => {

@@ -8,7 +8,6 @@ import Modal from 'react-modal';
 
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
 // Set the app element for react-modal
 Modal.setAppElement('#root'); //
 

@@ -10,18 +10,25 @@ import { DatePicker } from "antd";
 const { RangePicker } = DatePicker;
 import { Metadata, RpcError } from "grpc-web";
 import { EventProto } from "src/generated/events_pb";
-
+import dayjs from 'dayjs';
+import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateEventForm({ formData, setFormData }: any) {
-    // const { isLoaded, loadError } = useLoadScript({
-    //     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || "",
-    //     libraries: ['places'],
-    // });
+
     // const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null);
     const [uploadedImageLinks, setUploadedImageLinks] = useState<MediaUrl[]>([]);
     // const [suggestions, setSuggestions] = useState<google.maps.places.PlaceResult[]>([]);
 	const { eventId } = useParams();
+    const [ startDate, setStartDate ] = useState("2024/01/01 00:00:00");
+    const [ endDate, setendDate ] = useState("2024/01/02 00:00:00");
 	const isEditMode = eventId != null;
+    const dateFormat = 'YYYY/MM/DD HH:mm:ss';
+
+    // const { isLoaded, loadError } = useLoadScript({
+    //     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || "",
+    //     libraries: ['places'],
+    // });
 
 	const fetchEventById = (eventId: string, metaData: Metadata | null): Promise<EventProto> => {
 		return new Promise((resolve, reject) => {
@@ -58,9 +65,13 @@ export default function CreateEventForm({ formData, setFormData }: any) {
     //     }
     // };
 
-    const onUpload = (e: any) => {
-        handleChange(e);
-        HandleImageUpload(formData.posters, setUploadedImageLinks);
+    const onUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { type, files } = e.target;
+        if (type === "file") {
+            if (files) {
+                HandleImageUpload(files, setUploadedImageLinks);
+            }
+        }
     }
 
     function handleDateChange(dates: any, dateStrings: any[]) {
@@ -70,6 +81,8 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                 startDate: dateStrings[0],
                 endDate: dateStrings[1]
             }));
+            setStartDate(dateStrings[0]);
+            setendDate(dateStrings[1]);
         }
     }
 
@@ -77,21 +90,23 @@ export default function CreateEventForm({ formData, setFormData }: any) {
         const dateObj = new Date(dateStr);
         return dateObj.getTime() / 1000;
     }
+    const navigate = useNavigate();
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
         const event: IEvent = {
             id: eventId,
             authorName: formData.hostName,
-            startAt: toUnix(formData.startDate),
-            endAt: toUnix(formData.endDate),
+            startAt: toUnix(startDate),
+            endAt: toUnix(endDate),
             mediaUrls: uploadedImageLinks,
             description: formData.description,
             numAttendees: Number(formData.numAttendees),
             numSlots: Number(formData.slots),
             onlineLink: formData.link,
             title: formData.name,
-            type: formData.mode === 'Online' ? 1 : 0,
+            type: formData.mode === 'Online' ? 0 : 1,
+            tags: [formData.tag],
         };
         if (isEditMode) {
             clients.social.event.EditEvent(event, {}, (err, response) => {
@@ -99,6 +114,7 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                     console.log('Before:-', err);
                 } else {
                     console.log(response);
+                    navigate('/events/show');
                 }
             })
         }else{
@@ -107,6 +123,7 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                     console.log("Before:-", err);
                 } else {
                     console.log(response);
+                    navigate('/events/show');
                 }
             });
         }
@@ -117,17 +134,23 @@ export default function CreateEventForm({ formData, setFormData }: any) {
 			if (isEditMode) {
 				try {
 					const eventData = await fetchEventById(eventId, {});
-					console.log(eventData);
+                    console.log(eventData.getStartat());
+                    const startDate = moment.unix(eventData.getStartat()).format(dateFormat);
+                    const endDate = moment.unix(eventData.getEndat()).format(dateFormat);
+                    console.log(startDate, endDate);
                     setFormData((prevState: any) => ({
                         ...prevState,
                         hostName: eventData.getAuthorinfo()?.getName(),
 						description: eventData.getDescription(),
-						mode: eventData.getType(),
+						mode: eventData.getType() === 0 ? 'Online' : 'Offline',
 						numAttendees: eventData.getNumattendees(),
 						slots: eventData.getNumslots(),
 						link: eventData.getOnlinelink(),
 						name: eventData.getTitle(),
+                        tag: eventData.getTagsList()[0],
                     }));
+                    setStartDate(startDate);
+                    setendDate(endDate);
 				} catch (error) {
 					console.error('Error fetching event data:', error);
 				}
@@ -196,6 +219,7 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                         <RangePicker
                             showTime
                             id=""
+                            value={[dayjs(startDate, dateFormat), dayjs(endDate, dateFormat)]}
                             className="p-1 rounded w-[100%] bg-main_black shadow-inputShadow text-white border-none white-placeholder ant-picker-input"
                             onChange={handleDateChange}
                         />
@@ -217,10 +241,6 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                             onChange={handleChange}
                             className="p-1 rounded w-[100%] text-f_text bg-main_black shadow-inputShadow"
                         >
-                            <option
-                                value=""
-                                className="bg-main_black text-white"
-                            ></option>
                             <option
                                 value="Chemical"
                                 className="bg-main_black text-f_text"
@@ -253,10 +273,6 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                             onChange={handleChange}
                             className="p-1 rounded w-[100%] text-f_text bg-main_black shadow-inputShadow"
                         >
-                            <option
-                                value=""
-                                className="bg-main_black text-white"
-                            ></option>
                             <option
                                 value="Online"
                                 className="bg-main_black text-f_text "
@@ -362,7 +378,7 @@ export default function CreateEventForm({ formData, setFormData }: any) {
                 </div>
 
                 <button className="bg-primary text-w_text text-lg w-full py-2 mt-3 rounded border-2 border-solid border-green-300 opacity-90 backdrop-blur-sm tracking-[2px]">
-                    CREATE EVENT
+                    {isEditMode ? 'UPDATE' : 'CREATE EVENT'}
                 </button>
             </form>
         </div>
