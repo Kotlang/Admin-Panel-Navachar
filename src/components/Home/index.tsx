@@ -11,23 +11,8 @@ const Home: React.FC = () => {
 				{/* ... */}
 			</aside>
 			<main className="main-content">
-				<form className="form">
-					<div className="form-group with-icon">
-						<label htmlFor="name">Grouped with icons</label>
-						<input type="text" id="name" placeholder="John Doe" />
-						<span className="icon">👤</span>
-					</div>
-					<div className="form-group with-help">
-						<label htmlFor="email">With help line and labelFor</label>
-						<input type="email" id="email" placeholder="john.doe@example.com" />
-						<small>Help line comes here</small>
-					</div>
-					{/* More form inputs... */}
-					<div className="form-group">
-						<button type="submit">Submit</button>
-						<button type="reset">Reset</button>
-					</div>
-				</form>
+				{/* Main content */}
+				{/* ... */}
 			</main>
 		</div>
 	);
