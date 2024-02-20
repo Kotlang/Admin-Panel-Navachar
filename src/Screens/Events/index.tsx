@@ -7,6 +7,7 @@
 import Preview from 'src/components/Events/preview';
 import CreateEventForm from 'src/components/Events/createEvent';
 import { useState } from 'react';
+import { MediaUrl } from "src/types";
 
 export interface ILocation {
 	lat: number;
@@ -30,7 +31,7 @@ export interface IEventData {
 
 
 const Events = () => {
-
+	const [uploadedImageLinks, setUploadedImageLinks] = useState<MediaUrl[]>([]);
 	const [formData, setFormData] = useState<IEventData>({
 		name: "",
 		hostName: "",
@@ -60,10 +61,16 @@ const Events = () => {
 					<CreateEventForm
 						formData={formData}
 						setFormData={setFormData}
+						uploadedImageLinks={uploadedImageLinks}
+						setUploadedImageLinks={setUploadedImageLinks}
 					/>
 				</div>
 				<div className="w-[50%] p-5 relative flex flex-col items-center justify-center font-barlow ">{/*preview section*/}
-					<Preview formData={formData} />
+					<Preview
+						formData={formData}
+						mediaUrls={uploadedImageLinks}
+						setMediaUrls={setUploadedImageLinks}
+					/>
 				</div>
 			</div >
 		</div>

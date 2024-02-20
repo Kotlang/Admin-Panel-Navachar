@@ -7,32 +7,50 @@ import durationIcon from "src/assets/icons/durationIcon.png";
 import shareIcon from "src/assets/icons/shareIcon.png";
 import notIcon from "src/assets/icons/notIcon.png";
 import logo from "src/assets/logo.png";
+import { MediaUrl } from "src/types";
+
 // import ImageCarousel_1 from "src/assets/ImageCarousel_1.png"; // for testing
 // import ImageCarousel_2 from "src/assets/ImageCarousel_2.png";
+interface Props {
+    formData: any;
+    mediaUrls: MediaUrl[];
+    setMediaUrls: any;
+}
 
-function Preview({ formData }) {
-    const { startDate, hostName, mode, slots, description, posters, endDate } =
+function Preview({ formData, mediaUrls, setMediaUrls }: Props) {
+    const { startDate, hostName, mode, slots, description, endDate } =
         formData;
     const start = moment(startDate);
     const end = moment(endDate);
     const duration = moment.duration(end.diff(start));
     const hours = parseFloat(duration.asHours().toFixed(1));
 
+    const handleDelete = (index: number) => {
+        setMediaUrls((currentMediaUrls: any[]) => currentMediaUrls.filter((_, i) => i !== index));
+    };
+    
     return (
         <>
             <div className="bg-[#525252] rounded-lg  w-[394px] bg-opacity-40  backdrop-blur-[3.9px]  text-main_black font-bold  text-md overflow-hidden">
                 <div className="h-[252px] flex overflow-x-scroll  scrollbar-hide">
-                    {Array.from(posters).map((file, index) => (
-                        <img
-                            key={index}
-                            src={URL.createObjectURL(file)}
-                            alt={`Poster ${index + 1}`}
-                            style={{
-                                maxWidth: "394px",
-                                maxHeight: "252px",
-                                marginRight: "2px",
-                            }}
-                        />
+                    {Array.from(mediaUrls).map((mediaurl, index) => (
+                        <div key={index} className="relative mr-2">
+                            <img
+                                src={mediaurl.url}
+                                alt={`Poster ${index + 1}`}
+                                style={{
+                                    maxWidth: "394px",
+                                    maxHeight: "252px",
+                                }}
+                            />
+                            <button
+                                className="absolute top-0 right-0 bg-red-500 text-white p-1"
+                                onClick={() => handleDelete(index)}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                X
+                            </button>
+                        </div>
                     ))}
                 </div>
                 <div className="w-[394px] h-[60px] bg-[#99F5B3] flex px-6 justify-between items-center">

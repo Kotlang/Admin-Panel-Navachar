@@ -3,9 +3,7 @@
 import { MediaUrl } from "src/types";
 import clients from "src/clients";
 
-
-const HandleImageUpload = async (files: FileList, callback: (urls: MediaUrl[]) => void) => {
-    let updatedLinks: MediaUrl[] = [];
+const HandleImageUpload = async (files: FileList, setUploadedImageLinks: any, setIsUploading: any ) => {
     for (let i = 0; i < files.length; i++) {
         const extension = files[i].name.split('.').pop();
         if (extension) {
@@ -14,6 +12,7 @@ const HandleImageUpload = async (files: FileList, callback: (urls: MediaUrl[]) =
                     console.log(err);
                 } else {
                     const preSignedUrl = response.getUploadurl();
+                    setIsUploading(true);
                     await fetch(preSignedUrl, {
                         method: 'PUT',
                         body: files[i],
@@ -26,10 +25,12 @@ const HandleImageUpload = async (files: FileList, callback: (urls: MediaUrl[]) =
                             url: response.getMediaurl(),
                             mimeType: files[i].type,
                         };
-                        updatedLinks.push(mediaUrl);
+                        setUploadedImageLinks((prevState: any) => [...prevState, mediaUrl]);
                         console.log('File uploaded successfully.');
+                        setIsUploading(false);
                     })
                     .catch((error) => {
+                        setIsUploading(false);
                         console.error('An error occurred while uploading the file:', error);
                     });
                 }
@@ -37,8 +38,6 @@ const HandleImageUpload = async (files: FileList, callback: (urls: MediaUrl[]) =
             })
         }
     }
-    // Set the new state with the response links
-    callback(updatedLinks);
 };
 
 export default HandleImageUpload;
