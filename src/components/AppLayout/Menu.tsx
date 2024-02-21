@@ -20,6 +20,10 @@ const menuItems = [
 			{
 				key: '/events/show',
 				title: 'Show'
+			},
+			{
+				key: '/events/eventDetail',
+				title: 'Event Detail'
 			}
 		],
 		title: 'Events'
