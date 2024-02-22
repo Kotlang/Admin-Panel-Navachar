@@ -6,17 +6,15 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Events from 'src/Screens/Events';
 import MonitorDashboard from 'src/Screens/Events/monitor';
-import EventsTable from 'src/Screens/Events/show';
 import DetailView from 'src/Screens/Events/detailView';
 
 const EventMiddleware = () => {
 	return (
 		<Routes>
-			<Route path='create' element={<Events />} />
-			<Route path='show' element={<EventsTable />} />
+			<Route path='/' element={<Events />} />
 			<Route path=':eventId' element={<Events />} />
 			<Route path='monitor/:eventId' element={<MonitorDashboard />} />
-			<Route path='eventDetail' element={<DetailView />} />
+			<Route path='eventdetail/:eventId' element={<DetailView />} />
 		</Routes>
 	);
 };
