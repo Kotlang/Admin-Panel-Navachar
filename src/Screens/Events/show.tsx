@@ -9,9 +9,13 @@ import {
 	EventFeedResponse,
 } from "src/generated/events_pb";
 import EventClient from "src/clients/social/listevents";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import clients from "src/clients";
+
+interface EventsTableProps {
+	eventStatus: string;
+  }
 
 function convertUnixTimeToDateTime(unixTimeInSeconds: number): string {
 	const milliseconds = unixTimeInSeconds * 1000;
@@ -41,7 +45,7 @@ function calculateTimeDifference(startUnixTime: number, endUnixTime: number): st
 	return `${formattedHours}:${formattedMinutes}`;
 }
 
-const EventsTable: React.FC = () => {
+const EventsTable: React.FC<EventsTableProps> = ({eventStatus}) => {
 	const navigate = useNavigate();
 
 	const [isDialogOpen, setDialogOpen] = useState(false);
@@ -110,7 +114,7 @@ const EventsTable: React.FC = () => {
 	const fetchEvents = async () => {
 		try {
 			let allEvents: any[] = [];
-			for (let i = 0; i < 3; i++) {
+			for (let i = ( eventStatus === "ACTIVE" ? 1:0 ); i < ( eventStatus === "ACTIVE" ? 3:1 ); i++) {
 				const filters = new EventFeedFilters();
 				filters.setEventstatus(i);
 				const response = await fetchEventsAsync(0, 0, filters, {});
@@ -126,17 +130,14 @@ const EventsTable: React.FC = () => {
 
 	useEffect(() => {
 		fetchEvents();
-	}, []);
+	}, [eventStatus]);
 
 	if (loading) {
 		return <div>Loading...</div>;
 	}
 
 	return (
-		<div className="pt-20 p-5 h-screen">
-			<h2 className="text-2xl font-semibold text-white font-mainfont tracking-[10px] mb-4 uppercase">
-				Events
-			</h2>
+		<div className="mt-8 h-screen">
 			<div className="rounded-lg border  bg-[#525252] bg-opacity-40  backdrop-blur-[3.9px] h-[90%]  overflow-y-scroll">
 				<table className="table-auto w-full ">
 					<thead className=" uppercase text-f_text ">
@@ -166,7 +167,11 @@ const EventsTable: React.FC = () => {
 						{events.map((event, index) => (
 							<React.Fragment key={index}>
 								<tr className="bg-inherit  text-w_text h-full text-base font-mainfont">
-									<td className="px-3 py-4">{event.getTitle()}</td>
+									<td className="px-3 py-4">
+										<Link to={`/events/eventdetail/${event.getEventid()}`}>
+											{event.getTitle()}
+										</Link>
+									</td>
 									<td className="px-3 py-4">
 										{convertUnixTimeToDateTime(event.getStartat())}
 									</td>

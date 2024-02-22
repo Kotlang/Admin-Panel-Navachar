@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 // Copyright 2022-2023 @Kotlang/navachaar-admin-portal authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
@@ -12,20 +14,6 @@ const menuItems = [
 	},
 	{
 		key: '/events',
-		subMenu: [
-			{
-				key: '/events/create',
-				title: 'Create'
-			},
-			{
-				key: '/events/show',
-				title: 'Show'
-			},
-			{
-				key: '/events/eventDetail',
-				title: 'Event Detail'
-			}
-		],
 		title: 'Events'
 	},
 	{
@@ -78,36 +66,6 @@ const Menu: FC<Props> = ({ className }) => {
 				<ul className='flex flex-col py-2'>
 					{menuItems.map((item) => (
 						<li className='w-full pr-5 font-mainfont text-base' key={item.key}>
-							{item.subMenu ? (
-								<>
-									<div
-										className='flex items-center gap-x-3 menu-item-active'
-										onClick={() => handleSubMenuClick(item.key)}
-									>
-										<p className='w-[5px] h-9'></p>
-										<button className='px-3 py-2.5   font-mainfont text-lg text-white flex items-center gap-x-2 flex-1 rounded-md'>
-											{item.title}
-										</button>
-									</div>
-									{expandedSubMenu === item.key && (
-										<ul className='bg-main_black'>
-											{item.subMenu.map((subItem) => (
-												<li key={subItem.key} className='py-1'>
-													<Link
-														className='flex items-center gap-x-3 menu-item-active'
-														to={subItem.key}
-													>
-														<p className='w-[5px] h-9'></p>
-														<p className='px-8 py-2.5 font-mainfont text-base text-white flex items-center gap-x-2 flex-1 rounded-md'>
-															{subItem.title}
-														</p>
-													</Link>
-												</li>
-											))}
-										</ul>
-									)}
-								</>
-							) : (
 								<Link
 									className='flex items-center gap-x-3 menu-item-active'
 									to={item.key}
@@ -117,7 +75,6 @@ const Menu: FC<Props> = ({ className }) => {
 										{item.title}
 									</p>
 								</Link>
-							)}
 						</li>
 					))}
 				</ul>
