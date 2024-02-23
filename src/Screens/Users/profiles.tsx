@@ -2,10 +2,12 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import type { GetProp, TablePaginationConfig, TableProps } from 'antd';
-import { Space, Table } from 'antd';
+import { Button, Space, Table } from 'antd';
 import { Metadata, RpcError } from 'grpc-web';
 import React, { useEffect, useState } from 'react';
+import {  useNavigate } from 'react-router-dom';
 import clients from 'src/clients';
+import { FarmingType } from 'src/generated/common_pb';
 import { ProfileListResponse } from 'src/generated/profile_pb';
 import { IFetchProfiles } from 'src/types';
 
@@ -44,19 +46,46 @@ const columns: TableProps<DataType>['columns'] = [
 	{
 		dataIndex: 'farmingPractice',
 		key: 'farmingPractice',
+		render: (farmingPractice: string) => {
+
+			let cls = '';
+			if (farmingPractice === 'Chemical') {
+				cls = 'text-purple-500';
+			} else if (farmingPractice === 'Organic') {
+				cls = 'text-green-500';
+			} else if (farmingPractice === 'MIX') {
+				cls = 'text-yellow-500';
+			}else {
+				cls = 'text-white';
+			}
+			return <span className={cls}>{farmingPractice}</span>;
+		},
 		title: 'FARMING PRACTICE'
 	},
 	{
 		key: 'action',
 		render: () => (
 			<Space size="middle">
-				<a>Block</a>
-				<a>View</a>
+				<Button type='primary' danger>Block</Button>
+				<Button type="primary" onClick={() => useNavigate()('/users/prodile')}>View</Button>
 			</Space>
 		),
 		title: 'ACTIONS'
 	}
 ];
+
+const getFarmingType = (farmingType: FarmingType) => {
+	switch (farmingType) {
+	case FarmingType.CHEMICAL:
+		return 'Chemical';
+	case FarmingType.ORGANIC:
+		return 'Organic';
+	case FarmingType.MIX:
+		return 'MIX';
+	default:
+		return 'Unknown';
+	}
+};
 
 const UsersList: React.FC = () => {
 	const [data, setData] = useState<DataType[]>();
@@ -80,11 +109,10 @@ const UsersList: React.FC = () => {
 				if (err) {
 					console.error('Error fetching profiles:', err);
 				} else {
-					console.log(response.getProfilesList());
 					setData(
 						response.getProfilesList().map((profile) => {
 							return {
-								farmingPractice: profile.getFarmingtype().toString(),
+								farmingPractice: getFarmingType(profile.getFarmingtype()),
 								lastActive: 5,
 								location: profile.getAddressesMap().get('default')?.getCity() || '',
 								phoneNo: '9970378006',
@@ -93,6 +121,8 @@ const UsersList: React.FC = () => {
 							};
 						})
 					);
+					console.log(FarmingType.CHEMICAL);
+
 				}
 				setLoading(false);
 			});
@@ -123,7 +153,6 @@ const UsersList: React.FC = () => {
 		// You can include other parameters if needed (sortField, sortOrder, filters)
 		});
 
-		// `dataSource` is useless since `pageSize` changed
 		if (pagination.pageSize !== tableParams.pagination?.pageSize) {
 			setData([]);
 		}
