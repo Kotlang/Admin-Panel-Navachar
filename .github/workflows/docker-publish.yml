@@ -39,6 +39,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install protoc
+        run: sudo apt install -y protobuf-compiler
+
       # - name: Install Protocol Buffers Compiler
       #   run: |
       #     PROTOC_ZIP=protoc-3.15.8-linux-x86_64.zip

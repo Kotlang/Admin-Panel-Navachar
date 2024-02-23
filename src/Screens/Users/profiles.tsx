@@ -27,53 +27,6 @@ interface TableParams {
 	filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
 }
 
-const columns: TableProps<DataType>['columns'] = [
-	{
-		dataIndex: 'userName',
-		key: 'userName',
-		title: 'USER NAME'
-	},
-	{
-		dataIndex: 'phoneNo',
-		key: 'phoneNo',
-		title: 'PHONE NO.'
-	},
-	{
-		dataIndex: 'location',
-		key: 'location',
-		title: 'LOCATION'
-	},
-	{
-		dataIndex: 'farmingPractice',
-		key: 'farmingPractice',
-		render: (farmingPractice: string) => {
-
-			let cls = '';
-			if (farmingPractice === 'Chemical') {
-				cls = 'text-purple-500';
-			} else if (farmingPractice === 'Organic') {
-				cls = 'text-green-500';
-			} else if (farmingPractice === 'MIX') {
-				cls = 'text-yellow-500';
-			}else {
-				cls = 'text-white';
-			}
-			return <span className={cls}>{farmingPractice}</span>;
-		},
-		title: 'FARMING PRACTICE'
-	},
-	{
-		key: 'action',
-		render: () => (
-			<Space size="middle">
-				<Button type='primary' danger>Block</Button>
-				<Button type="primary" onClick={() => useNavigate()('/users/prodile')}>View</Button>
-			</Space>
-		),
-		title: 'ACTIONS'
-	}
-];
-
 const getFarmingType = (farmingType: FarmingType) => {
 	switch (farmingType) {
 	case FarmingType.CHEMICAL:
@@ -96,6 +49,56 @@ const UsersList: React.FC = () => {
 			pageSize: 2
 		}
 	});
+	const navigate = useNavigate();
+
+	const columns: TableProps<DataType>['columns'] = [
+		{
+			dataIndex: 'userName',
+			key: 'userName',
+			title: 'USER NAME'
+		},
+		{
+			dataIndex: 'phoneNo',
+			key: 'phoneNo',
+			title: 'PHONE NO.'
+		},
+		{
+			dataIndex: 'location',
+			key: 'location',
+			title: 'LOCATION'
+		},
+		{
+			dataIndex: 'farmingPractice',
+			key: 'farmingPractice',
+			render: (farmingPractice: string) => {
+
+				let cls = '';
+				if (farmingPractice === 'Chemical') {
+					cls = 'text-purple-500';
+				} else if (farmingPractice === 'Organic') {
+					cls = 'text-green-500';
+				} else if (farmingPractice === 'MIX') {
+					cls = 'text-yellow-500';
+				}else {
+					cls = 'text-white';
+				}
+				return <span className={cls}>{farmingPractice}</span>;
+			},
+			title: 'FARMING PRACTICE'
+		},
+		{
+			dataIndex: 'userId',
+			key: 'userId',
+			render: () => (
+				<Space size="middle">
+					<Button type='primary' danger>Block</Button>
+					<Button type="primary" onClick={() => navigate('profile/${userId}')} >View</Button>
+				</Space>
+			),
+			title: 'ACTIONS'
+		}
+	];
+
 	const fetchProfiles = async (pageNumber: number, pageSize: number) => {
 		try {
 			const fetchprofiles: IFetchProfiles = {
