@@ -168,8 +168,8 @@ export interface IEventData {
     name: string;
     hostName: string;
     description: string;
-    startDate: string;
-    endDate: string;
+    startDate: number;
+    endDate: number;
     tag: string;
     mode: string;
     slots: number;

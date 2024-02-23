@@ -5,13 +5,10 @@ import clients from "src/clients";
 import { IEvent, MediaUrl } from "src/types";
 import HandleImageUpload from "src/components/Events/mediaUpload";
 // import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
-import { useParams } from 'react-router-dom';
 import { DatePicker } from "antd";
-const { RangePicker } = DatePicker;
 import { Metadata, RpcError } from "grpc-web";
 import { EventProto } from "src/generated/events_pb";
 import dayjs from 'dayjs';
-import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
@@ -19,18 +16,16 @@ interface Props {
     setFormData: any;
     uploadedImageLinks: MediaUrl[];
     setUploadedImageLinks: (urls: MediaUrl[]) => void;
+    eventID?: string;
 }
 
-export default function CreateEventForm({ formData, setFormData, uploadedImageLinks, setUploadedImageLinks }: Props) {
+export default function CreateEventForm({ formData, setFormData, uploadedImageLinks, eventID, setUploadedImageLinks }: Props) {
     // const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null);
     // const [suggestions, setSuggestions] = useState<google.maps.places.PlaceResult[]>([]);
-    const { eventId } = useParams();
-    const [startDate, setStartDate] = useState("2024/01/01 00:00:00");
-    const [endDate, setendDate] = useState("2024/01/02 00:00:00");
+    const { RangePicker } = DatePicker;
+    const [startDate, setStartDate] = useState(dayjs());
+    const [endDate, setEndDate] = useState(dayjs().add(1, 'day'));
     const [isUploading, setIsUploading] = useState(false);
-    const isEditMode = eventId != null;
-    const dateFormat = 'YYYY/MM/DD HH:mm:ss';
-
     // const { isLoaded, loadError } = useLoadScript({
     //     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || "",
     //     libraries: ['places'],
@@ -75,7 +70,7 @@ export default function CreateEventForm({ formData, setFormData, uploadedImageLi
         const { type, files } = e.target;
         if (type === "file") {
             if (files) {
-                HandleImageUpload(files, setUploadedImageLinks, setIsUploading);
+                await HandleImageUpload(files, setUploadedImageLinks, setIsUploading);
             }
         }
     }
@@ -87,8 +82,6 @@ export default function CreateEventForm({ formData, setFormData, uploadedImageLi
                 startDate: dateStrings[0],
                 endDate: dateStrings[1]
             }));
-            setStartDate(dateStrings[0]);
-            setendDate(dateStrings[1]);
         }
     }
 
@@ -101,10 +94,10 @@ export default function CreateEventForm({ formData, setFormData, uploadedImageLi
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         const event: IEvent = {
-            id: eventId,
+            id: eventID,
             authorName: formData.hostName,
-            startAt: toUnix(startDate),
-            endAt: toUnix(endDate),
+            startAt: toUnix(formData.startDate),
+            endAt: toUnix(formData.endDate),
             mediaUrls: uploadedImageLinks,
             description: formData.description,
             numAttendees: Number(formData.numAttendees),
@@ -114,12 +107,12 @@ export default function CreateEventForm({ formData, setFormData, uploadedImageLi
             type: formData.mode === 'Online' ? 0 : 1,
             tags: [formData.tag],
         };
-        if (isEditMode) {
+        if (eventID !== undefined) {
             clients.social.event.EditEvent(event, {}, (err, response) => {
                 if (err) {
                     console.log('Before:-', err);
                 } else {
-                    navigate('/events/show');
+                    navigate('/events');
                 }
             })
         } else {
@@ -136,11 +129,14 @@ export default function CreateEventForm({ formData, setFormData, uploadedImageLi
 
     useEffect(() => {
         const fetchData = async () => {
-            if (isEditMode) {
+            if (eventID !== undefined) {
+
+                console.log('i was hit becuase eventid')
+                console.log('value of eventid', eventID)
                 try {
-                    const eventData = await fetchEventById(eventId, {});
-                    const startDate = moment.unix(eventData.getStartat()).format(dateFormat);
-                    const endDate = moment.unix(eventData.getEndat()).format(dateFormat);
+                    const eventData = await fetchEventById(eventID, {});
+                    const startDate = dayjs.unix(eventData.getStartat());
+                    const endDate = dayjs.unix(eventData.getEndat());
                     setFormData((prevState: any) => ({
                         ...prevState,
                         hostName: eventData.getAuthorinfo()?.getName(),
@@ -153,7 +149,7 @@ export default function CreateEventForm({ formData, setFormData, uploadedImageLi
                         tag: eventData.getTagsList()[0],
                     }));
                     setStartDate(startDate);
-                    setendDate(endDate);
+                    setEndDate(endDate);
                     setUploadedImageLinks(eventData.getMediaurlsList().map((media) => ({ url: media.getUrl(), mimeType: media.getMimetype() })));
                 } catch (error) {
                     console.error('Error fetching event data:', error);
@@ -161,7 +157,7 @@ export default function CreateEventForm({ formData, setFormData, uploadedImageLi
             }
         };
         fetchData();
-    }, [isEditMode, eventId]);
+    }, [eventID]);
 
     return (
         <>
@@ -228,9 +224,9 @@ export default function CreateEventForm({ formData, setFormData, uploadedImageLi
                             <RangePicker
                                 showTime
                                 id=""
-                                value={[dayjs(startDate, dateFormat), dayjs(endDate, dateFormat)]}
                                 className="p-1 rounded w-[100%] bg-main_black shadow-inputShadow text-white border-none white-placeholder ant-picker-input"
                                 onChange={handleDateChange}
+                                defaultValue={[startDate, endDate]}
                             />
                         </div>
 
@@ -387,7 +383,7 @@ export default function CreateEventForm({ formData, setFormData, uploadedImageLi
                     </div>
 
                     <button className="bg-primary text-w_text text-lg w-full py-2 mt-3 rounded border-2 border-solid border-green-300 opacity-90 backdrop-blur-sm tracking-[2px]">
-                        {isEditMode ? 'UPDATE' : 'CREATE EVENT'}
+                        {eventID ? 'UPDATE' : 'CREATE EVENT'}
                     </button>
                 </form>
             </div>
