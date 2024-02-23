@@ -59,7 +59,10 @@ jobs:
       #     sudo chmod +x /usr/local/bin/protoc-gen-grpc-web
 
       - name: Install protoc-gen-grpc-web
-        run: yarn global add grpc-web
+        run: |
+          yarn global add grpc-web
+          sudo chmod +x /usr/local/bin/protoc-gen-grpc-web
+          export PATH="$PATH:$(yarn global bin)/protoc-gen-grpc-web"
 
       - name: install
         run: yarn install
