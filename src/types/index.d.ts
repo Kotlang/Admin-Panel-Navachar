@@ -158,6 +158,26 @@ export enum PostType {
     QNA_ANSWER = 2,
 }
 
+export interface ILocation {
+    lat: number;
+    long: number;
+}
+
+export interface IEventData {
+    name: string;
+    hostName: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+    tag: string;
+    mode: string;
+    slots: number;
+    posters: FileList;
+    address: ILocation;
+    link: string;
+    numAttendees: number;
+}
+
 export interface IFetchDeletionRequests {
     pageSize: number;
     pageNumber: number;

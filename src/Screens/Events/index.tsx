@@ -1,84 +1,57 @@
-
-// Copyright 2022-2023 @Kotlang/navachaar-admin-portal authors & contributors
-// This software may be modified and distributed under the terms
-// of the Apache-2.0 license. See the LICENSE file for details.
-
 /* eslint-disable */
-import Preview from 'src/components/Events/preview';
-import CreateEventForm from 'src/components/Events/createEvent';
-import { useState } from 'react';
-import { MediaUrl } from "src/types";
 
-export interface ILocation {
-	lat: number;
-	long: number;
-}
-
-export interface IEventData {
-	name: string;
-	hostName: string;
-	description: string;
-	startDate: string;
-	endDate: string;
-	tag: string;
-	mode: string;
-	slots: number;
-	posters: FileList;
-	address: ILocation;
-	link: string;
-	numAttendees: number;
-}
-
+import Create from "./create";
+import { useState } from "react";
+import EventsTable from "./show";
 
 const Events = () => {
-	const [uploadedImageLinks, setUploadedImageLinks] = useState<MediaUrl[]>([]);
-	const [formData, setFormData] = useState<IEventData>({
-		name: "",
-		hostName: "",
-		description: "",
-		startDate: "",
-		endDate: "",
-		numAttendees: 0,
-		tag: "",
-		mode: "",
-		slots: 0,
-		posters: [] as unknown as FileList,
-		address: {
-			lat: 0,
-			long: 0,
+	const [activeComponent, setActiveComponent] = useState('show');
+	const renderComponent = () => {
+		switch (activeComponent) {
+			case 'CRESATE':
+				return <Create />;
+			case 'ACTIVE':
+				return <EventsTable eventStatus={activeComponent} />;
+			case 'PAST':
+				return <EventsTable eventStatus={activeComponent} />;
+			default:
+				return <Create />;
 		}
-		,
-		link: "",
+	};
 
-	});
-
-	return <>
-		<div className="mt-14">
-			<h2 className=" text-w_text font-barlow font-regular text-3xl leading-7 tracking-[10px] mt-3 mb-8 ">EVENTS</h2>
-			{/* <div></div> // for event navigation (create, active,history) */}
-			<div className="flex flex-wrap">
-				<div className="w-[50%] "> {/*create form section*/}
-					<CreateEventForm
-						formData={formData}
-						setFormData={setFormData}
-						uploadedImageLinks={uploadedImageLinks}
-						setUploadedImageLinks={setUploadedImageLinks}
-					/>
+	return (
+		<>
+			<div className="mt-14">
+				<h2 className=" text-w_text font-barlow font-regular text-3xl leading-7 tracking-[10px] mt-3 mb-8 ">EVENTS</h2>
+				<nav className=" text-gray-500 items-center justify-between hidden w-full md:flex md:w-auto md:order-1 mb-4">
+					<ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg md:space-x-10 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+						<p
+							className={`cursor-pointer text-lg ${activeComponent === 'ACTIVE' ? 'underline underline-offset-8 text-green-500' : ''}`}
+							onClick={() => setActiveComponent('ACTIVE')}
+						>
+							Active Events
+						</p>
+						<p
+							className={`cursor-pointer text-lg ${activeComponent === 'CRESATE' ? 'underline underline-offset-8 text-green-500' : ''}`}
+							onClick={() => setActiveComponent('CRESATE')}
+						>
+							Create Event
+						</p>
+						<p
+							className={`cursor-pointer text-lg ${activeComponent === 'PAST' ? 'underline underline-offset-8 text-green-500' : ''}`}
+							onClick={() => setActiveComponent('PAST')}
+						>
+							Past Events
+						</p>
+					</ul>
+				</nav>
+				<div>
+					{renderComponent()}
 				</div>
-				<div className="w-[50%] p-5 relative flex flex-col items-center justify-center font-barlow ">{/*preview section*/}
-					<Preview
-						formData={formData}
-						mediaUrls={uploadedImageLinks}
-						setMediaUrls={setUploadedImageLinks}
-					/>
-				</div>
-			</div >
-		</div>
-	</>
+			</div>
+		</>
+	);
 
 };
 
 export default Events;
-function dayjs(arg0: any) {
-	throw new Error('Function not implemented.');
-}
