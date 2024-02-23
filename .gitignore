@@ -1,3 +1,5 @@
+src/generated
+
 # Logs
 logs
 *.log
@@ -27,4 +29,3 @@ dist-ssr
 .vercel
 .vscode
 
-./src/generated
