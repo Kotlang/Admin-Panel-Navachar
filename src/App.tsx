@@ -10,7 +10,7 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import EventMiddleware from 'src/routes/events/eventMiddleware';
-import { antdTheme } from 'src/themes/antdTheme';
+import { darkTheme } from 'src/themes/antdTheme';
 import { styledTheme } from 'src/themes/styledTheme';
 import { ThemeProvider } from 'styled-components';
 
@@ -29,7 +29,7 @@ import { GlobalStyle } from './ui-components/GlobalStyle';
 
 function App() {
 	return (
-		<ConfigProvider theme={antdTheme}>
+		<ConfigProvider theme={darkTheme}>
 			<ThemeProvider theme={styledTheme}>
 				<GlobalStyle />
 				<ToastContainer />
