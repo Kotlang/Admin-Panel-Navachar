@@ -5,14 +5,17 @@
 import { theme } from 'antd';
 import { ThemeConfig } from 'antd/es/config-provider/context';
 
-export const antdTheme: ThemeConfig = {
+export const lightTheme: ThemeConfig = {
+	algorithm : theme.defaultAlgorithm,
 	hashed: false
 };
 
 export const darkTheme: ThemeConfig = {
 	algorithm : theme.darkAlgorithm,
 	components: {
-		Tabs: {
+		Button: {
+		}
+		,Tabs: {
 			inkBarColor: '#34C06E',
 			itemHoverColor: '#34C06E',
 			itemSelectedColor: '#34C06E'
@@ -20,5 +23,8 @@ export const darkTheme: ThemeConfig = {
 		Typography : {
 			fontFamily : 'Barlow '
 		}
+	},
+	token: {
+		colorPrimary: '#34C06E'
 	}
 };

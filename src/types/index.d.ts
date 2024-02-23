@@ -2,9 +2,8 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import dayjs from "dayjs";
-import { FarmingType, Gender, LandSizeInAcres } from "src/generated/common_pb";
-import { EventType } from "src/generated/events_pb";
+import { FarmingType, Gender, LandSizeInAcres } from 'src/generated/common_pb';
+import { EventType } from 'src/generated/events_pb';
 
 export interface IUserProfile {
     attributesList?: string[];
@@ -157,4 +156,9 @@ export enum PostType {
     FEED_POST = 0,
     QNA_QUESTION = 1,
     QNA_ANSWER = 2,
+}
+
+export interface IFetchDeletionRequests {
+    pageSize: number;
+    pageNumber: number;
 }
