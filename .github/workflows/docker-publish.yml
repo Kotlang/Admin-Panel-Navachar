@@ -39,6 +39,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Set CI variable to false
+        run: echo "CI=false" >> $GITHUB_ENV
+
       # - name: Install protoc
       #   run: sudo apt install -y protobuf-compiler
 
