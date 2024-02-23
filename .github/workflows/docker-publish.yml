@@ -65,7 +65,7 @@ jobs:
         run: yarn install
 
       - name: Build
-        run: yarn build
+        run: ./build.sh
 
       - name: Build docker image
         run: docker build -t navachar/$IMAGE_NAME:$IMAGE_TAG .
