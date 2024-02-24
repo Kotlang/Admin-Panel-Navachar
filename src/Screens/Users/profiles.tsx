@@ -1,111 +1,180 @@
 // Copyright 2022-2023 @Kotlang/navachaar-admin-portal authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import avatar from 'src/assets/avatar.png';
-import { UserProfileProto } from 'src/generated/common_pb';
-import { GetStatsResponse } from 'src/generated/social_stats_pb';
+import type { GetProp, TablePaginationConfig, TableProps } from 'antd';
+import { Button, Space, Table } from 'antd';
+import { Metadata, RpcError } from 'grpc-web';
+import React, { useEffect, useState } from 'react';
+import {  useNavigate } from 'react-router-dom';
+import clients from 'src/clients';
+import { FarmingType } from 'src/generated/common_pb';
+import { ProfileListResponse } from 'src/generated/profile_pb';
+import { IFetchProfiles } from 'src/types';
 
-type UserProfileWithStats = {
-	profile: UserProfileProto;
-	stats?: GetStatsResponse | null;
+interface DataType {
+  userName: string;
+  phoneNo: string;
+  location: string;
+  farmingPractice: string;
+  lastActive: number;
+  userId: string;
+}
+
+interface TableParams {
+	pagination?: TablePaginationConfig;
+	sortField?: string;
+	sortOrder?: string;
+	filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
+}
+
+const getFarmingType = (farmingType: FarmingType) => {
+	switch (farmingType) {
+	case FarmingType.CHEMICAL:
+		return 'Chemical';
+	case FarmingType.ORGANIC:
+		return 'Organic';
+	case FarmingType.MIX:
+		return 'MIX';
+	default:
+		return 'Unknown';
+	}
 };
 
-type UserProfileTableProps = {
-	userProfilesWithStats: UserProfileWithStats[];
-};
-
-const UserProfileTable: React.FC<UserProfileTableProps> = ({ userProfilesWithStats }) => {
+const UsersList: React.FC = () => {
+	const [data, setData] = useState<DataType[]>();
+	const [loading, setLoading] = useState<boolean>(true);
+	const [tableParams, setTableParams] = useState<TableParams>({
+		pagination: {
+			current: 1,
+			pageSize: 2
+		}
+	});
 	const navigate = useNavigate();
 
-	const navigateToProfile = (id: string) => {
-		navigate(`/users/profile/${id}`);
+	const columns: TableProps<DataType>['columns'] = [
+		{
+			dataIndex: 'userName',
+			key: 'userName',
+			title: 'USER NAME'
+		},
+		{
+			dataIndex: 'phoneNo',
+			key: 'phoneNo',
+			title: 'PHONE NO.'
+		},
+		{
+			dataIndex: 'location',
+			key: 'location',
+			title: 'LOCATION'
+		},
+		{
+			dataIndex: 'farmingPractice',
+			key: 'farmingPractice',
+			render: (farmingPractice: string) => {
+
+				let cls = '';
+				if (farmingPractice === 'Chemical') {
+					cls = 'text-purple-500';
+				} else if (farmingPractice === 'Organic') {
+					cls = 'text-green-500';
+				} else if (farmingPractice === 'MIX') {
+					cls = 'text-yellow-500';
+				}else {
+					cls = 'text-white';
+				}
+				return <span className={cls}>{farmingPractice}</span>;
+			},
+			title: 'FARMING PRACTICE'
+		},
+		{
+			dataIndex: 'userId',
+			key: 'userId',
+			render: () => (
+				<Space size="middle">
+					<Button type='primary' danger>Block</Button>
+					<Button type="primary" onClick={() => navigate('profile/${userId}')} >View</Button>
+				</Space>
+			),
+			title: 'ACTIONS'
+		}
+	];
+
+	const fetchProfiles = async (pageNumber: number, pageSize: number) => {
+		try {
+			const fetchprofiles: IFetchProfiles = {
+				filters: {},
+				pageNumber: pageNumber,
+				pageSize: pageSize
+			};
+			const metaData: Metadata | null = null;
+
+			clients.auth.profile.FetchProfiles(fetchprofiles, metaData, (err: RpcError, response: ProfileListResponse) => {
+				if (err) {
+					console.error('Error fetching profiles:', err);
+				} else {
+					setData(
+						response.getProfilesList().map((profile) => {
+							return {
+								farmingPractice: getFarmingType(profile.getFarmingtype()),
+								lastActive: 5,
+								location: profile.getAddressesMap().get('default')?.getCity() || '',
+								phoneNo: '9970378006',
+								userId: profile.getLoginid(),
+								userName: profile.getName()
+							};
+						})
+					);
+					console.log(FarmingType.CHEMICAL);
+
+				}
+				setLoading(false);
+			});
+		} catch (err) {
+			console.error('Error occurred:', err);
+			setLoading(false);
+		}
+		setTableParams({
+			...tableParams,
+			pagination: {
+				...tableParams.pagination,
+				total: 100
+				// Fetch the total count from the server and set it here
+			}
+		});
 	};
 
+	useEffect(() => {
+		const { current, pageSize } = tableParams.pagination || {};
+		if (current) {
+			fetchProfiles(current - 1, pageSize || 2);
+		}
+	}, [JSON.stringify(tableParams)]);
+
+	const handleTableChange: TableProps['onChange'] = (pagination) => {
+		setTableParams({
+			pagination: pagination
+		// You can include other parameters if needed (sortField, sortOrder, filters)
+		});
+
+		if (pagination.pageSize !== tableParams.pagination?.pageSize) {
+			setData([]);
+		}
+	};
+	if (loading) {
+		return <div>Loading...</div>;
+	}
+	console.log(data);
+
 	return (
-		<div className="overflow-x-auto">
-			<table className="min-w-full divide-y divide-gray-200">
-				<thead className="bg-gray-100">
-					<tr>
-						<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-							Name
-						</th>
-						<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-							Verified
-						</th>
-						<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-							Followers
-						</th>
-						<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-							Following
-						</th>
-						<th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-							<div className="font-bold mb-8">Engagements</div>
-							<div className="grid grid-cols-4 gap-1">
-								<div>Reacts</div>
-								<div>Comments</div>
-								<div>Posts</div>
-								<div>Total</div>
-							</div>
-						</th>
-					</tr>
-				</thead>
-				<tbody className="bg-white divide-y divide-gray-200">
-					{userProfilesWithStats.map(({ profile, stats }) => (
-						<tr key={profile.getLoginid()} onClick={() => navigateToProfile(profile.getLoginid())}>
-							<td className="px-6 py-4 whitespace-nowrap">
-								<div className="flex items-center">
-									<div className="flex-shrink-0 h-20 w-20">
-										<img className="h-20 w-20" src={profile.getPhotourl() || avatar} alt={avatar} />
-									</div>
-									<div className="ml-4">
-										<div className="text-sm font-medium text-gray-900">{profile.getName()}</div>
-									</div>
-								</div>
-							</td>
-							<td className="px-6 py-4 whitespace-nowrap">
-								{profile.getIsverified() ? (
-									<span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-										Verified
-									</span>
-								) : (
-									<span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-										Not Verified
-									</span>
-								)}
-							</td>
-							<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{stats?.getFollowerscount()}</td>
-							<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{stats?.getFollowingcount()}</td>
-							<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-								<div className="grid grid-cols-4 gap-1 text-center">
-									{/* Reacts */}
-									<div className="border rounded p-1">
-										<div>{stats?.getReactcount()}</div>
-									</div>
-
-									{/* Comments */}
-									<div className="border rounded p-1">
-										<div>{stats?.getCommentscount()}</div>
-									</div>
-
-									{/* Posts */}
-									<div className="border rounded p-1">
-										<div>{stats?.getPostscount()}</div>
-									</div>
-
-									{/* Total */}
-									<div className="border rounded p-1">
-										<div>{stats ? (stats.getReactcount() + stats.getCommentscount() + stats.getPostscount() + stats.getEventscount()) : 0}</div>
-									</div>
-								</div>
-							</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
-		</div>
+		<Table
+			columns={columns}
+			rowKey={(record) => record.userId}
+			dataSource={data}
+			pagination={tableParams.pagination}
+			loading={loading}
+			onChange={handleTableChange}
+		/>
 	);
 };
 
-export default UserProfileTable;
+export default UsersList;

@@ -2,7 +2,6 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import dayjs from 'dayjs';
 import { FarmingType, Gender, LandSizeInAcres } from 'src/generated/common_pb';
 import { EventType } from 'src/generated/events_pb';
 
@@ -177,4 +176,9 @@ export interface IEventData {
     address: ILocation;
     link: string;
     numAttendees: number;
+}
+
+export interface IFetchDeletionRequests {
+    pageSize: number;
+    pageNumber: number;
 }

@@ -6,7 +6,7 @@
 
 import { Metadata, RpcError } from 'grpc-web';
 import { addJwtToken } from 'src/clients/utils';
-import { UserProfileProto } from 'src/generated/common_pb';
+import { StatusResponse, UserProfileProto } from 'src/generated/common_pb';
 import {
 	BulkGetProfileRequest,
 	CreateProfileRequest,
@@ -15,10 +15,11 @@ import {
 	ProfileListResponse,
 	Userfilters,
 	ProfileImageUploadRequest,
-	ProfileImageUploadURL
+	ProfileImageUploadURL,
+	GetProfileDeletionRequest
 } from 'src/generated/profile_pb';
 import { ProfileClient } from 'src/generated/ProfileServiceClientPb';
-import { IFetchProfiles, IUserProfile } from 'src/types/index';
+import { IFetchDeletionRequests, IFetchProfiles, IUserProfile } from 'src/types/index';
 
 const getProfileClient = (() => {
 	const authURL = process.env.REACT_APP_AUTH_URL;
@@ -73,12 +74,18 @@ const getFetchProfilesRequest = (fetchprofiles: IFetchProfiles) => {
 	return fetchprofilesrequest;
 };
 
-const getProfileRequest = (userId: string) => {
-	const profile = new IdRequest();
-	profile.setUserid(userId);
-	return profile;
+const getIdRequest = (userId: string) => {
+	const idRequest = new IdRequest();
+	idRequest.setUserid(userId);
+	return idRequest;
 };
 
+const getProfileDeletionRequests = (fetchDeletionRequests: IFetchDeletionRequests) => {
+	const req = new GetProfileDeletionRequest();
+	req.setPagenumber(fetchDeletionRequests.pageNumber);
+	req.setPagesize(fetchDeletionRequests.pageSize);
+	return req;
+}
 
 const getProfileImageUploadUrl = (mediaExtension: string) => {
 	const mediaUploadRequest = new ProfileImageUploadRequest();
@@ -97,10 +104,19 @@ const profileClient = {
 		getProfileClient().fetchProfiles(getFetchProfilesRequest(fetchprofiles), addJwtToken(metaData), callback);
 	},
 	GetProfileByID: (userId: string, metaData: Metadata | null, callback: (err: RpcError, response: UserProfileProto) => void) => {
-		getProfileClient().getProfileById(getProfileRequest(userId), addJwtToken(metaData), callback);
+		getProfileClient().getProfileById(getIdRequest(userId), addJwtToken(metaData), callback);
 	},
 	GetProfileImageUploadURL: (mediaExtension: string, metaData: Metadata | null, callback: (err: RpcError, response: ProfileImageUploadURL) => void) => {
 		getProfileClient().getProfileImageUploadUrl(getProfileImageUploadUrl(mediaExtension), addJwtToken(metaData), callback);
+	},
+	GetPendingProfileDeletionRequests: (fetchDeletionRequests: IFetchDeletionRequests, metaData: Metadata | null, callback: (err: RpcError, response: ProfileListResponse) => void) => {
+		getProfileClient().getPendingProfileDeletionRequests(getProfileDeletionRequests(fetchDeletionRequests), addJwtToken(metaData), callback);
+	},
+	DeleteProfile: (userId: string, metaData: Metadata | null, callback: (err: RpcError, response: StatusResponse) => void) => {
+		getProfileClient().deleteProfile(getIdRequest(userId), addJwtToken(metaData), callback);
+	},
+	CancelProfileDeletionRequest: (userId: string, metaData: Metadata | null, callback: (err: RpcError, response: StatusResponse) => void) => {
+		getProfileClient().cancelProfileDeletionRequest(getIdRequest(userId), addJwtToken(metaData), callback);
 	}
 };
 
