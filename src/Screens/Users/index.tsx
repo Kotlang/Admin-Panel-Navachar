@@ -36,7 +36,7 @@ const Users = () => {
 	return<>
 		<div className="mt-14">
 			<Title >USERS</Title>
-			<Tabs defaultActiveKey="1" items={items} onChange={onChange} size='large' />;
+			<Tabs defaultActiveKey="1" items={items} onChange={onChange} size='large' />
 		</div>
 	</>;
 };

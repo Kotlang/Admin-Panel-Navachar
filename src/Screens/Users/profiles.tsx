@@ -46,7 +46,7 @@ const UsersList: React.FC = () => {
 	const [tableParams, setTableParams] = useState<TableParams>({
 		pagination: {
 			current: 1,
-			pageSize: 2
+			pageSize: 10
 		}
 	});
 	const navigate = useNavigate();
@@ -99,7 +99,7 @@ const UsersList: React.FC = () => {
 		}
 	];
 
-	const fetchProfiles = async (pageNumber: number, pageSize: number) => {
+	const fetchProfiles =(pageNumber: number, pageSize: number) => {
 		try {
 			const fetchprofiles: IFetchProfiles = {
 				filters: {},
@@ -118,14 +118,19 @@ const UsersList: React.FC = () => {
 								farmingPractice: getFarmingType(profile.getFarmingtype()),
 								lastActive: 5,
 								location: profile.getAddressesMap().get('default')?.getCity() || '',
-								phoneNo: '9970378006',
-								userId: profile.getLoginid(),
+								phoneNo: profile.getPhonenumber(),
+								userId: profile.getUserid(),
 								userName: profile.getName()
 							};
 						})
 					);
-					console.log(FarmingType.CHEMICAL);
-
+					setTableParams({
+						...tableParams,
+						pagination: {
+							...tableParams.pagination,
+							total: response.getTotalusers()
+						}
+					});
 				}
 				setLoading(false);
 			});
@@ -133,27 +138,19 @@ const UsersList: React.FC = () => {
 			console.error('Error occurred:', err);
 			setLoading(false);
 		}
-		setTableParams({
-			...tableParams,
-			pagination: {
-				...tableParams.pagination,
-				total: 100
-				// Fetch the total count from the server and set it here
-			}
-		});
 	};
 
 	useEffect(() => {
 		const { current, pageSize } = tableParams.pagination || {};
 		if (current) {
-			fetchProfiles(current - 1, pageSize || 2);
+			fetchProfiles(current - 1, pageSize || 10);
+
 		}
 	}, [JSON.stringify(tableParams)]);
 
 	const handleTableChange: TableProps['onChange'] = (pagination) => {
 		setTableParams({
 			pagination: pagination
-		// You can include other parameters if needed (sortField, sortOrder, filters)
 		});
 
 		if (pagination.pageSize !== tableParams.pagination?.pageSize) {
@@ -163,7 +160,6 @@ const UsersList: React.FC = () => {
 	if (loading) {
 		return <div>Loading...</div>;
 	}
-	console.log(data);
 
 	return (
 		<Table

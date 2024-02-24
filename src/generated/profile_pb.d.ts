@@ -145,6 +145,9 @@ export class ProfileListResponse extends jspb.Message {
   clearProfilesList(): ProfileListResponse;
   addProfiles(value?: common_pb.UserProfileProto, index?: number): common_pb.UserProfileProto;
 
+  getTotalusers(): number;
+  setTotalusers(value: number): ProfileListResponse;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ProfileListResponse.AsObject;
   static toObject(includeInstance: boolean, msg: ProfileListResponse): ProfileListResponse.AsObject;
@@ -156,6 +159,7 @@ export class ProfileListResponse extends jspb.Message {
 export namespace ProfileListResponse {
   export type AsObject = {
     profilesList: Array<common_pb.UserProfileProto.AsObject>,
+    totalusers: number,
   }
 }
 
@@ -397,3 +401,33 @@ export namespace ProfileDeletionRequest {
   }
 }
 
+export class ChangeUserTypeRequest extends jspb.Message {
+  getEmail(): string;
+  setEmail(value: string): ChangeUserTypeRequest;
+
+  getPhone(): string;
+  setPhone(value: string): ChangeUserTypeRequest;
+
+  getUsertype(): UserType;
+  setUsertype(value: UserType): ChangeUserTypeRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ChangeUserTypeRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: ChangeUserTypeRequest): ChangeUserTypeRequest.AsObject;
+  static serializeBinaryToWriter(message: ChangeUserTypeRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ChangeUserTypeRequest;
+  static deserializeBinaryFromReader(message: ChangeUserTypeRequest, reader: jspb.BinaryReader): ChangeUserTypeRequest;
+}
+
+export namespace ChangeUserTypeRequest {
+  export type AsObject = {
+    email: string,
+    phone: string,
+    usertype: UserType,
+  }
+}
+
+export enum UserType { 
+  DEFAULT = 0,
+  ADMIN = 1,
+}

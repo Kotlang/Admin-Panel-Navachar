@@ -949,7 +949,7 @@ proto.login.UserProfileProto.prototype.toObject = function(opt_includeInstance) 
  */
 proto.login.UserProfileProto.toObject = function(includeInstance, msg) {
   var f, obj = {
-    loginid: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    userid: jspb.Message.getFieldWithDefault(msg, 1, ""),
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
     photourl: jspb.Message.getFieldWithDefault(msg, 3, ""),
     bio: jspb.Message.getFieldWithDefault(msg, 4, ""),
@@ -965,7 +965,8 @@ proto.login.UserProfileProto.toObject = function(includeInstance, msg) {
     attributesList: (f = jspb.Message.getRepeatedField(msg, 15)) == null ? undefined : f,
     landsizeinacres: jspb.Message.getFieldWithDefault(msg, 16, 0),
     location: (f = msg.getLocation()) && proto.login.Location.toObject(includeInstance, f),
-    deletioninfo: (f = msg.getDeletioninfo()) && proto.login.DeletionInfo.toObject(includeInstance, f)
+    deletioninfo: (f = msg.getDeletioninfo()) && proto.login.DeletionInfo.toObject(includeInstance, f),
+    phonenumber: jspb.Message.getFieldWithDefault(msg, 19, "")
   };
 
   if (includeInstance) {
@@ -1004,7 +1005,7 @@ proto.login.UserProfileProto.deserializeBinaryFromReader = function(msg, reader)
     switch (field) {
     case 1:
       var value = /** @type {string} */ (reader.readString());
-      msg.setLoginid(value);
+      msg.setUserid(value);
       break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
@@ -1075,6 +1076,10 @@ proto.login.UserProfileProto.deserializeBinaryFromReader = function(msg, reader)
       reader.readMessage(value,proto.login.DeletionInfo.deserializeBinaryFromReader);
       msg.setDeletioninfo(value);
       break;
+    case 19:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPhonenumber(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1104,7 +1109,7 @@ proto.login.UserProfileProto.prototype.serializeBinary = function() {
  */
 proto.login.UserProfileProto.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getLoginid();
+  f = message.getUserid();
   if (f.length > 0) {
     writer.writeString(
       1,
@@ -1223,14 +1228,21 @@ proto.login.UserProfileProto.serializeBinaryToWriter = function(message, writer)
       proto.login.DeletionInfo.serializeBinaryToWriter
     );
   }
+  f = message.getPhonenumber();
+  if (f.length > 0) {
+    writer.writeString(
+      19,
+      f
+    );
+  }
 };
 
 
 /**
- * optional string loginId = 1;
+ * optional string userId = 1;
  * @return {string}
  */
-proto.login.UserProfileProto.prototype.getLoginid = function() {
+proto.login.UserProfileProto.prototype.getUserid = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -1239,7 +1251,7 @@ proto.login.UserProfileProto.prototype.getLoginid = function() {
  * @param {string} value
  * @return {!proto.login.UserProfileProto} returns this
  */
-proto.login.UserProfileProto.prototype.setLoginid = function(value) {
+proto.login.UserProfileProto.prototype.setUserid = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -1628,6 +1640,24 @@ proto.login.UserProfileProto.prototype.clearDeletioninfo = function() {
  */
 proto.login.UserProfileProto.prototype.hasDeletioninfo = function() {
   return jspb.Message.getField(this, 18) != null;
+};
+
+
+/**
+ * optional string phoneNumber = 19;
+ * @return {string}
+ */
+proto.login.UserProfileProto.prototype.getPhonenumber = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 19, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.login.UserProfileProto} returns this
+ */
+proto.login.UserProfileProto.prototype.setPhonenumber = function(value) {
+  return jspb.Message.setProto3StringField(this, 19, value);
 };
 
 
