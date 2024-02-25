@@ -78,13 +78,13 @@ const EventsTable: React.FC<EventsTableProps> = ({eventStatus}) => {
 
 	// Handler for the Edit button
 	const handleEdit = (event: any) => {
-		navigate(`/events/${event}`);
+		navigate(`/events/editevent/${event}`);
 	};
 
-	// Handler for the Monitor button
-	const handleMonitor = (event: any) => {
-		navigate(`/events/monitor/${event}`);
-	};
+	// // Handler for the Monitor button
+	// const handleMonitor = (event: any) => {
+	// 	navigate(`/events/monitor/${event}`);
+	// };
 	const [events, setEvents] = useState<EventProto[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const fetchEventsAsync = (

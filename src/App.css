@@ -62,3 +62,19 @@
 .ant-picker-input > input {
   color: white !important;
 }
+
+.profile-image-container {
+    width: 270px;
+    height: 180px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-image-container img {
+    object-fit: cover;
+    min-width: 100%;
+    min-height: 100%;
+}
