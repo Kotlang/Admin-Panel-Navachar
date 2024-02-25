@@ -5,19 +5,20 @@ import type { GetProp, TablePaginationConfig, TableProps } from 'antd';
 import { Button, Space, Table } from 'antd';
 import { Metadata, RpcError } from 'grpc-web';
 import React, { useEffect, useState } from 'react';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import clients from 'src/clients';
-import { FarmingType } from 'src/generated/common_pb';
 import { ProfileListResponse } from 'src/generated/profile_pb';
 import { IFetchProfiles } from 'src/types';
 
+import { GetFarmingType, GetFarmingTypeColor } from './utils';
+
 interface DataType {
-  userName: string;
-  phoneNo: string;
-  location: string;
-  farmingPractice: string;
-  lastActive: number;
-  userId: string;
+	userName: string;
+	phoneNo: string;
+	location: string;
+	farmingPractice: string;
+	lastActive: number;
+	userId: string;
 }
 
 interface TableParams {
@@ -26,19 +27,6 @@ interface TableParams {
 	sortOrder?: string;
 	filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
 }
-
-const getFarmingType = (farmingType: FarmingType) => {
-	switch (farmingType) {
-	case FarmingType.CHEMICAL:
-		return 'Chemical';
-	case FarmingType.ORGANIC:
-		return 'Organic';
-	case FarmingType.MIX:
-		return 'MIX';
-	default:
-		return 'Unknown';
-	}
-};
 
 const UsersList: React.FC = () => {
 	const [data, setData] = useState<DataType[]>();
@@ -71,28 +59,17 @@ const UsersList: React.FC = () => {
 			dataIndex: 'farmingPractice',
 			key: 'farmingPractice',
 			render: (farmingPractice: string) => {
-
-				let cls = '';
-				if (farmingPractice === 'Chemical') {
-					cls = 'text-purple-500';
-				} else if (farmingPractice === 'Organic') {
-					cls = 'text-green-500';
-				} else if (farmingPractice === 'MIX') {
-					cls = 'text-yellow-500';
-				}else {
-					cls = 'text-white';
-				}
-				return <span className={cls}>{farmingPractice}</span>;
+				return <span className={GetFarmingTypeColor(farmingPractice)}>{farmingPractice}</span>;
 			},
 			title: 'FARMING PRACTICE'
 		},
 		{
 			dataIndex: 'userId',
 			key: 'userId',
-			render: () => (
+			render: (userId: string) => (
 				<Space size="middle">
 					<Button type='primary' danger>Block</Button>
-					<Button type="primary" onClick={() => navigate('profile/${userId}')} >View</Button>
+					<Button type="primary" onClick={() => navigate(`userdetails/${userId}`)} >View</Button>
 				</Space>
 			),
 			title: 'ACTIONS'
@@ -115,7 +92,7 @@ const UsersList: React.FC = () => {
 					setData(
 						response.getProfilesList().map((profile) => {
 							return {
-								farmingPractice: getFarmingType(profile.getFarmingtype()),
+								farmingPractice: GetFarmingType(profile.getFarmingtype()),
 								lastActive: 5,
 								location: profile.getAddressesMap().get('default')?.getCity() || '',
 								phoneNo: '9970378006',
@@ -124,8 +101,6 @@ const UsersList: React.FC = () => {
 							};
 						})
 					);
-					console.log(FarmingType.CHEMICAL);
-
 				}
 				setLoading(false);
 			});
@@ -153,7 +128,7 @@ const UsersList: React.FC = () => {
 	const handleTableChange: TableProps['onChange'] = (pagination) => {
 		setTableParams({
 			pagination: pagination
-		// You can include other parameters if needed (sortField, sortOrder, filters)
+			// You can include other parameters if needed (sortField, sortOrder, filters)
 		});
 
 		if (pagination.pageSize !== tableParams.pagination?.pageSize) {
@@ -163,7 +138,7 @@ const UsersList: React.FC = () => {
 	if (loading) {
 		return <div>Loading...</div>;
 	}
-	console.log(data);
+	// console.log(data);
 
 	return (
 		<Table
