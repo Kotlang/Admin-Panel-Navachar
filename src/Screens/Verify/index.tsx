@@ -67,6 +67,8 @@ const Verify = () => {
 						value={otp}
 						onChange={(otp: any) => setOtp(otp)}
 						numInputs={6}
+						separator={<span style={{ width: '8px' }}></span>}
+						isInputNum={true}
 						shouldAutoFocus={true}
 						containerStyle='bg-gray-200 p-5 rounded-md'
 						inputStyle={{
@@ -79,16 +81,11 @@ const Verify = () => {
 							height: '54px',
 							width: '54px'
 						}}
-						renderInput={(inputProps, index) => (
-							<input
-								{...inputProps}
-								key={index}
-								className="otp-input"
-							/>
-						)}
-						renderSeparator={(index) => (
-							<span key={index} className="mx-2"></span>
-						)}
+						focusStyle={{
+							border: '1px solid #CFD3DB',
+							color: '#000',
+							outline: 'none'
+						}}
 					/>
 					{err.length > 0 ? <p className='text-red-500'>{err}</p> : null}
 				</div>

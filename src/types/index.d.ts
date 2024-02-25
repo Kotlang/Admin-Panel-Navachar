@@ -139,6 +139,8 @@ export interface IUserPost {
 
 export interface IGetFeedRequest {
     filters: FeedFilters;
+    pageNumber?: number;
+    pageSize?: number
 }
 
 export interface FeedFilters {
@@ -181,4 +183,15 @@ export interface IEventData {
 export interface IFetchDeletionRequests {
     pageSize: number;
     pageNumber: number;
+}
+
+export interface ActivityCardDetails {
+    activityType: string;
+    avatar: string;
+    content: string;
+    dateCreated: string;
+    dateReact: string;
+    description: string;
+    image: string;
+    name: string;
 }
