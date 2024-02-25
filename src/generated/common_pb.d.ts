@@ -107,8 +107,8 @@ export namespace DeletionInfo {
 }
 
 export class UserProfileProto extends jspb.Message {
-  getLoginid(): string;
-  setLoginid(value: string): UserProfileProto;
+  getUserid(): string;
+  setUserid(value: string): UserProfileProto;
 
   getName(): string;
   setName(value: string): UserProfileProto;
@@ -168,6 +168,9 @@ export class UserProfileProto extends jspb.Message {
   hasDeletioninfo(): boolean;
   clearDeletioninfo(): UserProfileProto;
 
+  getPhonenumber(): string;
+  setPhonenumber(value: string): UserProfileProto;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UserProfileProto.AsObject;
   static toObject(includeInstance: boolean, msg: UserProfileProto): UserProfileProto.AsObject;
@@ -178,7 +181,7 @@ export class UserProfileProto extends jspb.Message {
 
 export namespace UserProfileProto {
   export type AsObject = {
-    loginid: string,
+    userid: string,
     name: string,
     photourl: string,
     bio: string,
@@ -195,6 +198,7 @@ export namespace UserProfileProto {
     landsizeinacres: LandSizeInAcres,
     location?: Location.AsObject,
     deletioninfo?: DeletionInfo.AsObject,
+    phonenumber: string,
   }
 }
 

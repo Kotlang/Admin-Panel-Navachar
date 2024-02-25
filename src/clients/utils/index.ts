@@ -22,7 +22,7 @@ const getUserProfile: (userProfileProto: UserProfileProto) => IUserProfile = (us
 		attributesList: userProfileProto.getAttributesList(),
 		createdOn: userProfileProto.getCreatedon(),
 		gender: userProfileProto.getGender(),
-		loginId: userProfileProto.getLoginid(),
+		loginId: userProfileProto.getUserid(),
 		name: userProfileProto.getName(),
 		photoUrl: userProfileProto.getPhotourl(),
 		preferredLanguage: userProfileProto.getPreferredlanguage()

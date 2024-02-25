@@ -556,5 +556,48 @@ export class ProfileClient {
     this.methodDescriptorcancelProfileDeletionRequest);
   }
 
+  methodDescriptorchangeUserType = new grpcWeb.MethodDescriptor(
+    '/login.Profile/changeUserType',
+    grpcWeb.MethodType.UNARY,
+    profile_pb.ChangeUserTypeRequest,
+    common_pb.StatusResponse,
+    (request: profile_pb.ChangeUserTypeRequest) => {
+      return request.serializeBinary();
+    },
+    common_pb.StatusResponse.deserializeBinary
+  );
+
+  changeUserType(
+    request: profile_pb.ChangeUserTypeRequest,
+    metadata: grpcWeb.Metadata | null): Promise<common_pb.StatusResponse>;
+
+  changeUserType(
+    request: profile_pb.ChangeUserTypeRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.RpcError,
+               response: common_pb.StatusResponse) => void): grpcWeb.ClientReadableStream<common_pb.StatusResponse>;
+
+  changeUserType(
+    request: profile_pb.ChangeUserTypeRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.RpcError,
+               response: common_pb.StatusResponse) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/login.Profile/changeUserType',
+        request,
+        metadata || {},
+        this.methodDescriptorchangeUserType,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/login.Profile/changeUserType',
+    request,
+    metadata || {},
+    this.methodDescriptorchangeUserType);
+  }
+
 }
 
