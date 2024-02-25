@@ -35,6 +35,8 @@ const getFeedRequest = ( feedRequest: IGetFeedRequest ) => {
 		filters.setFetchuserreactedposts(feedRequest.filters.fetchUserReactedPosts || false);
 		getfeedRequest.setFilters(filters);
 	}
+	getfeedRequest.setPagenumber(feedRequest.pageNumber || 0);
+	getfeedRequest.setPagesize(feedRequest.pageSize || 10);
 
 	return getfeedRequest;
 };

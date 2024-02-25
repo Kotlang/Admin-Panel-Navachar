@@ -5,6 +5,7 @@ import type { TabsProps } from 'antd';
 import { Tabs } from 'antd';
 import { Typography } from 'antd';
 import React from 'react';
+import DeletionUsersList from 'src/Screens/Users/profileDeletion';
 import UsersList from 'src/Screens/Users/profiles';
 
 const onChange = (key: string) => {
@@ -26,7 +27,7 @@ const Users = () => {
 			label: 'Users List'
 		},
 		{
-			children: 'Content of Tab Pane 3',
+			children: <DeletionUsersList />,
 			key: '3',
 			label: 'Delete Data Request'
 		}

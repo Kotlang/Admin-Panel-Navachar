@@ -2,9 +2,8 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import dayjs from "dayjs";
-import { FarmingType, Gender, LandSizeInAcres } from "src/generated/common_pb";
-import { EventType } from "src/generated/events_pb";
+import { FarmingType, Gender, LandSizeInAcres } from 'src/generated/common_pb';
+import { EventType } from 'src/generated/events_pb';
 
 export interface IUserProfile {
     attributesList?: string[];
@@ -140,6 +139,8 @@ export interface IUserPost {
 
 export interface IGetFeedRequest {
     filters: FeedFilters;
+    pageNumber?: number;
+    pageSize?: number
 }
 
 export interface FeedFilters {
@@ -168,8 +169,8 @@ export interface IEventData {
     name: string;
     hostName: string;
     description: string;
-    startDate: string;
-    endDate: string;
+    startDate: number;
+    endDate: number;
     tag: string;
     mode: string;
     slots: number;
@@ -177,4 +178,20 @@ export interface IEventData {
     address: ILocation;
     link: string;
     numAttendees: number;
+}
+
+export interface IFetchDeletionRequests {
+    pageSize: number;
+    pageNumber: number;
+}
+
+export interface ActivityCardDetails {
+    activityType: string;
+    avatar: string;
+    content: string;
+    dateCreated: string;
+    dateReact: string;
+    description: string;
+    image: string;
+    name: string;
 }

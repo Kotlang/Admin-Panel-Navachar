@@ -13,13 +13,7 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global =
-    (typeof globalThis !== 'undefined' && globalThis) ||
-    (typeof window !== 'undefined' && window) ||
-    (typeof global !== 'undefined' && global) ||
-    (typeof self !== 'undefined' && self) ||
-    (function () { return this; }).call(null) ||
-    Function('return this')();
+var global = (function() { return this || window || global || self || Function('return this')(); }).call(null);
 
 var commons_pb = require('./commons_pb.js');
 goog.object.extend(proto, commons_pb);
@@ -1231,8 +1225,7 @@ proto.social.EventProto.prototype.getNumreactsMap = function(opt_noLazyCreate) {
  */
 proto.social.EventProto.prototype.clearNumreactsMap = function() {
   this.getNumreactsMap().clear();
-  return this;
-};
+  return this;};
 
 
 /**

@@ -39,6 +39,12 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Set CI variable to false
+        run: echo "CI=false" >> $GITHUB_ENV
+
+      # - name: Install protoc
+      #   run: sudo apt install -y protobuf-compiler
+
       # - name: Install Protocol Buffers Compiler
       #   run: |
       #     PROTOC_ZIP=protoc-3.15.8-linux-x86_64.zip
@@ -54,6 +60,12 @@ jobs:
       #     curl -OL https://github.com/grpc/grpc-web/releases/download/$GRPC_WEB_PLUGIN_VERSION/protoc-gen-grpc-web-$GRPC_WEB_PLUGIN_VERSION-linux-x86_64
       #     sudo mv protoc-gen-grpc-web-$GRPC_WEB_PLUGIN_VERSION-linux-x86_64 /usr/local/bin/protoc-gen-grpc-web
       #     sudo chmod +x /usr/local/bin/protoc-gen-grpc-web
+
+      # - name: Install protoc-gen-grpc-web
+      #   run: |
+      #     yarn global add grpc-web
+      #     sudo chmod +x /usr/local/bin/protoc-gen-grpc-web
+      #     export PATH="$PATH:$(yarn global bin)/protoc-gen-grpc-web"
 
       - name: install
         run: yarn install

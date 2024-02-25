@@ -2,20 +2,23 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import type { GetProp, TablePaginationConfig, TableProps } from 'antd';
-import { Space, Table } from 'antd';
+import { Button, Space, Table } from 'antd';
 import { Metadata, RpcError } from 'grpc-web';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import clients from 'src/clients';
 import { ProfileListResponse } from 'src/generated/profile_pb';
 import { IFetchProfiles } from 'src/types';
 
+import { GetFarmingType, GetFarmingTypeColor } from './utils';
+
 interface DataType {
-  userName: string;
-  phoneNo: string;
-  location: string;
-  farmingPractice: string;
-  lastActive: number;
-  userId: string;
+	userName: string;
+	phoneNo: string;
+	location: string;
+	farmingPractice: string;
+	lastActive: number;
+	userId: string;
 }
 
 interface TableParams {
@@ -24,39 +27,6 @@ interface TableParams {
 	sortOrder?: string;
 	filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
 }
-
-const columns: TableProps<DataType>['columns'] = [
-	{
-		dataIndex: 'userName',
-		key: 'userName',
-		title: 'USER NAME'
-	},
-	{
-		dataIndex: 'phoneNo',
-		key: 'phoneNo',
-		title: 'PHONE NO.'
-	},
-	{
-		dataIndex: 'location',
-		key: 'location',
-		title: 'LOCATION'
-	},
-	{
-		dataIndex: 'farmingPractice',
-		key: 'farmingPractice',
-		title: 'FARMING PRACTICE'
-	},
-	{
-		key: 'action',
-		render: () => (
-			<Space size="middle">
-				<a>Block</a>
-				<a>View</a>
-			</Space>
-		),
-		title: 'ACTIONS'
-	}
-];
 
 const UsersList: React.FC = () => {
 	const [data, setData] = useState<DataType[]>();
@@ -67,6 +37,45 @@ const UsersList: React.FC = () => {
 			pageSize: 2
 		}
 	});
+	const navigate = useNavigate();
+
+	const columns: TableProps<DataType>['columns'] = [
+		{
+			dataIndex: 'userName',
+			key: 'userName',
+			title: 'USER NAME'
+		},
+		{
+			dataIndex: 'phoneNo',
+			key: 'phoneNo',
+			title: 'PHONE NO.'
+		},
+		{
+			dataIndex: 'location',
+			key: 'location',
+			title: 'LOCATION'
+		},
+		{
+			dataIndex: 'farmingPractice',
+			key: 'farmingPractice',
+			render: (farmingPractice: string) => {
+				return <span className={GetFarmingTypeColor(farmingPractice)}>{farmingPractice}</span>;
+			},
+			title: 'FARMING PRACTICE'
+		},
+		{
+			dataIndex: 'userId',
+			key: 'userId',
+			render: (userId: string) => (
+				<Space size="middle">
+					<Button type='primary' danger>Block</Button>
+					<Button type="primary" onClick={() => navigate(`userdetails/${userId}`)} >View</Button>
+				</Space>
+			),
+			title: 'ACTIONS'
+		}
+	];
+
 	const fetchProfiles = async (pageNumber: number, pageSize: number) => {
 		try {
 			const fetchprofiles: IFetchProfiles = {
@@ -80,11 +89,10 @@ const UsersList: React.FC = () => {
 				if (err) {
 					console.error('Error fetching profiles:', err);
 				} else {
-					console.log(response.getProfilesList());
 					setData(
 						response.getProfilesList().map((profile) => {
 							return {
-								farmingPractice: profile.getFarmingtype().toString(),
+								farmingPractice: GetFarmingType(profile.getFarmingtype()),
 								lastActive: 5,
 								location: profile.getAddressesMap().get('default')?.getCity() || '',
 								phoneNo: '9970378006',
@@ -120,10 +128,9 @@ const UsersList: React.FC = () => {
 	const handleTableChange: TableProps['onChange'] = (pagination) => {
 		setTableParams({
 			pagination: pagination
-		// You can include other parameters if needed (sortField, sortOrder, filters)
+			// You can include other parameters if needed (sortField, sortOrder, filters)
 		});
 
-		// `dataSource` is useless since `pageSize` changed
 		if (pagination.pageSize !== tableParams.pagination?.pageSize) {
 			setData([]);
 		}
@@ -131,7 +138,7 @@ const UsersList: React.FC = () => {
 	if (loading) {
 		return <div>Loading...</div>;
 	}
-	console.log(data);
+	// console.log(data);
 
 	return (
 		<Table

@@ -4,14 +4,13 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Users from 'src/Screens/Users/index';
-import ProfileView from 'src/Screens/Users/profileInfo';
-
+import UserDetails from 'src/Screens/Users/userDetails';
 const UserMiddleware = () => {
 	return (
 
 		<Routes>
-			<Route path="/profile/:id" element={<ProfileView />} />
 			<Route path='/' element={<Users />} />
+			<Route path="/userdetails/:userId" element={<UserDetails />} />
 		</Routes>
 
 	);
