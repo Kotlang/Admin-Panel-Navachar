@@ -138,7 +138,7 @@ const UsersList: React.FC = () => {
 	if (loading) {
 		return <div>Loading...</div>;
 	}
-	console.log(data);
+	// console.log(data);
 
 	return (
 		<Table

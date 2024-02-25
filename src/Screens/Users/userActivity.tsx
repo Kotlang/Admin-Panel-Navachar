@@ -85,7 +85,6 @@ const UserActivity: React.FC<props> = (props) => {
 
     useEffect(() => {
         if (posts.length > 0) {
-            console.log(posts[0].getCreatedon());
             const activityData: ActivityCardDetails[] = posts.map(post => {
                 return {
                     activityType: "posted", 
