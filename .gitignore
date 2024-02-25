@@ -1,3 +1,5 @@
+# src/generated
+
 # Logs
 logs
 *.log
@@ -25,3 +27,5 @@ dist-ssr
 .env
 
 .vercel
+.vscode
+

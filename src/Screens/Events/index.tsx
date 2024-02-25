@@ -5,7 +5,7 @@ import { useState } from "react";
 import EventsTable from "./show";
 
 const Events = () => {
-	const [activeComponent, setActiveComponent] = useState('show');
+	const [activeComponent, setActiveComponent] = useState('ACTIVE');
 	const renderComponent = () => {
 		switch (activeComponent) {
 			case 'CRESATE':

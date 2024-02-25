@@ -19,12 +19,13 @@ const PostsPage: React.FC<PostsPageProps> = ({ CreatorID }) => {
     const [hasMore, setHasMore] = useState(true);
 
     const fetchPosts = useCallback(async (): Promise<UserPostProto[]> => {
-        setHasMore(true);
         const feedFilters: FeedFilters = {
             createdBy: CreatorID
         };
         const feedRequest: IGetFeedRequest = {
             filters: feedFilters,
+            pageNumber: pageNumber,
+            pageSize: 10
         };
 
         return new Promise((resolve, reject) => {
