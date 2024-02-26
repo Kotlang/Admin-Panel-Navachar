@@ -26,6 +26,7 @@ interface TableParams {
 	sortField?: string;
 	sortOrder?: string;
 	filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
+	totalPages?: number;
 }
 
 function declineProfileDeletion(userId: string) {
@@ -158,7 +159,8 @@ const DeletionUsersList: React.FC = () => {
 		pagination: {
 			current: 1,
 			pageSize: 2
-		}
+		},
+		totalPages: 0
 	});
 	const fetchProfiles = async (pageNumber: number, pageSize: number) => {
 		try {
@@ -177,14 +179,20 @@ const DeletionUsersList: React.FC = () => {
 							return {
 								deadlineDate: formatUnixTimestamp((profile.getDeletioninfo()?.getDeletiontime() || 0) + retentionDurationSeconds),
 								farmingPractice: getFarmingType(profile.getFarmingtype()),
-								phoneNo: '9970378006',
+								phoneNo: profile.getPhonenumber() || '',
 								requestDate: formatUnixTimestamp(profile.getDeletioninfo()?.getDeletiontime() || 0),
-								userId: profile.getLoginid(),
+								userId: profile.getUserid(),
 								userName: profile.getName()
 							};
 						})
 					);
-
+					setTableParams({
+						...tableParams,
+						pagination: {
+							...tableParams.pagination,
+							total: response.getTotalusers()
+						}
+					});
 				}
 				setLoading(false);
 			});
@@ -192,14 +200,7 @@ const DeletionUsersList: React.FC = () => {
 			console.error('Error occurred:', err);
 			setLoading(false);
 		}
-		setTableParams({
-			...tableParams,
-			pagination: {
-				...tableParams.pagination,
-				total: 100
-				// Fetch the total count from the server and set it here
-			}
-		});
+
 	};
 
 	useEffect(() => {
