@@ -10,7 +10,7 @@ const UserMiddleware = () => {
 
 		<Routes>
 			<Route path='/' element={<Users />} />
-			<Route path="/userdetails/:userId" element={<UserDetails />} />
+			<Route path="/userdetails/:userId/:phone" element={<UserDetails />} />
 		</Routes>
 
 	);
