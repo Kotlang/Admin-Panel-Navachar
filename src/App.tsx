@@ -15,6 +15,7 @@ import { styledTheme } from 'src/themes/styledTheme';
 import { ThemeProvider } from 'styled-components';
 
 import AppLayout from './components/AppLayout';
+import CommunityMiddleware from './routes/community/communityMiddleware';
 import ContentMiddleware from './routes/content/contentMiddleware';
 import UserMiddleware from './routes/users/usersMiddleware';
 import Events from './Screens/Events';
@@ -46,6 +47,7 @@ function App() {
 							<Route path='*' element={<NotFound />} />
 							<Route path='/home' element={<NotFound />} />
 							<Route path='/content/*' element={<ContentMiddleware />} />
+							<Route path='/community/*' element={<CommunityMiddleware />} />
 						</Route>
 						<Route path='/login' element={<Login />}/>
 						<Route path='/verify' element={<Verify />}/>

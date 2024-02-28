@@ -10,15 +10,15 @@ import { Metadata, RpcError } from "grpc-web";
 import avatar from "src/assets/avatar.png";
 import clients from "src/clients";
 import { GetFarmingType, GetFarmingTypeColor, RenderAddress } from './utils';
-
+import navArrowIcon from "src/assets/icons/navArrowIcon.svg";
 import {
-    AddressProto,
     FarmingType,
     UserProfileProto,
 } from "src/generated/common_pb";
+import CropList from "./crops";
 
 const UserDetails = () => {
-    const { userId } = useParams<{ userId: string }>();
+    const { userId, phone } = useParams<{ userId: string, phone: string }>();
     const [Profile, setProfile] = useState<UserProfileProto>();
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -34,7 +34,7 @@ const UserDetails = () => {
             label: "Likes",
         },
         {
-            children: "display user comments",
+            children: <UserActivity filter="comments" creatorId={userId || ""} />,
             key: "3",
             label: "Comments",
         },
@@ -106,7 +106,13 @@ const UserDetails = () => {
 
     return (
         <>
-            <h2 className="flex mt-14 just justify-center text-w_text font-barlow font-regular text-3xl leading-7 tracking-[10px] mb-8 ">
+            <div className="flex gap-5 cursor-pointer mt-5">
+                <img src={navArrowIcon} alt="" />
+                <a className=" uppercase tracking-widest  text-base" href="/users">
+                    Back To Users
+                </a>
+            </div>
+            <h2 className="flex mt-4 just justify-center text-w_text font-barlow font-regular text-3xl leading-7 tracking-[10px] mb-8 ">
                 USER DETAILS
             </h2>
             <div className="w-full p-5 border-2 border-f_text rounded-lg mt-2 flex flex-col gap-3 font-mainfont text-w_text bg-main_black">
@@ -170,7 +176,7 @@ const UserDetails = () => {
                                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                                 </svg>
                                 <p className="pl-4 text-lg text-gray-400">PHONE NUMBER :</p>
-                                <p className="pl-5 text-lg">7499618811</p>
+                                <p className="pl-5 text-lg">{phone}</p>
                             </div>
                             <div className="mt-5 flex flex-row">
                                 <svg
@@ -190,7 +196,7 @@ const UserDetails = () => {
                                     YEAR SINCE ORGANIC FARMING :
                                 </p>
                                 <p className="pl-5 text-lg">
-                                    {Profile?.getYearssinceorganicfarming()} years
+                                    {Profile?.getYearssinceorganicfarming()}
                                 </p>
                             </div>
                             <div className="mt-5 flex flex-row">
@@ -272,7 +278,8 @@ const UserDetails = () => {
                                     {renderCertificationDetails(Profile?.getCertificationdetails())}
                                 </p>
                             </div>
-                            <div className="mt-5 flex flex-row">
+                        </div>
+                        <div className="mt-5 flex flex-row">
                                 <svg
                                     className="m-1 h-6 w-6 text-gray-400"
                                     width="24"
@@ -291,9 +298,11 @@ const UserDetails = () => {
                                     <line x1="8" y1="21" x2="8" y2="13" />{" "}
                                     <line x1="16" y1="21" x2="16" y2="14" />
                                 </svg>
-                                <p className="pl-4 text-lg text-gray-400">CROPS FARMED :</p>
+                                <div className="flex flex-col w-full">
+                                    <p className="pl-4 text-lg text-gray-400">CROPS FARMED :</p>
+                                    <CropList crops={Profile?.getCropsList() || []} />
+                                </div>
                             </div>
-                        </div>
                         <button className="mt-4 uppercase w-[10%] tracking-wider rounded-lg font-semibold px-2 py-2 bg-red_primary border">
                             Block User
                         </button>

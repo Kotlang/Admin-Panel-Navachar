@@ -121,7 +121,7 @@ export default function CreateEventForm({ formData, setFormData, uploadedImageLi
                     console.log("Before:-", err);
                 } else {
                     console.log(response);
-                    navigate('/events/show');
+                    navigate('/events');
                 }
             });
         }
@@ -130,9 +130,6 @@ export default function CreateEventForm({ formData, setFormData, uploadedImageLi
     useEffect(() => {
         const fetchData = async () => {
             if (eventID !== undefined) {
-
-                console.log('i was hit becuase eventid')
-                console.log('value of eventid', eventID)
                 try {
                     const eventData = await fetchEventById(eventID, {});
                     const startDate = dayjs.unix(eventData.getStartat());

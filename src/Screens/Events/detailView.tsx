@@ -1,96 +1,87 @@
 /* eslint-disable */
 import React, { useState, useEffect } from "react";
-import { Metadata, RpcError } from 'grpc-web';
-import likeIcon from "src/assets/icons/likeIcon.svg";
+import { Metadata, RpcError } from "grpc-web";
 import groupIcon from "src/assets/icons/groupIcon.svg";
-import clients from 'src/clients';
+import clients from "src/clients";
 import navArrowIcon from "src/assets/icons/navArrowIcon.svg";
 import { EventProto } from "src/generated/events_pb";
-import { CommentProto, CommentsFetchResponse } from 'src/generated/actions_pb'
 import { useParams } from "react-router-dom";
 import { IEventData, MediaUrl } from "src/types";
-import moment from 'moment';
+import moment from "moment";
+import Comments from "../community/postComments";
 
 function DetailView() {
     const { eventId } = useParams();
     const [event, setEvent] = useState<IEventData>();
     const [mediaUrls, setMediaUrls] = useState<MediaUrl[]>([]);
-    const [comments, setComments] = useState<CommentProto[]>([]);
-    const [refreshKey, setRefreshKey] = useState(0);
+    // const [refreshKey, setRefreshKey] = useState(0);
 
-    const fetchEventById = (eventId: string, metaData: Metadata | null): Promise<EventProto> => {
+    const fetchEventById = (
+        eventId: string,
+        metaData: Metadata | null
+    ): Promise<EventProto> => {
         return new Promise((resolve, reject) => {
-            clients.social.event.GetEvent(eventId, metaData, (err: RpcError, response: EventProto) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(response);
-                }
-            });
-        });
-    };
-
-    const fetchCommetsByID = (eventId: string, metaData: Metadata | null): Promise<CommentsFetchResponse> => {
-        return new Promise((resolve, reject) => {
-            clients.social.actions.FetchComments({
-                parentID: eventId,
-                metaData: metaData,
-                callback: (err: RpcError, response: CommentsFetchResponse) => {
+            clients.social.event.GetEvent(
+                eventId,
+                metaData,
+                (err: RpcError, response: EventProto) => {
                     if (err) {
                         reject(err);
                     } else {
                         resolve(response);
                     }
                 }
-            });
+            );
         });
-    }
+    };
 
-    const handleCommentDelete = (commendId: string) => {
-        clients.social.actions.DeleteComments(commendId, null, (err, res) => {
-            if (err) {
-                console.log(err);
-            } else {
-                setRefreshKey(prevKey => prevKey + 1);
-            }
-        })
-    }
+    // const handleCommentDelete = (commendId: string) => {
+    //     clients.social.actions.DeleteComments(commendId, null, (err, res) => {
+    //         if (err) {
+    //             console.log(err);
+    //         } else {
+    //             setRefreshKey((prevKey) => prevKey + 1);
+    //         }
+    //     });
+    // };
 
     const fetchData = async () => {
         try {
-            const eventData = await fetchEventById(eventId ?? '', {});
+            const eventData = await fetchEventById(eventId ?? "", {});
             setEvent((prevState: any) => ({
                 ...prevState,
-                startDate: moment.unix(eventData.getStartat()).format('YYYY/MM/DD HH:mm:ss'),
-                endDate: moment.unix(eventData.getEndat()).format('YYYY/MM/DD HH:mm:ss'),
+                id: eventData.getEventid(),
+                startDate: moment
+                    .unix(eventData.getStartat())
+                    .format("YYYY/MM/DD HH:mm:ss"),
+                endDate: moment
+                    .unix(eventData.getEndat())
+                    .format("YYYY/MM/DD HH:mm:ss"),
                 hostName: eventData.getAuthorinfo()?.getName(),
                 description: eventData.getDescription(),
-                mode: eventData.getType() === 0 ? 'Online' : 'Offline',
+                mode: eventData.getType() === 0 ? "Online" : "Offline",
                 numAttendees: eventData.getNumattendees(),
                 slots: eventData.getNumslots(),
                 link: eventData.getOnlinelink(),
                 name: eventData.getTitle(),
                 tag: eventData.getTagsList()[0],
             }));
-            setMediaUrls(eventData.getMediaurlsList().map((media) => ({ url: media.getUrl(), mimeType: media.getMimetype() })));
+            setMediaUrls(
+                eventData
+                    .getMediaurlsList()
+                    .map((media) => ({
+                        url: media.getUrl(),
+                        mimeType: media.getMimetype(),
+                    }))
+            );
         } catch (error) {
-            console.error('Error fetching event data:', error);
+            console.error("Error fetching event data:", error);
         }
     };
 
     useEffect(() => {
         fetchData();
     }, [eventId]);
-
-    useEffect(() => {
-        fetchCommetsByID(eventId ?? '', {})
-            .then((commentData) => {
-                setComments(commentData.getCommentsList());
-            })
-            .catch((err) => {
-                console.error('Error fetching comments')
-            })
-    }, [eventId, refreshKey]);
 
     return (
         <div className="w-full p-5 border-2 border-f_text rounded-lg mt-2 flex flex-col gap-3 font-mainfont text-w_text bg-main_black">
@@ -187,32 +178,9 @@ function DetailView() {
             <div className="w-full">
                 <div className="flex gap-3 my-5">
                     <p className="text-xl">300</p>
-                    <p className=" uppercase text-xl tracking-widest">
-                        Comments :
-                    </p>
+                    <p className=" uppercase text-xl tracking-widest">Comments :</p>
                 </div>
-                {comments.map((comment, index) => (
-                    <div key={index} className="flex flex-col gap-2 mb-5">
-                        <div className="w-full flex gap-5  justify-between text-base">
-                            <div className="flex gap-2  max-w-[80%]">
-                                <img src={comment.getAuthorinfo()?.getPhotourl()} alt="" className="border  w-10 h-10 rounded-full" />
-                                <div className="flex flex-col ">
-                                    <p className="font-semibold">{comment.getAuthorinfo()?.getName()}</p>
-                                    <p>{comment.getContent()}</p>
-                                </div>
-                            </div>
-                            <div className="flex gap-3 items-center">
-                                <img src={likeIcon} alt="" />
-                                <p className="text-base">300</p>
-                                <button
-                                    onClick={() => handleCommentDelete(comment.getCommentid())}
-                                    className=" uppercase tracking-wide  px-3 py-1 text-sm bg-red_primary rounded border">
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                ))}
+               {event?.id && <Comments postId={event?.id} />}
             </div>
         </div>
     );

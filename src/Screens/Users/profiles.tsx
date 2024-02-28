@@ -66,10 +66,10 @@ const UsersList: React.FC = () => {
 		{
 			dataIndex: 'userId',
 			key: 'userId',
-			render: (userId: string) => (
+			render: (userId: string, record: DataType) => (
 				<Space size="middle">
 					<Button type='primary' danger>Block</Button>
-					<Button type="primary" onClick={() => navigate(`userdetails/${userId}`)} >View</Button>
+					<Button type="primary" onClick={() => navigate(`userdetails/${userId}/${record.phoneNo}`)} >View</Button>
 				</Space>
 			),
 			title: 'ACTIONS'

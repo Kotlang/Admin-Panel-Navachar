@@ -5,6 +5,7 @@ import { Metadata, RpcError } from 'grpc-web';
 import { CommentFetchRequest, CommentsFetchResponse, IdRequest } from 'src/generated/actions_pb';
 import { actionsClient } from 'src/generated/ActionsServiceClientPb';
 import { SocialStatusResponse } from 'src/generated/commons_pb';
+import { Icomments } from 'src/types';
 
 import { addJwtToken } from '../utils';
 
@@ -26,17 +27,18 @@ const getIdRequest = (commentId: string) => {
 	return idRequest;
 };
 
-const getCommentFetchRequest = (parentID?: string, userId?: string) => {
+const getCommentFetchRequest = (commentRequest: Icomments) => {
 	const commentReq = new CommentFetchRequest();
-
-	if (parentID) {
-		commentReq.setParentid(parentID);
+	commentReq.setParentid(commentRequest.parentID);
+	if (commentRequest.userID) {
+		commentReq.setUserid(commentRequest.userID);
 	}
-
-	if (userId) {
-		commentReq.setUserid(userId);
+	if (commentRequest.pageNumber) {
+		commentReq.setPagenumber(commentRequest.pageNumber);
 	}
-
+	if (commentRequest.pageSize) {
+		commentReq.setPagesize(commentRequest.pageSize);
+	}
 	return commentReq;
 };
 
@@ -49,19 +51,14 @@ const ActionsClient = {
 		getActionsClient().deleteComment(getIdRequest(parentID), addJwtToken(metaData), callback);
 	},
 
-	FetchComments: ({
-		parentID,
-		userID,
-		metaData,
-		callback
-	}: {
-		parentID?: string,
-		userID?: string,
+	FetchComments: (
+		commentRequest: Icomments,
 		metaData: Metadata | null,
 		callback: (err: RpcError, response: CommentsFetchResponse) => void
-	}) => {
-		getActionsClient().fetchComments(getCommentFetchRequest(parentID, userID), addJwtToken(metaData), callback);
+	) => {
+		getActionsClient().fetchComments(getCommentFetchRequest(commentRequest), addJwtToken(metaData), callback);
 	}
+
 };
 
 export default ActionsClient;

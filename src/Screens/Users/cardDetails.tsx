@@ -98,7 +98,7 @@ const CardDetails: React.FC<ActivityCardDetails> = (activityCardDetails) => {
 	};
 
 	return (
-		<div className="flex flex-col w-[90%] gap-2">
+		<div className="flex flex-col gap-2">
 			<div className="flex gap-2">
 				<div className="flex flex-row w-full ">
 					<img
@@ -108,7 +108,7 @@ const CardDetails: React.FC<ActivityCardDetails> = (activityCardDetails) => {
 					/>
 					<p className="px-2 py-6 font-bold">{activityCardDetails.name}</p>
 				</div>
-				<div className="flex justify-end w-[20%] ">
+				<div className="flex justify-end w-[25%] ">
 					<p className="">{activityCardDetails.dateCreated}</p>
 				</div>
 			</div>
@@ -117,9 +117,9 @@ const CardDetails: React.FC<ActivityCardDetails> = (activityCardDetails) => {
 					{activityCardDetails.content}
 				</p>
 			</div>
-			<div className="px-2 flex flex-row ">
-				<p className=" font-sans text-base text-gray-400">123 Likes</p>
-				<p className="px-6 text-base text-gray-400">123 Comments</p>
+			<div className="px-2 flex flex-row">
+				<p className=" font-sans text-base text-gray-400">{activityCardDetails.numlikes} Likes</p>
+				<p className="px-6 text-base text-gray-400">{activityCardDetails.numcomments} Comments</p>
 			</div>
 			<div className="flex gap-2">
 				<div className="flex flex-row w-full items-center ">
@@ -128,7 +128,7 @@ const CardDetails: React.FC<ActivityCardDetails> = (activityCardDetails) => {
 					{activityCardDetails.dateReact}
 				</div>
 				<div className="flex justify-end items-center w-[20%]">
-					<button className="">Show</button>
+					<a className="" href={`/community/post/${activityCardDetails.postId}`}>Show</a>
 				</div>
 			</div>
 		</div>

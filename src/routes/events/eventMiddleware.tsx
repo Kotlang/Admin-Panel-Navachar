@@ -5,7 +5,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Events from 'src/Screens/Events';
-import MonitorDashboard from 'src/Screens/Events/monitor';
 import DetailView from 'src/Screens/Events/detailView';
 import Create from 'src/Screens/Events/create';
 const EventMiddleware = () => {
@@ -13,7 +12,6 @@ const EventMiddleware = () => {
 		<Routes>
 			<Route path='/' element={<Events />} />
 			<Route path='editevent/:eventId' element={<Create />} />
-			<Route path='monitor/:eventId' element={<MonitorDashboard />} />
 			<Route path='eventdetail/:eventId' element={<DetailView />} />
 		</Routes>
 	);
