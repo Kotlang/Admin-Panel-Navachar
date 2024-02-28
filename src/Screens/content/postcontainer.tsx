@@ -4,7 +4,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React, { useState, useEffect } from 'react';
-import { IUserPost } from 'src/types';
+import { IUserPost, Icomments } from 'src/types';
 import clients from 'src/clients';
 import { toast } from 'react-toastify';
 import Modal from 'react-modal';
@@ -19,17 +19,20 @@ const PostContainer: React.FC<IUserPost> = (Posts) => {
 
   const fetchCommetsByID = (eventId: string, metaData: Metadata | null): Promise<CommentsFetchResponse> => {
     return new Promise((resolve, reject) => {
-      clients.social.actions.FetchComments({
-        parentID: eventId, // Assuming eventId is used as parentID
-        metaData: metaData,
-        callback: (err: RpcError, response: CommentsFetchResponse) => {
+
+      const commentRequset: Icomments = {
+        parentID: eventId,
+      }
+
+      clients.social.actions.FetchComments(
+        commentRequset, {}, (err: RpcError, response: CommentsFetchResponse) => {
           if (err) {
             reject(err);
           } else {
             resolve(response);
           }
         }
-      });
+      );
     });
   }
 

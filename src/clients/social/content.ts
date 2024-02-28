@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { Metadata, RpcError } from 'grpc-web';
 import { SocialStatusResponse } from 'src/generated/commons_pb';
-import { DeletePostRequest,FeedFilters, FeedResponse,GetFeedRequest } from 'src/generated/social_pb';
+import { DeletePostRequest,FeedFilters,FeedResponse,GetFeedRequest,GetPostRequest,UserPostProto } from 'src/generated/social_pb';
 import { PostType } from 'src/generated/social_pb';
 import { UserPostClient } from 'src/generated/SocialServiceClientPb';
 import { IGetFeedRequest } from 'src/types';
@@ -47,12 +47,21 @@ const getDeletePostRequest = (postid: string) => {
 	return deletePostRequest;
 };
 
+const getPostByIdRequest = (postid: string) => {
+	const getPostRequest = new GetPostRequest();
+	getPostRequest.setPostid(postid);
+	return getPostRequest;
+};
+
 const userPostClient = {
 	DeletePost:(postid: string, metaData: Metadata | null, callback: (err: RpcError, response: SocialStatusResponse) => void) => {
 		getUserPostClient().deletePost(getDeletePostRequest(postid), addJwtToken(metaData), callback);
 	},
 	FeedContent:(feedrequest: IGetFeedRequest, metaData: Metadata | null, callback: (err: RpcError, response: FeedResponse) => void) => {
 		getUserPostClient().getFeed(getFeedRequest(feedrequest), addJwtToken(metaData), callback);
+	},
+	GetPostByID:(postid: string, metaData: Metadata | null, callback: (err: RpcError, response: UserPostProto) => void) => {
+		getUserPostClient().getPost(getPostByIdRequest(postid), addJwtToken(metaData), callback);
 	}
 };
 

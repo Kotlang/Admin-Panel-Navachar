@@ -16,6 +16,7 @@ const Create = () => {
     const isEditMode = eventId != null;
     const [uploadedImageLinks, setUploadedImageLinks] = useState<MediaUrl[]>([]);
     const [formData, setFormData] = useState<IEventData>({
+        id: "",
         name: "",
         hostName: "",
         description: "",

@@ -42,7 +42,7 @@ const Login = () => {
 	}, [authResponse?.jwt]);
 
 	return (
-		<div className='flex min-h-screen'>
+		<div className='flex min-h-screen bg-mid_black'>
 			<div className='w-1/2'>
 				<img
 					src='https://images.unsplash.com/photo-1622383563227-04401ab4e5ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wyMDUzMDJ8MHwxfHNlYXJjaHwxMnx8ZmFybWluZ3xlbnwxfHx8fDE3MDEwMjExMzd8MA&ixlib=rb-4.0.3&q=80&w=1080'
@@ -51,7 +51,7 @@ const Login = () => {
 				/>
 			</div>
 			<div className='w-1/2 flex flex-col justify-center items-center relative'>
-				<h1 className='text-4xl pb-8 pr-4 font-bold font-poppins text-center mb-8'>Navachar Admin Panel</h1>
+				<h1 className=' text-slate-200 text-4xl pb-8 pr-4 font-bold font-poppins text-center mb-8'>Navachar Admin Panel</h1>
 				<section className='w-full flex justify-center items-center'>
 					<Form
 						form={form}
@@ -117,7 +117,7 @@ const Login = () => {
 								loading={loading}
 								htmlType="submit"
 								size="large"
-								className="w-36 rounded-md outline-none border-none bg-black text-white hover:text-white"
+								className="w-36 rounded-md outline-none border-none bg-green-600 text-white font-bold hover:bg-green-700"
 							>
 								Get OTP
 							</Button>

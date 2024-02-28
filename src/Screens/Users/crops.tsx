@@ -11,9 +11,9 @@ interface CropListProps {
 
 const CropList: React.FC<CropListProps> = ({ crops }) => {
     return (
-        <div className="w-full grid grid-cols-6">
+        <div className="p-2 w-full grid grid-cols-10">
             {crops.map((crop, index) => (
-                <div key={index} className="flex flex-col gap-1 items-center mt-2">
+                <div key={index} className="flex flex-col py-2 gap-1 items-center mt-2">
                     <img
                         src={`/crops/${crop}.png`}
                         alt={crop}

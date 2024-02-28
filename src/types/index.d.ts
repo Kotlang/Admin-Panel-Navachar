@@ -166,6 +166,7 @@ export interface ILocation {
 }
 
 export interface IEventData {
+    id: string;
     name: string;
     hostName: string;
     description: string;
@@ -194,4 +195,21 @@ export interface ActivityCardDetails {
     description: string;
     image: string;
     name: string;
+    postId: string;
+    numlikes: number;
+    numcomments: number;
+}
+
+export interface Icomments {
+    parentID: string;
+    userID?: string;
+    pageNumber?: number;
+    pageSize?: number;
+}
+
+export interface CommentItems {
+    authorProfileImage: string;
+    authorName: string;
+    commentContent: string;
+    commentTime: number;
 }

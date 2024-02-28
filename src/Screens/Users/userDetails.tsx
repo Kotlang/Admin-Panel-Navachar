@@ -34,7 +34,7 @@ const UserDetails = () => {
             label: "Likes",
         },
         {
-            children: "display user comments",
+            children: <UserActivity filter="comments" creatorId={userId || ""} />,
             key: "3",
             label: "Comments",
         },
@@ -278,7 +278,8 @@ const UserDetails = () => {
                                     {renderCertificationDetails(Profile?.getCertificationdetails())}
                                 </p>
                             </div>
-                            <div className="mt-5 flex flex-row">
+                        </div>
+                        <div className="mt-5 flex flex-row">
                                 <svg
                                     className="m-1 h-6 w-6 text-gray-400"
                                     width="24"
@@ -302,7 +303,6 @@ const UserDetails = () => {
                                     <CropList crops={Profile?.getCropsList() || []} />
                                 </div>
                             </div>
-                        </div>
                         <button className="mt-4 uppercase w-[10%] tracking-wider rounded-lg font-semibold px-2 py-2 bg-red_primary border">
                             Block User
                         </button>
