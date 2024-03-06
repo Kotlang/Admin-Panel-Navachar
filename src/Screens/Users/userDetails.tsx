@@ -3,16 +3,17 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React, { useEffect, useState } from "react";
-import { TabsProps, Tabs } from "antd";
+import { TabsProps, Tabs, Popconfirm, Button } from "antd";
 import UserActivity from "./userActivity";
 import { useParams } from "react-router-dom";
 import { Metadata, RpcError } from "grpc-web";
 import avatar from "src/assets/avatar.png";
 import clients from "src/clients";
-import { GetFarmingType, GetFarmingTypeColor, RenderAddress } from './utils';
+import { getFarmingType, getFarmingTypeColor, renderAddress, blockUser, unBlockUser } from './utils';
 import navArrowIcon from "src/assets/icons/navArrowIcon.svg";
 import {
     FarmingType,
+    StatusResponse,
     UserProfileProto,
 } from "src/generated/common_pb";
 import CropList from "./crops";
@@ -44,6 +45,20 @@ const UserDetails = () => {
             label: "Posts",
         },
     ];
+
+    function blockOrUnblockUser(userId: string | undefined, isBlocked: boolean | undefined) {
+        if (userId === undefined || isBlocked === undefined) {
+            return
+        }
+        if (isBlocked) {
+            unBlockUser(userId);
+            Profile?.setIsblocked(false);
+        } else {
+            blockUser(userId);
+            Profile?.setIsblocked(true);
+        }
+    }
+
 
     const renderCertificationDetails = (certificationDetails: any) => {
         if (!certificationDetails || !certificationDetails.isCertified) {
@@ -219,8 +234,8 @@ const UserDetails = () => {
                                     <path d="M19 13a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2" />
                                 </svg>
                                 <p className="pl-4 text-lg text-gray-400">FARMING PRACTICE :</p>
-                                <p className={`pl-5 text-lg  ${GetFarmingTypeColor(GetFarmingType(Profile?.getFarmingtype() || FarmingType.UNSPECIFIEDFARMING))}`}>
-                                    {GetFarmingType(Profile?.getFarmingtype() || FarmingType.UNSPECIFIEDFARMING)}
+                                <p className={`pl-5 text-lg  ${getFarmingTypeColor(getFarmingType(Profile?.getFarmingtype() || FarmingType.UNSPECIFIEDFARMING))}`}>
+                                    {getFarmingType(Profile?.getFarmingtype() || FarmingType.UNSPECIFIEDFARMING)}
                                 </p>
                             </div>
                             <div className="mt-5 flex flex-row">
@@ -246,7 +261,7 @@ const UserDetails = () => {
                                 <p className="pl-4 text-lg text-gray-400">LOCATION :</p>
                                 <div className="pl-5 text-lg">
                                     {Profile?.getAddressesMap() &&
-                                        RenderAddress(Profile.getAddressesMap())}
+                                        renderAddress(Profile.getAddressesMap())}
                                 </div>
                             </div>
                             <div className="mt-5 flex flex-row">
@@ -303,9 +318,16 @@ const UserDetails = () => {
                                     <CropList crops={Profile?.getCropsList() || []} />
                                 </div>
                             </div>
-                        <button className="mt-4 uppercase w-[10%] tracking-wider rounded-lg font-semibold px-2 py-2 bg-red_primary border">
-                            Block User
-                        </button>
+                            <Popconfirm
+						title={Profile?.getIsblocked ? 'Unblock user' : 'Block user'}
+						description={Profile?.getIsblocked ? 'Are you sure you want to unblock user?' : 'Are you sure you want to block user?'}
+						onConfirm={() => blockOrUnblockUser(userId, Profile?.getIsblocked())}
+
+						okText="Yes"
+						cancelText="No"
+					>
+						<Button type='primary' danger>{Profile?.getIsblocked ? 'Unblock' : 'Block'}</Button>
+					</Popconfirm>
                     </div>
                 </div>
             </div>

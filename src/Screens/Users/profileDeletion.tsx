@@ -28,101 +28,6 @@ interface TableParams {
 	totalPages?: number;
 }
 
-function declineProfileDeletion(userId: string) {
-	const metaData: Metadata | null = null;
-
-	clients.auth.loginVerified.CancelProfileDeletionRequest(userId, metaData, (err: RpcError, response: StatusResponse) => {
-		if (err) {
-			console.error('Error fetching profiles:', err);
-		} else {
-			console.log('response',response);
-		}
-	}
-	);
-
-}
-function acceptProfileDeletion(userId: string) {
-	const metaData: Metadata | null = null;
-
-	clients.auth.loginVerified.DeleteProfile(userId, metaData, (err: RpcError, response: StatusResponse) => {
-		if (err) {
-			console.error('Error Deleting profiles:', err);
-		} else {
-			console.log('response',response);
-		}
-	}
-	);
-}
-
-const columns: TableProps<DataType>['columns'] = [
-	{
-		dataIndex: 'userName',
-		key: 'userName',
-		title: 'USER NAME'
-	},
-	{
-		dataIndex: 'phoneNo',
-		key: 'phoneNo',
-		title: 'PHONE NO.'
-	},
-	{
-		dataIndex: 'requestDate',
-		key: 'requestDate',
-		title: 'REQUEST DATE'
-	},
-	{
-		dataIndex: 'deadlineDate',
-		key: 'deadlineDate',
-		title: 'DEADLINE DATE'
-	},
-	{
-		dataIndex: 'farmingPractice',
-		key: 'farmingPractice',
-		render: (farmingPractice: string) => {
-
-			let cls = '';
-			if (farmingPractice === 'Chemical') {
-				cls = 'text-purple-500';
-			} else if (farmingPractice === 'Organic') {
-				cls = 'text-green-500';
-			} else if (farmingPractice === 'MIX') {
-				cls = 'text-yellow-500';
-			}else {
-				cls = 'text-white';
-			}
-			return <span className={cls}>{farmingPractice}</span>;
-		},
-		title: 'FARMING PRACTICE'
-	},
-	{
-		dataIndex: 'userId',
-		key: 'userId',
-		render: (userId: string) => (
-			<Space size="middle">
-				<Popconfirm
-					title="Cancel Profile Deletion"
-					description="Are you sure you want to cancel Profile Deletion?"
-					onConfirm={() => declineProfileDeletion(userId)}
-					okText="Yes"
-					cancelText="No"
-				>
-					<Button type='primary' danger>Decline</Button>
-				</Popconfirm>
-				<Popconfirm
-					title="Delete Profile"
-					description="Are you sure you want to delete this Profile?"
-					onConfirm={() => acceptProfileDeletion(userId)}
-					okText="Yes"
-					cancelText="No"
-				>
-					<Button type= 'primary' >Accept</Button>
-				</Popconfirm>
-			</Space>
-		),
-		title: 'ACTIONS'
-	}
-];
-
 function getFarmingType(farmingType: FarmingType){
 	switch (farmingType) {
 	case FarmingType.CHEMICAL:
@@ -161,6 +66,76 @@ const DeletionUsersList: React.FC = () => {
 		},
 		totalPages: 0
 	});
+
+	const columns: TableProps<DataType>['columns'] = [
+		{
+			dataIndex: 'userName',
+			key: 'userName',
+			title: 'USER NAME'
+		},
+		{
+			dataIndex: 'phoneNo',
+			key: 'phoneNo',
+			title: 'PHONE NO.'
+		},
+		{
+			dataIndex: 'requestDate',
+			key: 'requestDate',
+			title: 'REQUEST DATE'
+		},
+		{
+			dataIndex: 'deadlineDate',
+			key: 'deadlineDate',
+			title: 'DEADLINE DATE'
+		},
+		{
+			dataIndex: 'farmingPractice',
+			key: 'farmingPractice',
+			render: (farmingPractice: string) => {
+
+				let cls = '';
+				if (farmingPractice === 'Chemical') {
+					cls = 'text-purple-500';
+				} else if (farmingPractice === 'Organic') {
+					cls = 'text-green-500';
+				} else if (farmingPractice === 'MIX') {
+					cls = 'text-yellow-500';
+				}else {
+					cls = 'text-white';
+				}
+				return <span className={cls}>{farmingPractice}</span>;
+			},
+			title: 'FARMING PRACTICE'
+		},
+		{
+			dataIndex: 'userId',
+			key: 'userId',
+			render: (userId: string) => (
+				<Space size="middle">
+					<Popconfirm
+						title="Cancel Profile Deletion"
+						description="Are you sure you want to cancel Profile Deletion?"
+						onConfirm={() => declineProfileDeletion(userId)}
+						okText="Yes"
+						cancelText="No"
+					>
+						<Button type='primary' danger>Decline</Button>
+					</Popconfirm>
+					<Popconfirm
+						title="Delete Profile"
+						description="Are you sure you want to delete this Profile?"
+						onConfirm={() => acceptProfileDeletion(userId)}
+						okText="Yes"
+						cancelText="No"
+					>
+						<Button type= 'primary' >Accept</Button>
+					</Popconfirm>
+				</Space>
+			),
+			title: 'ACTIONS'
+		}
+	];
+
 	const fetchProfiles = async (pageNumber: number, pageSize: number) => {
 		try {
 			const fetchDeletionRequests: IFetchDeletionRequests = {
@@ -201,6 +176,39 @@ const DeletionUsersList: React.FC = () => {
 		}
 
 	};
+
+	function declineProfileDeletion(userId: string) {
+		const metaData: Metadata | null = null;
+
+		clients.auth.loginVerified.CancelProfileDeletionRequest(userId, metaData, (err: RpcError, response: StatusResponse) => {
+			if (err) {
+				console.error('Error fetching profiles:', err);
+			} else {
+				const { current, pageSize } = tableParams.pagination || {};
+				if (current) {
+					fetchProfiles(current - 1, pageSize || 2);
+				}
+				console.debug('response', response);}
+		}
+		);
+
+	}
+	function acceptProfileDeletion(userId: string) {
+		const metaData: Metadata | null = null;
+
+		clients.auth.loginVerified.DeleteProfile(userId, metaData, (err: RpcError, response: StatusResponse) => {
+			if (err) {
+				console.error('Error Deleting profiles:', err);
+			} else {
+				const { current, pageSize } = tableParams.pagination || {};
+				if (current) {
+					fetchProfiles(current - 1, pageSize || 2);
+				}
+				console.debug('response', response);
+			}
+		}
+		);
+	}
 
 	useEffect(() => {
 		const { current, pageSize } = tableParams.pagination || {};

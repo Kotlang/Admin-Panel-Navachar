@@ -7,10 +7,10 @@ import { Metadata, RpcError } from 'grpc-web';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import clients from 'src/clients';
-import { ProfileListResponse, StatusResponse } from 'src/generated/common_pb';
+import { ProfileListResponse } from 'src/generated/common_pb';
 import { IFetchProfiles } from 'src/types';
 
-import { GetFarmingType, GetFarmingTypeColor } from './utils';
+import { blockUser, getFarmingType, getFarmingTypeColor, unBlockUser } from './utils';
 
 interface DataType {
 	userName: string;
@@ -29,30 +29,6 @@ interface TableParams {
 	filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
 }
 
-function blockUser(userId: string) {
-	const metaData: Metadata | null = null;
-
-	clients.auth.loginVerified.BlockUser(userId, metaData, (err: RpcError, response: StatusResponse) => {
-		if (err) {
-			console.error('Error blocking user:', err);
-		} else {
-			console.log('response', response);
-		}
-	});
-}
-
-function unBlockUser(userId: string) {
-	const metaData: Metadata | null = null;
-
-	clients.auth.loginVerified.UnBlockUser(userId, metaData, (err: RpcError, response: StatusResponse) => {
-		if (err) {
-			console.error('Error unblocking user:', err);
-		} else {
-			console.log('response', response);
-		}
-	});
-}
-
 const UsersList: React.FC = () => {
 	const [data, setData] = useState<DataType[]>();
 	const [loading, setLoading] = useState<boolean>(true);
@@ -63,6 +39,25 @@ const UsersList: React.FC = () => {
 		}
 	});
 	const navigate = useNavigate();
+
+	function blockOrUnblockUser(userId: string | undefined, isBlocked: boolean | undefined) {
+		if (userId === undefined || isBlocked === undefined) {
+			return;
+		}
+		if (isBlocked) {
+			unBlockUser(userId);
+		} else {
+			blockUser(userId);
+		}
+		// modify the isBlocked field in the data array
+		const newData = data?.map((item) => {
+			if (item.userId === userId) {
+				item.isBlocked = !isBlocked;
+			}
+			return item;
+		});
+		setData(newData);
+	}
 
 	const columns: TableProps<DataType>['columns'] = [
 		{
@@ -84,7 +79,7 @@ const UsersList: React.FC = () => {
 			dataIndex: 'farmingPractice',
 			key: 'farmingPractice',
 			render: (farmingPractice: string) => {
-				return <span className={GetFarmingTypeColor(farmingPractice)}>{farmingPractice}</span>;
+				return <span className={getFarmingTypeColor(farmingPractice)}>{farmingPractice}</span>;
 			},
 			title: 'FARMING PRACTICE'
 		},
@@ -96,7 +91,7 @@ const UsersList: React.FC = () => {
 					<Popconfirm
 						title={record.isBlocked ? 'Unblock user' : 'Block user'}
 						description={record.isBlocked ? 'Are you sure you want to unblock user?' : 'Are you sure you want to block user?'}
-						onConfirm={() => record.isBlocked ? unBlockUser(userId) : blockUser(userId)}
+						onConfirm={() => blockOrUnblockUser(userId, record.isBlocked)}
 						okText="Yes"
 						cancelText="No"
 					>
@@ -125,7 +120,7 @@ const UsersList: React.FC = () => {
 					setData(
 						response.getProfilesList().map((profile) => {
 							return {
-								farmingPractice: GetFarmingType(profile.getFarmingtype()),
+								farmingPractice: getFarmingType(profile.getFarmingtype()),
 								isBlocked: profile.getIsblocked(),
 								lastActive: 5,
 								location: profile.getAddressesMap().get('default')?.getCity() || '',
@@ -155,7 +150,6 @@ const UsersList: React.FC = () => {
 		const { current, pageSize } = tableParams.pagination || {};
 		if (current) {
 			fetchProfiles(current - 1, pageSize || 10);
-
 		}
 	}, [JSON.stringify(tableParams)]);
 
