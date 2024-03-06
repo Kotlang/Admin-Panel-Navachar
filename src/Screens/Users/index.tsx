@@ -9,7 +9,7 @@ import DeletionUsersList from 'src/Screens/Users/profileDeletion';
 import UsersList from 'src/Screens/Users/profiles';
 
 const onChange = (key: string) => {
-	console.log(key);
+	console.debug('key', key);
 };
 
 const { Title } = Typography;

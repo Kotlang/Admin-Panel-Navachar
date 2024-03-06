@@ -1,14 +1,17 @@
 // Copyright 2022-2023 @Kotlang/navachaar-admin-portal authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
+import { Metadata, RpcError } from 'grpc-web';
 import React from 'react';
+import clients from 'src/clients';
 import {
 	AddressProto,
 	FarmingType,
-	LandSizeInAcres
+	LandSizeInAcres,
+	StatusResponse
 } from 'src/generated/common_pb';
 
-export function GetFarmingType (farmingType: FarmingType) {
+function getFarmingType (farmingType: FarmingType) {
 	switch (farmingType) {
 	case FarmingType.CHEMICAL:
 		return 'Chemical';
@@ -21,7 +24,7 @@ export function GetFarmingType (farmingType: FarmingType) {
 	}
 }
 
-export function GetFarmingTypeColor (farmingPractice: string) {
+function getFarmingTypeColor (farmingPractice: string) {
 	switch (farmingPractice) {
 	case 'Chemical':
 		return 'text-purple-500';
@@ -34,7 +37,7 @@ export function GetFarmingTypeColor (farmingPractice: string) {
 	}
 }
 
-export function getLandSizeString (landsize: any) {
+function getLandSizeString (landsize: any) {
 	switch (landsize) {
 	case LandSizeInAcres.LESSTHAN2:
 		return 'Less than 2';
@@ -47,7 +50,7 @@ export function getLandSizeString (landsize: any) {
 	}
 }
 
-export function RenderAddress(addressesMap: Map<string, AddressProto>) {
+function renderAddress(addressesMap: Map<string, AddressProto>) {
 	const addressesArray: Array<{
 		key: string;
 		city: string;
@@ -73,3 +76,28 @@ export function RenderAddress(addressesMap: Map<string, AddressProto>) {
 		</div>
 	));
 }
+
+function blockUser(userId: string) {
+	const metaData: Metadata | null = null;
+	clients.auth.loginVerified.BlockUser(userId, metaData, (err: RpcError, response: StatusResponse) => {
+		if (err) {
+			console.error('Error blocking user:', err);
+		} else {
+			console.debug('response', response);
+		}
+	});
+}
+
+function unBlockUser(userId: string) {
+	const metaData: Metadata | null = null;
+
+	clients.auth.loginVerified.UnBlockUser(userId, metaData, (err: RpcError, response: StatusResponse) => {
+		if (err) {
+			console.error('Error unblocking user:', err);
+		} else {
+			console.debug('response', response);
+		}
+	});
+}
+
+export { blockUser, unBlockUser, renderAddress, getFarmingType, getLandSizeString, getFarmingTypeColor };

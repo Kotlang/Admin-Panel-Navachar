@@ -6,20 +6,22 @@
 
 import { Metadata, RpcError } from 'grpc-web';
 import { addJwtToken } from 'src/clients/utils';
-import { StatusResponse, UserProfileProto } from 'src/generated/common_pb';
+import {
+	StatusResponse,
+	UserProfileProto,
+	IdRequest,
+	ProfileListResponse,
+} from 'src/generated/common_pb';
 import {
 	BulkGetProfileRequest,
 	CreateProfileRequest,
 	FetchProfilesRequest,
-	IdRequest,
-	ProfileListResponse,
 	Userfilters,
 	ProfileImageUploadRequest,
-	ProfileImageUploadURL,
-	GetProfileDeletionRequest
+	ProfileImageUploadURL
 } from 'src/generated/profile_pb';
 import { ProfileClient } from 'src/generated/ProfileServiceClientPb';
-import { IFetchDeletionRequests, IFetchProfiles, IUserProfile } from 'src/types/index';
+import { IFetchProfiles, IUserProfile } from 'src/types/index';
 
 const getProfileClient = (() => {
 	const authURL = process.env.REACT_APP_AUTH_URL;
@@ -80,13 +82,6 @@ const getIdRequest = (userId: string) => {
 	return idRequest;
 };
 
-const getProfileDeletionRequests = (fetchDeletionRequests: IFetchDeletionRequests) => {
-	const req = new GetProfileDeletionRequest();
-	req.setPagenumber(fetchDeletionRequests.pageNumber);
-	req.setPagesize(fetchDeletionRequests.pageSize);
-	return req;
-}
-
 const getProfileImageUploadUrl = (mediaExtension: string) => {
 	const mediaUploadRequest = new ProfileImageUploadRequest();
 	mediaUploadRequest.setMediaextension(mediaExtension);
@@ -108,15 +103,6 @@ const profileClient = {
 	},
 	GetProfileImageUploadURL: (mediaExtension: string, metaData: Metadata | null, callback: (err: RpcError, response: ProfileImageUploadURL) => void) => {
 		getProfileClient().getProfileImageUploadUrl(getProfileImageUploadUrl(mediaExtension), addJwtToken(metaData), callback);
-	},
-	GetPendingProfileDeletionRequests: (fetchDeletionRequests: IFetchDeletionRequests, metaData: Metadata | null, callback: (err: RpcError, response: ProfileListResponse) => void) => {
-		getProfileClient().getPendingProfileDeletionRequests(getProfileDeletionRequests(fetchDeletionRequests), addJwtToken(metaData), callback);
-	},
-	DeleteProfile: (userId: string, metaData: Metadata | null, callback: (err: RpcError, response: StatusResponse) => void) => {
-		getProfileClient().deleteProfile(getIdRequest(userId), addJwtToken(metaData), callback);
-	},
-	CancelProfileDeletionRequest: (userId: string, metaData: Metadata | null, callback: (err: RpcError, response: StatusResponse) => void) => {
-		getProfileClient().cancelProfileDeletionRequest(getIdRequest(userId), addJwtToken(metaData), callback);
 	}
 };
 

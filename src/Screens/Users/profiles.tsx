@@ -2,15 +2,15 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import type { GetProp, TablePaginationConfig, TableProps } from 'antd';
-import { Button, Space, Table } from 'antd';
+import { Button, Popconfirm, Space, Table } from 'antd';
 import { Metadata, RpcError } from 'grpc-web';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import clients from 'src/clients';
-import { ProfileListResponse } from 'src/generated/profile_pb';
+import { ProfileListResponse } from 'src/generated/common_pb';
 import { IFetchProfiles } from 'src/types';
 
-import { GetFarmingType, GetFarmingTypeColor } from './utils';
+import { blockUser, getFarmingType, getFarmingTypeColor, unBlockUser } from './utils';
 
 interface DataType {
 	userName: string;
@@ -19,6 +19,7 @@ interface DataType {
 	farmingPractice: string;
 	lastActive: number;
 	userId: string;
+	isBlocked: boolean;
 }
 
 interface TableParams {
@@ -38,6 +39,25 @@ const UsersList: React.FC = () => {
 		}
 	});
 	const navigate = useNavigate();
+
+	function blockOrUnblockUser(userId: string | undefined, isBlocked: boolean | undefined) {
+		if (userId === undefined || isBlocked === undefined) {
+			return;
+		}
+		if (isBlocked) {
+			unBlockUser(userId);
+		} else {
+			blockUser(userId);
+		}
+		// modify the isBlocked field in the data array
+		const newData = data?.map((item) => {
+			if (item.userId === userId) {
+				item.isBlocked = !isBlocked;
+			}
+			return item;
+		});
+		setData(newData);
+	}
 
 	const columns: TableProps<DataType>['columns'] = [
 		{
@@ -59,7 +79,7 @@ const UsersList: React.FC = () => {
 			dataIndex: 'farmingPractice',
 			key: 'farmingPractice',
 			render: (farmingPractice: string) => {
-				return <span className={GetFarmingTypeColor(farmingPractice)}>{farmingPractice}</span>;
+				return <span className={getFarmingTypeColor(farmingPractice)}>{farmingPractice}</span>;
 			},
 			title: 'FARMING PRACTICE'
 		},
@@ -68,7 +88,15 @@ const UsersList: React.FC = () => {
 			key: 'userId',
 			render: (userId: string, record: DataType) => (
 				<Space size="middle">
-					<Button type='primary' danger>Block</Button>
+					<Popconfirm
+						title={record.isBlocked ? 'Unblock user' : 'Block user'}
+						description={record.isBlocked ? 'Are you sure you want to unblock user?' : 'Are you sure you want to block user?'}
+						onConfirm={() => blockOrUnblockUser(userId, record.isBlocked)}
+						okText="Yes"
+						cancelText="No"
+					>
+						<Button type='primary' danger>{record.isBlocked ? 'Unblock' : 'Block'}</Button>
+					</Popconfirm>
 					<Button type="primary" onClick={() => navigate(`userdetails/${userId}/${record.phoneNo}`)} >View</Button>
 				</Space>
 			),
@@ -76,7 +104,7 @@ const UsersList: React.FC = () => {
 		}
 	];
 
-	const fetchProfiles =(pageNumber: number, pageSize: number) => {
+	const fetchProfiles = (pageNumber: number, pageSize: number) => {
 		try {
 			const fetchprofiles: IFetchProfiles = {
 				filters: {},
@@ -92,7 +120,8 @@ const UsersList: React.FC = () => {
 					setData(
 						response.getProfilesList().map((profile) => {
 							return {
-								farmingPractice: GetFarmingType(profile.getFarmingtype()),
+								farmingPractice: getFarmingType(profile.getFarmingtype()),
+								isBlocked: profile.getIsblocked(),
 								lastActive: 5,
 								location: profile.getAddressesMap().get('default')?.getCity() || '',
 								phoneNo: profile.getPhonenumber(),
@@ -121,7 +150,6 @@ const UsersList: React.FC = () => {
 		const { current, pageSize } = tableParams.pagination || {};
 		if (current) {
 			fetchProfiles(current - 1, pageSize || 10);
-
 		}
 	}, [JSON.stringify(tableParams)]);
 
