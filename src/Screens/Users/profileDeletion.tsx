@@ -6,8 +6,10 @@ import { Button, Popconfirm, Space, Table } from 'antd';
 import { Metadata, RpcError } from 'grpc-web';
 import React, { useEffect, useState } from 'react';
 import clients from 'src/clients';
-import { FarmingType, ProfileListResponse, StatusResponse } from 'src/generated/common_pb';
+import {  ProfileListResponse, StatusResponse } from 'src/generated/common_pb';
 import { IFetchDeletionRequests } from 'src/types';
+
+import { formatUnixTimestamp,getFarmingType } from './utils';
 
 const retentionDurationSeconds = 60 * 60 * 24 * 90; // 90 days
 
@@ -28,41 +30,13 @@ interface TableParams {
 	totalPages?: number;
 }
 
-function getFarmingType(farmingType: FarmingType){
-	switch (farmingType) {
-	case FarmingType.CHEMICAL:
-		return 'Chemical';
-	case FarmingType.ORGANIC:
-		return 'Organic';
-	case FarmingType.MIX:
-		return 'MIX';
-	default:
-		return 'Unknown';
-	}
-}
-
-function formatUnixTimestamp(unixTimestamp: number) {
-
-	if (!unixTimestamp) {
-		return '';
-	}
-	const timestampInMilliseconds = unixTimestamp * 1000;
-	const date = new Date(timestampInMilliseconds);
-
-	const year = date.getFullYear();
-	const month = String(date.getMonth() + 1).padStart(2, '0');
-	const day = String(date.getDate()).padStart(2, '0');
-
-	return `${day}/${month}/${year}`;
-}
-
 const DeletionUsersList: React.FC = () => {
 	const [data, setData] = useState<DataType[]>();
 	const [loading, setLoading] = useState<boolean>(true);
 	const [tableParams, setTableParams] = useState<TableParams>({
 		pagination: {
 			current: 1,
-			pageSize: 2
+			pageSize: 10
 		},
 		totalPages: 0
 	});
@@ -160,6 +134,7 @@ const DeletionUsersList: React.FC = () => {
 							};
 						})
 					);
+
 					setTableParams({
 						...tableParams,
 						pagination: {
@@ -186,7 +161,7 @@ const DeletionUsersList: React.FC = () => {
 			} else {
 				const { current, pageSize } = tableParams.pagination || {};
 				if (current) {
-					fetchProfiles(current - 1, pageSize || 2);
+					fetchProfiles(current - 1, pageSize || 10);
 				}
 				console.debug('response', response);}
 		}
@@ -202,7 +177,7 @@ const DeletionUsersList: React.FC = () => {
 			} else {
 				const { current, pageSize } = tableParams.pagination || {};
 				if (current) {
-					fetchProfiles(current - 1, pageSize || 2);
+					fetchProfiles(current - 1, pageSize || 10);
 				}
 				console.debug('response', response);
 			}
@@ -213,7 +188,7 @@ const DeletionUsersList: React.FC = () => {
 	useEffect(() => {
 		const { current, pageSize } = tableParams.pagination || {};
 		if (current) {
-			fetchProfiles(current - 1, pageSize || 2);
+			fetchProfiles(current - 1, pageSize || 10);
 		}
 	}, [JSON.stringify(tableParams)]);
 

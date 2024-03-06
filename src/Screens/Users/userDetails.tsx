@@ -13,7 +13,6 @@ import { getFarmingType, getFarmingTypeColor, renderAddress, blockUser, unBlockU
 import navArrowIcon from "src/assets/icons/navArrowIcon.svg";
 import {
     FarmingType,
-    StatusResponse,
     UserProfileProto,
 } from "src/generated/common_pb";
 import CropList from "./crops";
@@ -113,12 +112,12 @@ const UserDetails = () => {
             setLoading(false);
             console.log("no id found");
         }
-    }, [userId]);
+    }, [userId, Profile]);
 
     if (loading) {
         return <div>Loading...</div>;
     }
-
+    
     return (
         <>
             <div className="flex gap-5 cursor-pointer mt-5">
@@ -148,7 +147,9 @@ const UserDetails = () => {
                                 <div className="flex flex-col justify-center ">
                                     <h1 className="flex text-gray-400 text-xl ">Last Active</h1>
                                     <h1 className="flex text-gray-400 text-xl justify-end">
-                                        1 HR AGO
+                                    {Profile?.getLastactive()
+                                        ? new Date(Profile?.getLastactive() * 1000).toLocaleString()
+                                        : "N/A"}
                                     </h1>
                                 </div>
                             </div>
@@ -173,7 +174,7 @@ const UserDetails = () => {
                                 <p className="pl-4 text-lg text-gray-400">JOINED :</p>
                                 <p className="pl-5 text-lg">
                                     {Profile?.getCreatedon()
-                                        ? new Date(Profile.getCreatedon() * 1000).toLocaleString()
+                                        ? new Date(Profile?.getCreatedon() * 1000).toLocaleString()
                                         : "N/A"}
                                 </p>
                             </div>
@@ -261,7 +262,7 @@ const UserDetails = () => {
                                 <p className="pl-4 text-lg text-gray-400">LOCATION :</p>
                                 <div className="pl-5 text-lg">
                                     {Profile?.getAddressesMap() &&
-                                        renderAddress(Profile.getAddressesMap())}
+                                        renderAddress(Profile?.getAddressesMap())}
                                 </div>
                             </div>
                             <div className="mt-5 flex flex-row">
@@ -318,17 +319,18 @@ const UserDetails = () => {
                                     <CropList crops={Profile?.getCropsList() || []} />
                                 </div>
                             </div>
-                            <Popconfirm
-						title={Profile?.getIsblocked ? 'Unblock user' : 'Block user'}
-						description={Profile?.getIsblocked ? 'Are you sure you want to unblock user?' : 'Are you sure you want to block user?'}
+                            
+                    </div>
+                    <Popconfirm
+						title={Profile?.getIsblocked() ? 'Unblock user' : 'Block user'}
+						description={Profile?.getIsblocked() ? 'Are you sure you want to unblock user?' : 'Are you sure you want to block user?'}
 						onConfirm={() => blockOrUnblockUser(userId, Profile?.getIsblocked())}
 
 						okText="Yes"
 						cancelText="No"
 					>
-						<Button type='primary' danger>{Profile?.getIsblocked ? 'Unblock' : 'Block'}</Button>
+						<Button type='primary' danger>{ Profile?.getIsblocked() ? 'Unblock' : 'Block'}</Button>
 					</Popconfirm>
-                    </div>
                 </div>
             </div>
 
