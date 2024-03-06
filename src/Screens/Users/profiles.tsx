@@ -2,12 +2,12 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import type { GetProp, TablePaginationConfig, TableProps } from 'antd';
-import { Button, Space, Table } from 'antd';
+import { Button, Popconfirm, Space, Table } from 'antd';
 import { Metadata, RpcError } from 'grpc-web';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import clients from 'src/clients';
-import { ProfileListResponse } from 'src/generated/profile_pb';
+import { ProfileListResponse, StatusResponse } from 'src/generated/common_pb';
 import { IFetchProfiles } from 'src/types';
 
 import { GetFarmingType, GetFarmingTypeColor } from './utils';
@@ -19,6 +19,7 @@ interface DataType {
 	farmingPractice: string;
 	lastActive: number;
 	userId: string;
+	isBlocked: boolean;
 }
 
 interface TableParams {
@@ -26,6 +27,30 @@ interface TableParams {
 	sortField?: string;
 	sortOrder?: string;
 	filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
+}
+
+function blockUser(userId: string) {
+	const metaData: Metadata | null = null;
+
+	clients.auth.loginVerified.BlockUser(userId, metaData, (err: RpcError, response: StatusResponse) => {
+		if (err) {
+			console.error('Error blocking user:', err);
+		} else {
+			console.log('response', response);
+		}
+	});
+}
+
+function unBlockUser(userId: string) {
+	const metaData: Metadata | null = null;
+
+	clients.auth.loginVerified.UnBlockUser(userId, metaData, (err: RpcError, response: StatusResponse) => {
+		if (err) {
+			console.error('Error unblocking user:', err);
+		} else {
+			console.log('response', response);
+		}
+	});
 }
 
 const UsersList: React.FC = () => {
@@ -68,7 +93,15 @@ const UsersList: React.FC = () => {
 			key: 'userId',
 			render: (userId: string, record: DataType) => (
 				<Space size="middle">
-					<Button type='primary' danger>Block</Button>
+					<Popconfirm
+						title={record.isBlocked ? 'Unblock user' : 'Block user'}
+						description={record.isBlocked ? 'Are you sure you want to unblock user?' : 'Are you sure you want to block user?'}
+						onConfirm={() => record.isBlocked ? unBlockUser(userId) : blockUser(userId)}
+						okText="Yes"
+						cancelText="No"
+					>
+						<Button type='primary' danger>{record.isBlocked ? 'Unblock' : 'Block'}</Button>
+					</Popconfirm>
 					<Button type="primary" onClick={() => navigate(`userdetails/${userId}/${record.phoneNo}`)} >View</Button>
 				</Space>
 			),
@@ -76,7 +109,7 @@ const UsersList: React.FC = () => {
 		}
 	];
 
-	const fetchProfiles =(pageNumber: number, pageSize: number) => {
+	const fetchProfiles = (pageNumber: number, pageSize: number) => {
 		try {
 			const fetchprofiles: IFetchProfiles = {
 				filters: {},
@@ -93,6 +126,7 @@ const UsersList: React.FC = () => {
 						response.getProfilesList().map((profile) => {
 							return {
 								farmingPractice: GetFarmingType(profile.getFarmingtype()),
+								isBlocked: profile.getIsblocked(),
 								lastActive: 5,
 								location: profile.getAddressesMap().get('default')?.getCity() || '',
 								phoneNo: profile.getPhonenumber(),

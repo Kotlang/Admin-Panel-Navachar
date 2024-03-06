@@ -6,8 +6,7 @@ import { Button, Popconfirm, Space, Table } from 'antd';
 import { Metadata, RpcError } from 'grpc-web';
 import React, { useEffect, useState } from 'react';
 import clients from 'src/clients';
-import { FarmingType, StatusResponse } from 'src/generated/common_pb';
-import { ProfileListResponse } from 'src/generated/profile_pb';
+import { FarmingType, ProfileListResponse, StatusResponse } from 'src/generated/common_pb';
 import { IFetchDeletionRequests } from 'src/types';
 
 const retentionDurationSeconds = 60 * 60 * 24 * 90; // 90 days
@@ -32,7 +31,7 @@ interface TableParams {
 function declineProfileDeletion(userId: string) {
 	const metaData: Metadata | null = null;
 
-	clients.auth.profile.CancelProfileDeletionRequest(userId, metaData, (err: RpcError, response: StatusResponse) => {
+	clients.auth.loginVerified.CancelProfileDeletionRequest(userId, metaData, (err: RpcError, response: StatusResponse) => {
 		if (err) {
 			console.error('Error fetching profiles:', err);
 		} else {
@@ -45,7 +44,7 @@ function declineProfileDeletion(userId: string) {
 function acceptProfileDeletion(userId: string) {
 	const metaData: Metadata | null = null;
 
-	clients.auth.profile.DeleteProfile(userId, metaData, (err: RpcError, response: StatusResponse) => {
+	clients.auth.loginVerified.DeleteProfile(userId, metaData, (err: RpcError, response: StatusResponse) => {
 		if (err) {
 			console.error('Error Deleting profiles:', err);
 		} else {
@@ -170,7 +169,7 @@ const DeletionUsersList: React.FC = () => {
 			};
 			const metaData: Metadata | null = null;
 
-			clients.auth.profile.GetPendingProfileDeletionRequests(fetchDeletionRequests, metaData, (err: RpcError, response: ProfileListResponse) => {
+			clients.auth.loginVerified.GetPendingProfileDeletionRequests(fetchDeletionRequests, metaData, (err: RpcError, response: ProfileListResponse) => {
 				if (err) {
 					console.error('Error fetching profiles:', err);
 				} else {

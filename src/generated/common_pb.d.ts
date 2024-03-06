@@ -171,6 +171,12 @@ export class UserProfileProto extends jspb.Message {
   getPhonenumber(): string;
   setPhonenumber(value: string): UserProfileProto;
 
+  getLastactive(): number;
+  setLastactive(value: number): UserProfileProto;
+
+  getIsblocked(): boolean;
+  setIsblocked(value: boolean): UserProfileProto;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UserProfileProto.AsObject;
   static toObject(includeInstance: boolean, msg: UserProfileProto): UserProfileProto.AsObject;
@@ -199,6 +205,32 @@ export namespace UserProfileProto {
     location?: Location.AsObject,
     deletioninfo?: DeletionInfo.AsObject,
     phonenumber: string,
+    lastactive: number,
+    isblocked: boolean,
+  }
+}
+
+export class ProfileListResponse extends jspb.Message {
+  getProfilesList(): Array<UserProfileProto>;
+  setProfilesList(value: Array<UserProfileProto>): ProfileListResponse;
+  clearProfilesList(): ProfileListResponse;
+  addProfiles(value?: UserProfileProto, index?: number): UserProfileProto;
+
+  getTotalusers(): number;
+  setTotalusers(value: number): ProfileListResponse;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ProfileListResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: ProfileListResponse): ProfileListResponse.AsObject;
+  static serializeBinaryToWriter(message: ProfileListResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ProfileListResponse;
+  static deserializeBinaryFromReader(message: ProfileListResponse, reader: jspb.BinaryReader): ProfileListResponse;
+}
+
+export namespace ProfileListResponse {
+  export type AsObject = {
+    profilesList: Array<UserProfileProto.AsObject>,
+    totalusers: number,
   }
 }
 
@@ -217,6 +249,24 @@ export class StatusResponse extends jspb.Message {
 export namespace StatusResponse {
   export type AsObject = {
     status: string,
+  }
+}
+
+export class IdRequest extends jspb.Message {
+  getUserid(): string;
+  setUserid(value: string): IdRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): IdRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: IdRequest): IdRequest.AsObject;
+  static serializeBinaryToWriter(message: IdRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): IdRequest;
+  static deserializeBinaryFromReader(message: IdRequest, reader: jspb.BinaryReader): IdRequest;
+}
+
+export namespace IdRequest {
+  export type AsObject = {
+    userid: string,
   }
 }
 

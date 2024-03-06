@@ -13,6 +13,9 @@ export class LoginRequest extends jspb.Message {
   getRestoreaccountrequest(): boolean;
   setRestoreaccountrequest(value: boolean): LoginRequest;
 
+  getBlockunknown(): boolean;
+  setBlockunknown(value: boolean): LoginRequest;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): LoginRequest.AsObject;
   static toObject(includeInstance: boolean, msg: LoginRequest): LoginRequest.AsObject;
@@ -26,6 +29,7 @@ export namespace LoginRequest {
     emailorphone: string,
     domain: string,
     restoreaccountrequest: boolean,
+    blockunknown: boolean,
   }
 }
 
