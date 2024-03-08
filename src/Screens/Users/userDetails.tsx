@@ -112,7 +112,7 @@ const UserDetails = () => {
             setLoading(false);
             console.log("no id found");
         }
-    }, [userId, Profile]);
+    }, [userId]);
 
     if (loading) {
         return <div>Loading...</div>;
