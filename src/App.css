@@ -56,15 +56,17 @@
 .white-placeholder ::placeholder {
     color: #868a8b !important;
 }
+
 .white-placeholder {
     color: white;
 }
+
 .ant-picker-input > input {
   color: white !important;
 }
 
 .profile-image-container {
-    width: 270px;
+    width: 220px;
     height: 180px;
     border-radius: 50%;
     overflow: hidden;

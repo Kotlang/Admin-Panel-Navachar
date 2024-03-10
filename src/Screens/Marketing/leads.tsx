@@ -123,7 +123,7 @@ const Leads: React.FC<LeadsProps> = ({ search, filter }) => {
 			render: (userId: string) => {
 				return (
 					<div className="flex w-[50%]">
-						<a href={`/userid/${userId}`}>
+						<a href={`/marketing/leaddetails/${userId}`}>
 							<svg
 								className="h-6 w-6 text-gray-300"
 								viewBox="0 0 24 24"
