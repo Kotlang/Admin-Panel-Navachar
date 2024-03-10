@@ -1,9 +1,7 @@
-/* eslint-disable */
-
 // Copyright 2022-2023 @Kotlang/navachaar-admin-portal authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { NavaCharIcon } from 'src/ui-components/CustomIcons';
 import styled from 'styled-components';
@@ -23,6 +21,10 @@ const menuItems = [
 	{
 		key: '/users',
 		title: 'Users'
+	},
+	{
+		key: '/marketing',
+		title: 'Marketing'
 	},
 	{
 		key: '/profile-master',
@@ -47,11 +49,6 @@ interface Props {
 }
 
 const Menu: FC<Props> = ({ className }) => {
-	const [expandedSubMenu, setExpandedSubMenu] = useState<string | null>(null);
-
-	const handleSubMenuClick = (key: string) => {
-		setExpandedSubMenu((prevKey) => (prevKey === key ? null : key));
-	};
 	return (
 		<div className={className}>
 			<section>
@@ -66,15 +63,15 @@ const Menu: FC<Props> = ({ className }) => {
 				<ul className='flex flex-col py-2'>
 					{menuItems.map((item) => (
 						<li className='w-full pr-5 font-mainfont text-base' key={item.key}>
-								<Link
-									className='flex items-center gap-x-3 menu-item-active'
-									to={item.key}
-								>
-									<p className='w-[5px] h-9'></p>
-									<p className='px-3 py-2.5 font-mainfont text-lg text-white flex items-center gap-x-2 flex-1 rounded-md'>
-										{item.title}
-									</p>
-								</Link>
+							<Link
+								className='flex items-center gap-x-3 menu-item-active'
+								to={item.key}
+							>
+								<p className='w-[5px] h-9'></p>
+								<p className='px-3 py-2.5 font-mainfont text-lg text-white flex items-center gap-x-2 flex-1 rounded-md'>
+									{item.title}
+								</p>
+							</Link>
 						</li>
 					))}
 				</ul>
