@@ -13,7 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = (function() { return this || window || global || self || Function('return this')(); }).call(null);
+var global =
+    (typeof globalThis !== 'undefined' && globalThis) ||
+    (typeof window !== 'undefined' && window) ||
+    (typeof global !== 'undefined' && global) ||
+    (typeof self !== 'undefined' && self) ||
+    (function () { return this; }).call(null) ||
+    Function('return this')();
 
 var common_pb = require('./common_pb.js');
 goog.object.extend(proto, common_pb);
@@ -265,7 +271,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.login.CreateProfileRequest.repeatedFields_ = [8,9];
+proto.login.CreateProfileRequest.repeatedFields_ = [5,8,9];
 
 
 
@@ -302,7 +308,8 @@ proto.login.CreateProfileRequest.toObject = function(includeInstance, msg) {
     gender: jspb.Message.getFieldWithDefault(msg, 2, 0),
     photourl: jspb.Message.getFieldWithDefault(msg, 3, ""),
     bio: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    addressesMap: (f = msg.getAddressesMap()) ? f.toObject(includeInstance, proto.login.AddressProto.toObject) : [],
+    addressesList: jspb.Message.toObjectList(msg.getAddressesList(),
+    common_pb.AddressProto.toObject, includeInstance),
     preferredlanguage: jspb.Message.getFieldWithDefault(msg, 6, ""),
     farmingtype: jspb.Message.getFieldWithDefault(msg, 7, 0),
     cropsList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f,
@@ -364,10 +371,9 @@ proto.login.CreateProfileRequest.deserializeBinaryFromReader = function(msg, rea
       msg.setBio(value);
       break;
     case 5:
-      var value = msg.getAddressesMap();
-      reader.readMessage(value, function(message, reader) {
-        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readMessage, proto.login.AddressProto.deserializeBinaryFromReader, "", new proto.login.AddressProto());
-         });
+      var value = new common_pb.AddressProto;
+      reader.readMessage(value,common_pb.AddressProto.deserializeBinaryFromReader);
+      msg.addAddresses(value);
       break;
     case 6:
       var value = /** @type {string} */ (reader.readString());
@@ -460,9 +466,13 @@ proto.login.CreateProfileRequest.serializeBinaryToWriter = function(message, wri
       f
     );
   }
-  f = message.getAddressesMap(true);
-  if (f && f.getLength() > 0) {
-    f.serializeBinary(5, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeMessage, proto.login.AddressProto.serializeBinaryToWriter);
+  f = message.getAddressesList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      5,
+      f,
+      common_pb.AddressProto.serializeBinaryToWriter
+    );
   }
   f = message.getPreferredlanguage();
   if (f.length > 0) {
@@ -598,25 +608,41 @@ proto.login.CreateProfileRequest.prototype.setBio = function(value) {
 
 
 /**
- * map<string, AddressProto> addresses = 5;
- * @param {boolean=} opt_noLazyCreate Do not create the map if
- * empty, instead returning `undefined`
- * @return {!jspb.Map<string,!proto.login.AddressProto>}
+ * repeated AddressProto addresses = 5;
+ * @return {!Array<!proto.login.AddressProto>}
  */
-proto.login.CreateProfileRequest.prototype.getAddressesMap = function(opt_noLazyCreate) {
-  return /** @type {!jspb.Map<string,!proto.login.AddressProto>} */ (
-      jspb.Message.getMapField(this, 5, opt_noLazyCreate,
-      proto.login.AddressProto));
+proto.login.CreateProfileRequest.prototype.getAddressesList = function() {
+  return /** @type{!Array<!proto.login.AddressProto>} */ (
+    jspb.Message.getRepeatedWrapperField(this, common_pb.AddressProto, 5));
 };
 
 
 /**
- * Clears values from the map. The map will be non-null.
+ * @param {!Array<!proto.login.AddressProto>} value
+ * @return {!proto.login.CreateProfileRequest} returns this
+*/
+proto.login.CreateProfileRequest.prototype.setAddressesList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 5, value);
+};
+
+
+/**
+ * @param {!proto.login.AddressProto=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.login.AddressProto}
+ */
+proto.login.CreateProfileRequest.prototype.addAddresses = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 5, opt_value, proto.login.AddressProto, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
  * @return {!proto.login.CreateProfileRequest} returns this
  */
-proto.login.CreateProfileRequest.prototype.clearAddressesMap = function() {
-  this.getAddressesMap().clear();
-  return this;};
+proto.login.CreateProfileRequest.prototype.clearAddressesList = function() {
+  return this.setAddressesList([]);
+};
 
 
 /**

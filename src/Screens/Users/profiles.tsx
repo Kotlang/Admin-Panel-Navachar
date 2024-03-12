@@ -123,7 +123,7 @@ const UsersList: React.FC = () => {
 								farmingPractice: getFarmingType(profile.getFarmingtype()),
 								isBlocked: profile.getIsblocked(),
 								lastActive: 5,
-								location: profile.getAddressesMap().get('default')?.getCity() || '',
+								location: profile.getAddressesList()[0].getCity() || '',
 								phoneNo: profile.getPhonenumber(),
 								userId: profile.getUserid(),
 								userName: profile.getName()

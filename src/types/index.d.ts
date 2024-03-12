@@ -2,8 +2,9 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { FarmingType, Gender, LandSizeInAcres } from 'src/generated/common_pb';
+import { AddressProto, CertificationDetails,FarmingType, Gender, LandSizeInAcres } from 'src/generated/common_pb';
 import { EventType } from 'src/generated/events_pb';
+import { LeadChannel,OperatorType } from 'src/generated/lead_pb';
 
 export interface IUserProfile {
     attributesList?: string[];
@@ -212,4 +213,22 @@ export interface CommentItems {
     authorName: string;
     commentContent: string;
     commentTime: number;
+}
+
+export interface ICreateLeads {
+	name: string;
+	phoneNumber?: string;
+	operatorType?: OperatorType;
+	channel?: LeadChannel;
+	source?: string ;
+	addresses?: AddressProto[];
+	landSizeInAcres?: LandSizeInAcres;
+	farmingType?: FarmingType ;
+	certificationDetails?: CertificationDetails;
+	crops?: string[];
+	mainProfession?: string;
+	organizationName?: string;
+	sideProfession?: string
+	userInterviewNotes?: string;
+	education?: string;
 }

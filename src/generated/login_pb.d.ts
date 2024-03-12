@@ -1,6 +1,6 @@
 import * as jspb from 'google-protobuf'
 
-import * as common_pb from './common_pb';
+import * as common_pb from './common_pb'; // proto import: "common.proto"
 
 
 export class LoginRequest extends jspb.Message {

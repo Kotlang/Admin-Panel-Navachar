@@ -199,8 +199,8 @@ const UserDetails = () => {
                                 <LocationIcon />
                                 <p className="pl-4 text-lg text-gray-400">LOCATION :</p>
                                 <div className="pl-5 text-lg">
-                                    {Profile?.getAddressesMap() &&
-                                        renderAddress(Profile?.getAddressesMap())}
+                                    {Profile?.getAddressesList() &&
+                                        renderAddress(Profile?.getAddressesList())}
                                 </div>
                             </div>
                             <div className="mt-5 flex flex-row">

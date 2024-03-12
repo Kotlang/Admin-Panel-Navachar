@@ -3,6 +3,9 @@ import * as jspb from 'google-protobuf'
 
 
 export class AddressProto extends jspb.Message {
+  getType(): string;
+  setType(value: string): AddressProto;
+
   getCity(): string;
   setCity(value: string): AddressProto;
 
@@ -25,6 +28,7 @@ export class AddressProto extends jspb.Message {
 
 export namespace AddressProto {
   export type AsObject = {
+    type: string,
     city: string,
     state: string,
     country: string,
@@ -147,8 +151,10 @@ export class UserProfileProto extends jspb.Message {
   getCreatedon(): number;
   setCreatedon(value: number): UserProfileProto;
 
-  getAddressesMap(): jspb.Map<string, AddressProto>;
-  clearAddressesMap(): UserProfileProto;
+  getAddressesList(): Array<AddressProto>;
+  setAddressesList(value: Array<AddressProto>): UserProfileProto;
+  clearAddressesList(): UserProfileProto;
+  addAddresses(value?: AddressProto, index?: number): AddressProto;
 
   getAttributesList(): Array<string>;
   setAttributesList(value: Array<string>): UserProfileProto;
@@ -199,7 +205,7 @@ export namespace UserProfileProto {
     yearssinceorganicfarming: number,
     preferredlanguage: string,
     createdon: number,
-    addressesMap: Array<[string, AddressProto.AsObject]>,
+    addressesList: Array<AddressProto.AsObject>,
     attributesList: Array<string>,
     landsizeinacres: LandSizeInAcres,
     location?: Location.AsObject,

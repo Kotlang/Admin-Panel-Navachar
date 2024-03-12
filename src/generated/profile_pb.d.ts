@@ -1,6 +1,6 @@
 import * as jspb from 'google-protobuf'
 
-import * as common_pb from './common_pb';
+import * as common_pb from './common_pb'; // proto import: "common.proto"
 
 
 export class CreateProfileRequest extends jspb.Message {
@@ -16,8 +16,10 @@ export class CreateProfileRequest extends jspb.Message {
   getBio(): string;
   setBio(value: string): CreateProfileRequest;
 
-  getAddressesMap(): jspb.Map<string, common_pb.AddressProto>;
-  clearAddressesMap(): CreateProfileRequest;
+  getAddressesList(): Array<common_pb.AddressProto>;
+  setAddressesList(value: Array<common_pb.AddressProto>): CreateProfileRequest;
+  clearAddressesList(): CreateProfileRequest;
+  addAddresses(value?: common_pb.AddressProto, index?: number): common_pb.AddressProto;
 
   getPreferredlanguage(): string;
   setPreferredlanguage(value: string): CreateProfileRequest;
@@ -65,7 +67,7 @@ export namespace CreateProfileRequest {
     gender: common_pb.Gender,
     photourl: string,
     bio: string,
-    addressesMap: Array<[string, common_pb.AddressProto.AsObject]>,
+    addressesList: Array<common_pb.AddressProto.AsObject>,
     preferredlanguage: string,
     farmingtype: common_pb.FarmingType,
     cropsList: Array<string>,

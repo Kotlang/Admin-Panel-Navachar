@@ -1,33 +1,18 @@
 /* eslint-disable */
 import { useState } from 'react';
 import * as XLSX from 'xlsx';
-interface Lead {
-    phoneNumber: string;
-    leadName: string;
-    operatorType: string;
-    leadChannel: string;
-    leadSource: string;
-    leadLocation: string;
-    landArea: string;
-    farmingType: string;
-    certificationStatus: string;
-    cropsGrown: string;
-    mainProfession: string;
-    organizationName: string;
-    sideProfession: string;
-    userInterviewNotes: string;
-    education: string;
-    status: string;
-}
+import { ICreateLeads } from 'src/types';
+import clients from 'src/clients';
 
 async function HandleImportedData(file: any) {
+
     if (file) {
         try{
             const ab = await file.arrayBuffer();
             const wb = XLSX.read(ab);
             const wsname = wb.SheetNames[0];
             const ws = wb.Sheets[wsname];
-            const rows: Lead[] = XLSX.utils.sheet_to_json<Lead>(ws, { header: 1 });
+            const rows: ICreateLeads[] = XLSX.utils.sheet_to_json<ICreateLeads>(ws, { header: 1 });
             rows.slice(1).forEach((colName: any) => {
                 console.log("Number:", colName[0])
                 console.log("Name:", colName[1])
