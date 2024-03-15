@@ -5,8 +5,13 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React, { useEffect } from "react";
 import { useState } from "react";
+import { RpcError, Metadata } from "grpc-web";
 import type { GetProp, TablePaginationConfig, TableProps } from "antd";
 import { Table } from "antd";
+import { IFetchLeads } from "src/types";
+import clients from "src/clients";
+import { LeadListResponse } from "src/generated/lead_pb";
+import { operatorTypeMapping } from "./utils";
 
 interface DataType {
 	userName: string;
@@ -36,39 +41,11 @@ const Leads: React.FC<LeadsProps> = ({ search, filter }) => {
 	const [tableParams, setTableParams] = useState<TableParams>({
 		pagination: {
 			current: 1,
-			pageSize: 10,
+			pageSize: 14,
 		},
 	});
 
-	const sampleData: DataType[] = [
-		{
-			userName: "John Doe",
-			phoneNo: "1234567890",
-			appStatus: "I",
-			type: "Farmer",
-			lastMessage: "12/03/2024",
-			consent: "Accepted",
-			userId: "1",
-		},
-		{
-			userName: "jane Cena",
-			phoneNo: "1234567890",
-			appStatus: "N",
-			type: "Farmer",
-			lastMessage: "14/03/2024",
-			consent: "Decline",
-			userId: "2",
-		},
-		{
-			userName: "John Wick",
-			phoneNo: "1234567890",
-			appStatus: "N",
-			type: "Farmer",
-			lastMessage: "16/03/2024",
-			consent: "NA",
-			userId: "3",
-		}
-	];
+
 
 	const columns: TableProps<DataType>["columns"] = [
 		{
@@ -86,10 +63,8 @@ const Leads: React.FC<LeadsProps> = ({ search, filter }) => {
 			key: "appStatus",
 			render: (appStatus: string) => {
 				return (
-					<span
-						className={`${appStatus === "I" ? "text-green-500" : ""}`}
-					>
-						{appStatus==="I" ? "Installed": "Not Installed"}
+					<span className={`${appStatus === "I" ? "text-green-500" : ""}`}>
+						{appStatus === "I" ? "Installed" : "Not Installed"}
 					</span>
 				);
 			},
@@ -157,14 +132,58 @@ const Leads: React.FC<LeadsProps> = ({ search, filter }) => {
 		}
 	};
 
+	const fetchProfiles = (pageNumber: number, pageSize: number) => {
+		try {
+			const fetchprofiles: IFetchLeads = {
+				PageNumber: pageNumber,
+				pageSize: pageSize,
+			};
+			const metaData: Metadata | null = null;
+
+			clients.auth.marketing.FeatchLeads(
+				fetchprofiles,
+				metaData,
+				(err: RpcError, response: LeadListResponse) => {
+					if (err) {
+						console.error("Error fetching leads:", err);
+					} else {
+						setData(
+							response.getLeadsList().map((lead) => {
+								return {
+									userName: lead.getName(),
+									phoneNo: lead.getPhonenumber(),
+									appStatus: "Not Installed",
+									type: operatorTypeMapping(lead.getOperatortype()),
+									lastMessage: "12/12/2024",
+									consent: "Accepted",
+									userId: lead.getLeadId(),
+								};
+							})
+						);
+
+						setTableParams({
+							...tableParams,
+							pagination: {
+								...tableParams.pagination,
+								total: response.getTotalleads(),
+							},
+						});
+					}
+				}
+			);
+			setLoading(false);
+		} catch (err) {
+			console.error("Error occurred:", err);
+			setLoading(false);
+		}
+	};
+
 	useEffect(() => {
-		setLoading(true);
-		const filteredData = sampleData.filter(item => 
-			item.userName.toLocaleLowerCase().includes(search.toLowerCase()) &&
-			item.appStatus.includes(filter!=='A' && filter!=="" ? filter: item.appStatus.toString()));
-		setData(filteredData);
-		setLoading(false);
-	}, [search, filter]);
+		const { current, pageSize } = tableParams.pagination || {};
+		if (current) {
+			fetchProfiles(current - 1, pageSize || 14);
+		}
+	}, [JSON.stringify(tableParams)]);
 
 	return (
 		<div className="border border-gray-500 p-5">

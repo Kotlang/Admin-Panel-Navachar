@@ -2,8 +2,7 @@
 // Copyright 2022-2023 @Kotlang/navachaar-admin-portal authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import React from "react";
-import { useState } from "react";
+import React,{ useState } from "react";
 import Leads from "./leads";
 import { Menu, MenuHandler, MenuList, MenuItem, Button } from '@material-tailwind/react';
 import HandleImportedData from "./writeData";
@@ -11,16 +10,17 @@ const MarketingIndex = () => {
 	const [activeComponent, setActiveComponent] = useState("LEADS");
 	const [search, setSearch] = useState("");
 	const [filter, setfilter] = useState("");
+	const [isImporting, setIsImporting] = useState(false);
 	const renderComponent = () => {
 		switch (activeComponent) {
 			case "LEADS":
 				return <Leads search={search} filter={filter} />;
 			case "TEMPLATES":
-				return <div>hellow i'm TEMPLATES </div>;
+				return <div>TEMPLATES </div>;
 			case "CAMPAIGNS":
-				return <div>hellow i'm CAMPAIGNS </div>;
+				return <div>CAMPAIGNS </div>;
 			default:
-				return <div>hellow i'm DEFAULT </div>;
+				return <div>DEFAULT </div>;
 		}
 	};
 
@@ -28,17 +28,25 @@ const MarketingIndex = () => {
 		setfilter(item);
 	};
 
+
 	const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { type, files } = e.target;
-        if (type === "file") {
-            if (files) {
-				HandleImportedData(files[0])
-            }
-        }
+		const { type, files } = e.target;
+		if (type === "file") {
+			if (files) {
+				setIsImporting(true);
+				await HandleImportedData(files[0])
+				setIsImporting(false);
+			}
+		}
 	}
 
 	return (
 		<>
+			{isImporting && (
+				<div className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-black bg-opacity-50 z-50">
+					<div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-purple-500"></div>
+				</div>
+			)}
 			<div className="mt-14">
 				<h2 className=" text-w_text font-barlow font-regular text-3xl leading-7 tracking-[10px] mt-3 mb-8 ">
 					MARKETING

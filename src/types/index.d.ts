@@ -4,7 +4,7 @@
 
 import { AddressProto, CertificationDetails,FarmingType, Gender, LandSizeInAcres } from 'src/generated/common_pb';
 import { EventType } from 'src/generated/events_pb';
-import { LeadChannel,OperatorType } from 'src/generated/lead_pb';
+import { LeadChannel, LeadFilters,OperatorType } from 'src/generated/lead_pb';
 
 export interface IUserProfile {
     attributesList?: string[];
@@ -231,4 +231,10 @@ export interface ICreateLeads {
 	sideProfession?: string
 	userInterviewNotes?: string;
 	education?: string;
+}
+
+export interface IFetchLeads {
+    leadfilters?: LeadFilters;
+    pageSize?: number;
+    PageNumber?: number;
 }
