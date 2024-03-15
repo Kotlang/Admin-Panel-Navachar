@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { loginClient, loginVerifiedClient,profileClient, profileMasterClient } from './auth';
+import { loginClient, loginVerifiedClient,marketingClient,profileClient, profileMasterClient } from './auth';
 import { adminClient } from './localization';
 import { ActionsClient, EventClient, socialStatsClient, userPostClient } from './social';
 
@@ -10,6 +10,7 @@ const clients = {
 	auth: {
 		login: loginClient,
 		loginVerified: loginVerifiedClient,
+		marketing: marketingClient,
 		profile: profileClient,
 		profileMaster: profileMasterClient
 	},

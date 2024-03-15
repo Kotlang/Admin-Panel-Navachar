@@ -50,9 +50,9 @@ function getLandSizeString (landsize: any) {
 	}
 }
 
-function renderAddress(addressesMap: Map<string, AddressProto>) {
+function renderAddress(addressesMap: AddressProto[]) {
 	const addressesArray: Array<{
-		key: string;
+		key: number;
 		city: string;
 		state: string;
 		country: string;

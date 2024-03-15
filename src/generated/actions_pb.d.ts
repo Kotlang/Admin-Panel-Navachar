@@ -1,6 +1,6 @@
 import * as jspb from 'google-protobuf'
 
-import * as commons_pb from './commons_pb';
+import * as commons_pb from './commons_pb'; // proto import: "commons.proto"
 
 
 export class ReactRequest extends jspb.Message {

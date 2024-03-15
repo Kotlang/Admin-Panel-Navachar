@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ILogin } from 'src/types';
-import create from 'zustand';
+import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
 const useLoginStore = create<ILogin>()(

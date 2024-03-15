@@ -13,7 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = (function() { return this || window || global || self || Function('return this')(); }).call(null);
+var global =
+    (typeof globalThis !== 'undefined' && globalThis) ||
+    (typeof window !== 'undefined' && window) ||
+    (typeof global !== 'undefined' && global) ||
+    (typeof self !== 'undefined' && self) ||
+    (function () { return this; }).call(null) ||
+    Function('return this')();
 
 goog.exportSymbol('proto.login.AddressProto', null, global);
 goog.exportSymbol('proto.login.CertificationDetails', null, global);
@@ -226,10 +232,11 @@ proto.login.AddressProto.prototype.toObject = function(opt_includeInstance) {
  */
 proto.login.AddressProto.toObject = function(includeInstance, msg) {
   var f, obj = {
-    city: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    state: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    country: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    address: jspb.Message.getFieldWithDefault(msg, 4, "")
+    type: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    city: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    state: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    country: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    address: jspb.Message.getFieldWithDefault(msg, 5, "")
   };
 
   if (includeInstance) {
@@ -268,17 +275,21 @@ proto.login.AddressProto.deserializeBinaryFromReader = function(msg, reader) {
     switch (field) {
     case 1:
       var value = /** @type {string} */ (reader.readString());
-      msg.setCity(value);
+      msg.setType(value);
       break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
-      msg.setState(value);
+      msg.setCity(value);
       break;
     case 3:
       var value = /** @type {string} */ (reader.readString());
-      msg.setCountry(value);
+      msg.setState(value);
       break;
     case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setCountry(value);
+      break;
+    case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.setAddress(value);
       break;
@@ -311,31 +322,38 @@ proto.login.AddressProto.prototype.serializeBinary = function() {
  */
 proto.login.AddressProto.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getCity();
+  f = message.getType();
   if (f.length > 0) {
     writer.writeString(
       1,
       f
     );
   }
-  f = message.getState();
+  f = message.getCity();
   if (f.length > 0) {
     writer.writeString(
       2,
       f
     );
   }
-  f = message.getCountry();
+  f = message.getState();
   if (f.length > 0) {
     writer.writeString(
       3,
       f
     );
   }
-  f = message.getAddress();
+  f = message.getCountry();
   if (f.length > 0) {
     writer.writeString(
       4,
+      f
+    );
+  }
+  f = message.getAddress();
+  if (f.length > 0) {
+    writer.writeString(
+      5,
       f
     );
   }
@@ -343,10 +361,10 @@ proto.login.AddressProto.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional string city = 1;
+ * optional string type = 1;
  * @return {string}
  */
-proto.login.AddressProto.prototype.getCity = function() {
+proto.login.AddressProto.prototype.getType = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -355,16 +373,16 @@ proto.login.AddressProto.prototype.getCity = function() {
  * @param {string} value
  * @return {!proto.login.AddressProto} returns this
  */
-proto.login.AddressProto.prototype.setCity = function(value) {
+proto.login.AddressProto.prototype.setType = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
 /**
- * optional string state = 2;
+ * optional string city = 2;
  * @return {string}
  */
-proto.login.AddressProto.prototype.getState = function() {
+proto.login.AddressProto.prototype.getCity = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -373,16 +391,16 @@ proto.login.AddressProto.prototype.getState = function() {
  * @param {string} value
  * @return {!proto.login.AddressProto} returns this
  */
-proto.login.AddressProto.prototype.setState = function(value) {
+proto.login.AddressProto.prototype.setCity = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
 /**
- * optional string country = 3;
+ * optional string state = 3;
  * @return {string}
  */
-proto.login.AddressProto.prototype.getCountry = function() {
+proto.login.AddressProto.prototype.getState = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
@@ -391,16 +409,16 @@ proto.login.AddressProto.prototype.getCountry = function() {
  * @param {string} value
  * @return {!proto.login.AddressProto} returns this
  */
-proto.login.AddressProto.prototype.setCountry = function(value) {
+proto.login.AddressProto.prototype.setState = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 
 /**
- * optional string address = 4;
+ * optional string country = 4;
  * @return {string}
  */
-proto.login.AddressProto.prototype.getAddress = function() {
+proto.login.AddressProto.prototype.getCountry = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
@@ -409,8 +427,26 @@ proto.login.AddressProto.prototype.getAddress = function() {
  * @param {string} value
  * @return {!proto.login.AddressProto} returns this
  */
-proto.login.AddressProto.prototype.setAddress = function(value) {
+proto.login.AddressProto.prototype.setCountry = function(value) {
   return jspb.Message.setProto3StringField(this, 4, value);
+};
+
+
+/**
+ * optional string address = 5;
+ * @return {string}
+ */
+proto.login.AddressProto.prototype.getAddress = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.login.AddressProto} returns this
+ */
+proto.login.AddressProto.prototype.setAddress = function(value) {
+  return jspb.Message.setProto3StringField(this, 5, value);
 };
 
 
@@ -960,7 +996,7 @@ proto.login.DeletionInfo.prototype.setReason = function(value) {
  * @private {!Array<number>}
  * @const
  */
-proto.login.UserProfileProto.repeatedFields_ = [8,15];
+proto.login.UserProfileProto.repeatedFields_ = [8,14,15];
 
 
 
@@ -1005,7 +1041,8 @@ proto.login.UserProfileProto.toObject = function(includeInstance, msg) {
     yearssinceorganicfarming: jspb.Message.getFieldWithDefault(msg, 10, 0),
     preferredlanguage: jspb.Message.getFieldWithDefault(msg, 12, ""),
     createdon: jspb.Message.getFieldWithDefault(msg, 13, 0),
-    addressesMap: (f = msg.getAddressesMap()) ? f.toObject(includeInstance, proto.login.AddressProto.toObject) : [],
+    addressesList: jspb.Message.toObjectList(msg.getAddressesList(),
+    proto.login.AddressProto.toObject, includeInstance),
     attributesList: (f = jspb.Message.getRepeatedField(msg, 15)) == null ? undefined : f,
     landsizeinacres: jspb.Message.getFieldWithDefault(msg, 16, 0),
     location: (f = msg.getLocation()) && proto.login.Location.toObject(includeInstance, f),
@@ -1099,10 +1136,9 @@ proto.login.UserProfileProto.deserializeBinaryFromReader = function(msg, reader)
       msg.setCreatedon(value);
       break;
     case 14:
-      var value = msg.getAddressesMap();
-      reader.readMessage(value, function(message, reader) {
-        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readMessage, proto.login.AddressProto.deserializeBinaryFromReader, "", new proto.login.AddressProto());
-         });
+      var value = new proto.login.AddressProto;
+      reader.readMessage(value,proto.login.AddressProto.deserializeBinaryFromReader);
+      msg.addAddresses(value);
       break;
     case 15:
       var value = /** @type {string} */ (reader.readString());
@@ -1248,9 +1284,13 @@ proto.login.UserProfileProto.serializeBinaryToWriter = function(message, writer)
       f
     );
   }
-  f = message.getAddressesMap(true);
-  if (f && f.getLength() > 0) {
-    f.serializeBinary(14, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeMessage, proto.login.AddressProto.serializeBinaryToWriter);
+  f = message.getAddressesList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      14,
+      f,
+      proto.login.AddressProto.serializeBinaryToWriter
+    );
   }
   f = message.getAttributesList();
   if (f.length > 0) {
@@ -1561,25 +1601,41 @@ proto.login.UserProfileProto.prototype.setCreatedon = function(value) {
 
 
 /**
- * map<string, AddressProto> addresses = 14;
- * @param {boolean=} opt_noLazyCreate Do not create the map if
- * empty, instead returning `undefined`
- * @return {!jspb.Map<string,!proto.login.AddressProto>}
+ * repeated AddressProto addresses = 14;
+ * @return {!Array<!proto.login.AddressProto>}
  */
-proto.login.UserProfileProto.prototype.getAddressesMap = function(opt_noLazyCreate) {
-  return /** @type {!jspb.Map<string,!proto.login.AddressProto>} */ (
-      jspb.Message.getMapField(this, 14, opt_noLazyCreate,
-      proto.login.AddressProto));
+proto.login.UserProfileProto.prototype.getAddressesList = function() {
+  return /** @type{!Array<!proto.login.AddressProto>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.login.AddressProto, 14));
 };
 
 
 /**
- * Clears values from the map. The map will be non-null.
+ * @param {!Array<!proto.login.AddressProto>} value
+ * @return {!proto.login.UserProfileProto} returns this
+*/
+proto.login.UserProfileProto.prototype.setAddressesList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 14, value);
+};
+
+
+/**
+ * @param {!proto.login.AddressProto=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.login.AddressProto}
+ */
+proto.login.UserProfileProto.prototype.addAddresses = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 14, opt_value, proto.login.AddressProto, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
  * @return {!proto.login.UserProfileProto} returns this
  */
-proto.login.UserProfileProto.prototype.clearAddressesMap = function() {
-  this.getAddressesMap().clear();
-  return this;};
+proto.login.UserProfileProto.prototype.clearAddressesList = function() {
+  return this.setAddressesList([]);
+};
 
 
 /**

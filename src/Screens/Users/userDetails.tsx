@@ -16,6 +16,15 @@ import {
     UserProfileProto,
 } from "src/generated/common_pb";
 import CropList from "./crops";
+import {
+    JoinIcon,
+    PhoneIcon,
+    ClockIcon,
+    SickleIcon,
+    LocationIcon,
+    CertificationIcon,
+    CropsIcon,
+} from "src/assets";
 
 const UserDetails = () => {
     const { userId, phone } = useParams<{ userId: string, phone: string }>();
@@ -117,7 +126,7 @@ const UserDetails = () => {
     if (loading) {
         return <div>Loading...</div>;
     }
-    
+
     return (
         <>
             <div className="flex gap-5 cursor-pointer mt-5">
@@ -147,9 +156,9 @@ const UserDetails = () => {
                                 <div className="flex flex-col justify-center ">
                                     <h1 className="flex text-gray-400 text-xl ">Last Active</h1>
                                     <h1 className="flex text-gray-400 text-xl justify-end">
-                                    {Profile?.getLastactive()
-                                        ? new Date(Profile?.getLastactive() * 1000).toLocaleString()
-                                        : "N/A"}
+                                        {Profile?.getLastactive()
+                                            ? new Date(Profile?.getLastactive() * 1000).toLocaleString()
+                                            : "N/A"}
                                     </h1>
                                 </div>
                             </div>
@@ -157,20 +166,7 @@ const UserDetails = () => {
 
                         <div className="mt-5 p-2 grid grid-cols-2">
                             <div className="mt-5 flex flex-row">
-                                <svg
-                                    className="m-1 h-6 w-6 text-gray-400"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                                    />
-                                </svg>
-
+                                <JoinIcon />
                                 <p className="pl-4 text-lg text-gray-400">JOINED :</p>
                                 <p className="pl-5 text-lg">
                                     {Profile?.getCreatedon()
@@ -179,35 +175,12 @@ const UserDetails = () => {
                                 </p>
                             </div>
                             <div className="mt-5 flex flex-row">
-                                <svg
-                                    className="m-1.5 h-5 w-5 text-gray-400"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                >
-                                    {" "}
-                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                                </svg>
+                                <PhoneIcon />
                                 <p className="pl-4 text-lg text-gray-400">PHONE NUMBER :</p>
                                 <p className="pl-5 text-lg">{phone}</p>
                             </div>
                             <div className="mt-5 flex flex-row">
-                                <svg
-                                    className="m-1 h-6 w-6 text-gray-400"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                >
-                                    {" "}
-                                    <circle cx="12" cy="12" r="10" />{" "}
-                                    <polyline points="12 6 12 12 16 14" />
-                                </svg>
+                                <ClockIcon />
                                 <p className="pl-4 text-lg text-gray-400">
                                     YEAR SINCE ORGANIC FARMING :
                                 </p>
@@ -216,79 +189,22 @@ const UserDetails = () => {
                                 </p>
                             </div>
                             <div className="mt-5 flex flex-row">
-                                <svg
-                                    className="h-6 w-6 text-gray-400"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    stroke-width="2"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                >
-                                    {" "}
-                                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                                    <polyline points="6 21 21 6 18 3 3 18 6 21" />{" "}
-                                    <line x1="15" y1="6" x2="18" y2="9" />{" "}
-                                    <path d="M9 3a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2" />{" "}
-                                    <path d="M19 13a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2" />
-                                </svg>
+                                <SickleIcon />
                                 <p className="pl-4 text-lg text-gray-400">FARMING PRACTICE :</p>
                                 <p className={`pl-5 text-lg  ${getFarmingTypeColor(getFarmingType(Profile?.getFarmingtype() || FarmingType.UNSPECIFIEDFARMING))}`}>
                                     {getFarmingType(Profile?.getFarmingtype() || FarmingType.UNSPECIFIEDFARMING)}
                                 </p>
                             </div>
                             <div className="mt-5 flex flex-row">
-                                <svg
-                                    className="m-1 h-6 w-6 text-gray-400"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                                    />
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                                    />
-                                </svg>
+                                <LocationIcon />
                                 <p className="pl-4 text-lg text-gray-400">LOCATION :</p>
                                 <div className="pl-5 text-lg">
-                                    {Profile?.getAddressesMap() &&
-                                        renderAddress(Profile?.getAddressesMap())}
+                                    {Profile?.getAddressesList() &&
+                                        renderAddress(Profile?.getAddressesList())}
                                 </div>
                             </div>
                             <div className="mt-5 flex flex-row">
-                                <svg
-                                    className="m-1 h-6 w-6 text-gray-400"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    stroke-width="2"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                >
-                                    {" "}
-                                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                                    <circle cx="12" cy="9" r="6" />{" "}
-                                    <polyline
-                                        points="9 14.2 9 21 12 19 15 21 15 14.2"
-                                        transform="rotate(-30 12 9)"
-                                    />{" "}
-                                    <polyline
-                                        points="9 14.2 9 21 12 19 15 21 15 14.2"
-                                        transform="rotate(30 12 9)"
-                                    />
-                                </svg>
+                                <CertificationIcon />
                                 <p className="pl-4 text-lg text-gray-400">CERTIFICATION :</p>
                                 <p className="pl-5 text-lg">
                                     {renderCertificationDetails(Profile?.getCertificationdetails())}
@@ -296,41 +212,24 @@ const UserDetails = () => {
                             </div>
                         </div>
                         <div className="mt-5 flex flex-row">
-                                <svg
-                                    className="m-1 h-6 w-6 text-gray-400"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    stroke-width="2"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                >
-                                    {" "}
-                                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                                    <rect x="4" y="3" width="8" height="14" rx="4" />{" "}
-                                    <rect x="12" y="7" width="8" height="10" rx="3" />{" "}
-                                    <line x1="8" y1="21" x2="8" y2="13" />{" "}
-                                    <line x1="16" y1="21" x2="16" y2="14" />
-                                </svg>
-                                <div className="flex flex-col w-full">
-                                    <p className="pl-4 text-lg text-gray-400">CROPS FARMED :</p>
-                                    <CropList crops={Profile?.getCropsList() || []} />
-                                </div>
+                            <CropsIcon />
+                            <div className="flex flex-col w-full">
+                                <p className="pl-4 text-lg text-gray-400">CROPS FARMED :</p>
+                                <CropList crops={Profile?.getCropsList() || []} />
                             </div>
-                            
+                        </div>
+
                     </div>
                     <Popconfirm
-						title={Profile?.getIsblocked() ? 'Unblock user' : 'Block user'}
-						description={Profile?.getIsblocked() ? 'Are you sure you want to unblock user?' : 'Are you sure you want to block user?'}
-						onConfirm={() => blockOrUnblockUser(userId, Profile?.getIsblocked())}
+                        title={Profile?.getIsblocked() ? 'Unblock user' : 'Block user'}
+                        description={Profile?.getIsblocked() ? 'Are you sure you want to unblock user?' : 'Are you sure you want to block user?'}
+                        onConfirm={() => blockOrUnblockUser(userId, Profile?.getIsblocked())}
 
-						okText="Yes"
-						cancelText="No"
-					>
-						<Button type='primary' danger>{ Profile?.getIsblocked() ? 'Unblock' : 'Block'}</Button>
-					</Popconfirm>
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <Button type='primary' danger>{Profile?.getIsblocked() ? 'Unblock' : 'Block'}</Button>
+                    </Popconfirm>
                 </div>
             </div>
 

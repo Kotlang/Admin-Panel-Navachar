@@ -1,6 +1,6 @@
 import * as jspb from 'google-protobuf'
 
-import * as common_pb from './common_pb';
+import * as common_pb from './common_pb'; // proto import: "common.proto"
 
 
 export class IsUserAdminResponse extends jspb.Message {
@@ -88,6 +88,6 @@ export namespace ChangeUserTypeRequest {
 }
 
 export enum UserType { 
-  DEFAULT = 0,
+  MEMBER = 0,
   ADMIN = 1,
 }

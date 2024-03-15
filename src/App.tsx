@@ -17,6 +17,7 @@ import { ThemeProvider } from 'styled-components';
 import AppLayout from './components/AppLayout';
 import CommunityMiddleware from './routes/community/communityMiddleware';
 import ContentMiddleware from './routes/content/contentMiddleware';
+import MarketingMiddleware from './routes/marketing/marketingmiddleware';
 import UserMiddleware from './routes/users/usersMiddleware';
 import Events from './Screens/Events';
 import Home from './Screens/Home';
@@ -48,6 +49,7 @@ function App() {
 							<Route path='/home' element={<NotFound />} />
 							<Route path='/content/*' element={<ContentMiddleware />} />
 							<Route path='/community/*' element={<CommunityMiddleware />} />
+							<Route path='/marketing/*' element={<MarketingMiddleware />} />
 						</Route>
 						<Route path='/login' element={<Login />}/>
 						<Route path='/verify' element={<Verify />}/>
