@@ -238,3 +238,16 @@ export interface IFetchLeads {
     pageSize?: number;
     PageNumber?: number;
 }
+
+export enum CampStatus {
+    SCHEDULED = 0,
+    COMPLETED = 1
+}
+
+export interface CampaignDetails {
+    status : CampStatus;
+    scheduledDate: string;
+    sendTo: number;
+    receivedBy: number;
+    readBy: number;
+}

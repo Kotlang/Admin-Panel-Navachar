@@ -4,12 +4,14 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import MarketingIndex from 'src/Screens/Marketing';
+import CreateTemplate from 'src/Screens/Marketing/createTemplate';
 import LeadDetails from 'src/Screens/Marketing/leadDetails';
 const MarketingMiddleware = () => {
 
 	return (
 		<Routes>
 			<Route path='/' element={<MarketingIndex />} />
+			<Route path='/createtemplate' element={<CreateTemplate />} />
 			<Route path='leaddetails/:leadId' element={<LeadDetails />} />
 		</Routes>
 	);
