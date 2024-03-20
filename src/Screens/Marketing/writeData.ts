@@ -107,17 +107,17 @@ async function HandleImportedData(file: any) {
                     phoneNumber: colName[0].toString(),
                     operatorType: operatorTypeMapping(colName[2]),
                     channel: leadChannelMapping(colName[3]),
-                    source: colName[4],
+                    source: colName[4].toString(),
                     addresses: [address],
                     landSizeInAcres: landsizeInAcresMapping(colName[6]),
                     farmingType: farmingTypeMapping(colName[7]),
                     certificationDetails: certification,
-                    crops: colName[9].split(','),
-                    mainProfession: colName[10],
-                    organizationName: colName[11],
-                    sideProfession: colName[12],
-                    userInterviewNotes: colName[13],
-                    education: colName[14]
+                    crops: colName[9] ? colName[9].split(',') : [],
+                    mainProfession: colName[10] || 'NA',
+                    organizationName: colName[11] || 'NA',
+                    sideProfession: colName[12] || 'NA',
+                    userInterviewNotes: colName[13] || 'NA',
+                    education: colName[14] || 'NA'
                 }
                 console.log(lead);
                 await createLead(lead);
