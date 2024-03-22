@@ -5,6 +5,7 @@
 import { AddressProto, CertificationDetails,FarmingType, Gender, LandSizeInAcres } from 'src/generated/common_pb';
 import { EventType } from 'src/generated/events_pb';
 import { LeadChannel, LeadFilters,OperatorType } from 'src/generated/lead_pb';
+import { ActionType, ButtonType, CallToActionButtons, Category, MediaType, QuickReplyButtons } from 'src/generated/messaging-service_pb';
 
 export interface IUserProfile {
     attributesList?: string[];
@@ -250,4 +251,77 @@ export interface CampaignDetails {
     sendTo: number;
     receivedBy: number;
     readBy: number;
+}
+
+// message MessagingTemplate {
+//     string templateId = 1;
+//     string templateName = 2;
+//     MediaParameters mediaParameters = 3;
+//     string header = 4;
+//     map<string, string> HeaderParameters = 5;
+//     string body = 6;
+//     map<string, string> BodyParameters = 7;
+//     string footer = 8;
+//     Category category = 9;
+//     string wabaId = 10; // WhatsApp Business Account ID
+//     ButtonType buttonType = 11;
+//     Button buttons = 12;
+//   }
+
+// message Button {
+//     repeated CallToActionButtons callToActionButtons = 1;
+//     repeated QuickReplyButtons quickReplyButtons = 2;
+// }
+// message CallToActionButtons {
+//     ActionType actionType = 1;
+//     string text = 2;
+//     string phoneNumber = 3;
+//     Url url = 4;
+// }
+// message QuickReplyButtons {
+//     string text = 1;
+// }
+
+// message MediaParameters {
+//     MediaType mediaType = 1;
+//     string link = 2;
+//     string filename = 3;
+//   }
+
+export interface Button {
+    callToActionButtons: CallToActionButtons[];
+    quickReplyButtons: QuickReplyButtons[];
+
+}
+
+// export interface CallToActionButtons {
+//     actionType: ActionType;
+//     text: string;
+//     phoneNumber: string;
+//     url: Url;
+// }
+
+// export interface QuickReplyButtons {
+//     text: string;
+// }
+
+export interface MediaParameters {
+    mediaType: MediaType;
+    link: string;
+    filename: string;
+}
+
+export interface IMessagingTemplate {
+    templateId: string;
+    templateName: string;
+    mediaParameters?: MediaParameters;
+    header?: string;
+    headerParameters?: Map<string, string>;
+    body?: string;
+    bodyParameters?: Map<string, string>;
+    footer?: string;
+    category?: Category;
+    wabaId: string;
+    buttonType?: ButtonType;
+    buttons?: Button;
 }

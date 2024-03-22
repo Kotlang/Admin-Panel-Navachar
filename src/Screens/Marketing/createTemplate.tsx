@@ -1,16 +1,167 @@
 /* eslint-disable */
-import { Radio } from "@material-tailwind/react";
 import React, { useState } from "react";
 import navArrowIcon from "src/assets/icons/navArrowIcon.svg";
+import clients from "src/clients";
+import { IMessagingTemplate } from "src/types";
+import { CallToActionButtons, QuickReplyButtons, Url } from "src/generated/messaging-service_pb";
+import { ProfileImageUploadURL } from "src/generated/profile_pb";
+import { useNavigate } from "react-router-dom";
 
 const CreateTemplate = () => {
     const [textAreas, setTextAreas] = useState([0]);
     const [textBodyAreas, setTextBodyAreas] = useState([0]);
-    const [textButton, setTextButton] = useState([0]);
-    const [selectedOption, setSelectedOption] = useState("none");
-    const [selecteSubOption, setSelectedSubOption] = useState("visitLink");
-    const [quickReplyButton, setQckReplyButton] = useState(true);
+    const [quickReplyCount, setquickReplyCount] = useState([0]);
+    const [responseOptions, setResponseOptions] = useState("none");
+    const [actionsOptions, setActionsOptions] = useState("visitLink");
+    const [mediaOptions, setMediaOptions] = useState("none");
+    const [quickReplyButton, setQckReplyButton] = useState(false);
 
+    const [templateName, setTemplateName] = useState("");
+    const [templateId, setTemplateId] = useState("");
+    const [businessAccountId, setBusinessAccountId] = useState("");
+    const [headers, setHeaders] = useState(Array(textAreas.length).fill(''));
+    const [bodyParams, setBodyParams] = useState(Array(textBodyAreas.length).fill(''));
+    const [quickReply, setQuickReply] = useState(Array(quickReplyCount.length).fill(''));
+    const [footer, setFooter] = useState("");
+    const [isMedia, setIsMedia] = useState(false);
+    const [mobileOrLink, setMobileOrLink] = useState("");
+    const [buttonText, setButtonText] = useState("");
+    const [mediaUrl, setMediaUrl] = useState("");
+    const [ fileName, setFileName] = useState("");
+
+    const navigate = useNavigate();
+
+    const getMediaType = (mediaType: string) => {
+        switch (mediaType) {
+            case "image":
+                return 0;
+            case "video":
+                return 1;
+            case "audio":
+                return 2;
+            default:
+                return 0;
+        }
+    }
+
+    async function getPresignedUrl(extension: string): Promise<ProfileImageUploadURL> {
+        return new Promise((resolve, reject) => {
+            clients.auth.profile.GetProfileImageUploadURL(extension, {}, (err, response) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(response);
+                }
+            });
+        });
+    }
+
+    const onUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { type, files } = e.target;
+        if (type === "file") {
+            if (files) {
+                const fileName = files[0].name.split('.').pop();
+                if(fileName){
+                    try {
+                        const preSignedUrl = await getPresignedUrl(fileName);
+                        const response = await fetch(preSignedUrl.getUploadurl(), {
+                            method: 'PUT',
+                            body: files[0],
+                            headers: {
+                                'Content-Type': files[0].type,
+                            },
+                        });
+                        if (!response.ok) {
+                            throw new Error('Failed to upload file');
+                        }
+                        setMediaUrl(preSignedUrl.getMediaurl());
+                        setFileName(files[0].name);
+                        console.log('File uploaded successfully.');
+                    } catch (error) {
+                        console.error('An error occurred while uploading the file:', error);
+                    }
+                }
+            }
+        }
+    }
+
+    const registerMessagingTemplate = async () => {
+        const media = {
+            mediaType: getMediaType(mediaOptions),
+            link: "asdfadskfjasdflasdfadsf",
+            filename: fileName
+        }
+        const headerMap = new Map();
+        if(headers){
+            headers.forEach((value, index) => {
+                headerMap.set(`header${index}`, value);
+            })
+        }
+
+        const bodyparamsMap = new Map();
+        if(bodyParams){
+            bodyParams.forEach((value, index) => {
+                bodyparamsMap.set(`body${index}`, value);
+            })
+        }
+        
+        let calltoActions: CallToActionButtons[] = [];
+        let quickReplies: QuickReplyButtons[] = [];
+        if(responseOptions === 'callToActions'){
+            const actions = new CallToActionButtons();
+            actions.setActiontype(actionsOptions === 'visitLink' ? 1 : 0);
+            actions.setText(buttonText);
+            if(actionsOptions === 'visitLink'){
+                const url = new Url();
+                url.setLink(mobileOrLink);
+                actions.setUrl(url);
+            }
+            if(actionsOptions === 'callOnNumber'){
+                actions.setPhonenumber(mobileOrLink);
+            }
+            calltoActions.push(actions);
+        }
+
+        if(quickReplyButton){ 
+            quickReply.forEach((value) => {
+                const quickReply = new QuickReplyButtons();
+                quickReply.setText(value);
+                quickReplies.push(quickReply);
+            });
+        }
+
+        const messaggeTemplate: IMessagingTemplate = {
+            templateId: templateId,
+            templateName: templateName,
+            mediaParameters: isMedia ? media : undefined,
+            headerParameters: headers ? headerMap : undefined,
+            bodyParameters: bodyParams ? bodyparamsMap : undefined,
+            footer:  footer ? footer : undefined,
+            category: 1,
+            wabaId: businessAccountId,
+            buttonType: 0,
+            buttons: {
+                callToActionButtons: responseOptions === 'callToActions' ? calltoActions : [],
+                quickReplyButtons: quickReplyButton ? quickReplies : []
+            }
+        }
+
+        console.log(messaggeTemplate);
+
+        clients.messaging.messaging.RegisterMessagingTemplate(messaggeTemplate, {}, (err, response) => {
+            if (err) {
+                console.log(err);
+            } else {
+                navigate('/marketing/templates');
+                console.log(response);
+            }
+        })
+
+     }
+
+    const handleSubmit = async () => {
+        await registerMessagingTemplate();
+     }
 
     const addTextArea = () => {
         setTextAreas((prevTextAreas) => [...prevTextAreas, prevTextAreas.length]);
@@ -32,13 +183,13 @@ const CreateTemplate = () => {
         );
     };
 
-    const addTextButton = () => {
-        setTextButton((prevTextButton) => [...prevTextButton, prevTextButton.length]);
+    const addquickReplyCount = () => {
+        setquickReplyCount((prevquickReplyCount) => [...prevquickReplyCount, prevquickReplyCount.length]);
     };
 
-    const removeTextButton = (index: number) => {
-        setTextButton((prevTextButton) =>
-            prevTextButton.filter((_, i) => i !== index)
+    const removequickReplyCount = (index: number) => {
+        setquickReplyCount((prevquickReplyCount) =>
+            prevquickReplyCount.filter((_, i) => i !== index)
         );
     };
 
@@ -61,6 +212,7 @@ const CreateTemplate = () => {
                         </label>
                         <input
                             className="border mx-6 bg-zinc-800 p-2 h-8 w-[50%]"
+                            onChange={(e) => setTemplateName(e.target.value)}
                             type="text"
                         />
                     </div>
@@ -70,6 +222,7 @@ const CreateTemplate = () => {
                         </label>
                         <input
                             className="border mx-6 bg-zinc-800 p-2 h-8 w-[50%]"
+                            onChange={(e) => setTemplateId(e.target.value)}
                             type="text"
                         />
                     </div>
@@ -79,6 +232,7 @@ const CreateTemplate = () => {
                         </label>
                         <input
                             className="border mx-6 bg-zinc-800 p-2 h-8 w-[50%]"
+                            onChange={(e) => setBusinessAccountId(e.target.value)}
                             type="text"
                         />
                     </div>
@@ -96,6 +250,8 @@ const CreateTemplate = () => {
                         <div className="flex items-center">
                             <input
                                 type="radio"
+                                checked={isMedia === true}
+                                onChange={() => setIsMedia(true)}
                                 className="form-radio mr-2 h-5 w-5 appearance-none rounded-full border-2 checked:border-primary checked:after:border-primary checked:after:bg-primary"
                             />
                             <p className=" text-lg">Media</p>
@@ -106,21 +262,27 @@ const CreateTemplate = () => {
                             <div className="flex items-center mr-2 my-2">
                                 <input
                                     type="radio"
-                                    className="form-radio mr-2 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300  checked:border-primary checked:after:border-primary checked:after:bg-primary "
+                                    checked={mediaOptions === "image"}
+                                    onChange={() => setMediaOptions("image")}
+                                    className="form-radio mr-2 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300  checked:bg-green-600"
                                 />
                                 <label htmlFor="none" className=" text-lg align-middle px-2">Image</label>
                             </div>
                             <div className="flex items-center mr-2">
                                 <input
                                     type="radio"
-                                    className="form-radio mr-2 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300  checked:border-primary checked:after:border-primary checked:after:bg-primary "
+                                    checked={mediaOptions === "video"}
+                                    onChange={() => setMediaOptions("video")}
+                                    className="form-radio mr-2 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300  checked:bg-green-600"
                                 />
                                 <label htmlFor="none" className=" text-lg align-middle px-2">Video</label>
                             </div>
                             <div className="flex items-center mr-2">
                                 <input
                                     type="radio"
-                                    className="form-radio mr-2 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300  checked:border-primary checked:after:border-primary checked:after:bg-primary "
+                                    checked={mediaOptions === "doc"}
+                                    onChange={() => setMediaOptions("doc")}
+                                    className="form-radio mr-2 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 checked:bg-green-600"
                                 />
                                 <label htmlFor="none" className=" text-lg align-middle px-2">Doc</label>
                             </div>
@@ -128,12 +290,11 @@ const CreateTemplate = () => {
 
                         <div className="flex flex-row mt-2">
                             <p className=" text-lg mr-4">Upload FIles</p>
-                            <input type="file" />
+                            <input type="file"
+                                onChange={onUpload}
+                            />
                         </div>
-
-
                     </div>
-
 
                     <div className="w-[90%]">
                         <div className="flex justify-between mb-2">
@@ -165,6 +326,11 @@ const CreateTemplate = () => {
                                 <textarea
                                     id={`templateName${index}`}
                                     className="border bg-zinc-800 py-2 h-26 px-4"
+                                    onChange={(e) => {
+                                        const newTextAreaValues = [...headers];
+                                        newTextAreaValues[index] = e.target.value;
+                                        setHeaders(newTextAreaValues);
+                                    }}
                                 />
                                 <button
                                     onClick={() => removeTextArea(index)}
@@ -219,6 +385,11 @@ const CreateTemplate = () => {
                                 <textarea
                                     id={`templateName${index}`}
                                     className="border bg-zinc-800 py-2 h-36  px-4"
+                                    onChange={(e) => {
+                                        const newBodyValues = [...bodyParams];
+                                        newBodyValues[index] = e.target.value;
+                                        setBodyParams(newBodyValues);
+                                    }}
                                 />
                                 <button
                                     onClick={() => removeBodyTextArea(index)}
@@ -249,6 +420,7 @@ const CreateTemplate = () => {
                         </label>
                         <textarea
                             id="footer"
+                            onChange={(e) => setFooter(e.target.value)}
                             className="border bg-zinc-800 py-2 h-18"
                         />
                     </div>
@@ -258,30 +430,30 @@ const CreateTemplate = () => {
                         <div className="flex items-center mt-2">
                             <input
                                 type="radio"
-                                className="form-radio my-2 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300  checked:border-primary checked:after:border-primary checked:after:bg-primary "
-                                checked={selectedOption === "none"}
-                                onChange={() => setSelectedOption("none")}
+                                className="form-radio my-2 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 checked:bg-green-600"
+                                checked={responseOptions === "none"}
+                                onChange={() => setResponseOptions("none")}
                             />
                             <label htmlFor="none" className=" text-lg align-middle px-2">None</label>
                         </div>
                         <div className="flex items-center">
                             <input
                                 type="radio"
-                                className="form-radio my-2 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300  checked:border-primary checked:after:border-primary checked:after:bg-primary "
-                                checked={selectedOption === "callToActions"}
-                                onChange={() => setSelectedOption("callToActions")}
+                                className="form-radio my-2 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 checked:bg-green-600"
+                                checked={responseOptions === "callToActions"}
+                                onChange={() => setResponseOptions("callToActions")}
                             />
                             <label htmlFor="none" className=" text-lg align-middle px-2">Call to Actions</label>
                         </div>
-                        <div className={`${selectedOption === 'none' ? ' text-gray-500' : ''} flex flex-row mt-2`}>
+                        <div className={`${responseOptions === 'none' ? ' text-gray-500' : ''} flex flex-row mt-2`}>
                             <p className=" text-lg mr-4">Actions Type :</p>
                             <div className="flex items-center mr-4">
                                 <input
                                     type="radio"
-                                    className="form-radio my-2 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300  checked:border-primary checked:after:border-primary checked:after:bg-primary "
-                                    disabled={selectedOption === 'none'}
-                                    checked={selecteSubOption === 'visitLink'}
-                                    onChange={() => setSelectedSubOption('visitLink')}
+                                    className="form-radio my-2 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 checked:bg-green-600"
+                                    disabled={responseOptions === 'none'}
+                                    checked={actionsOptions === 'visitLink'}
+                                    onChange={() => setActionsOptions('visitLink')}
                                 />
                                 <label htmlFor="none" className=" text-lg align-middle px-2">Visit Link</label>
                             </div>
@@ -289,10 +461,10 @@ const CreateTemplate = () => {
                             <div className="flex items-center">
                                 <input
                                     type="radio"
-                                    className="form-radio my-2 h-5 w-5 appearance-none rounded-full border-2 checked:border-primary checked:after:border-primary checked:after:bg-primary"
-                                    disabled={selectedOption === 'none'}
-                                    checked={selecteSubOption === 'callOnNumber'}
-                                    onChange={() => setSelectedSubOption('callOnNumber')}
+                                    className="form-radio my-2 h-5 w-5 appearance-none rounded-full border-2 checked:bg-green-600"
+                                    disabled={responseOptions === 'none'}
+                                    checked={actionsOptions === 'callOnNumber'}
+                                    onChange={() => setActionsOptions('callOnNumber')}
                                 />
                                 <label htmlFor="none" className=" text-lg align-middle px-2">Call on Number</label>
                             </div>
@@ -302,10 +474,11 @@ const CreateTemplate = () => {
                         <div className="mt-4 ">
                             <div className="flex flex-row items-center mb-6">
                                 <label className="text-w_text text-lg" htmlFor="templateName">
-                                    {selecteSubOption === 'visitLink' ? 'Link' : 'Mobile Number'} :{" "}
+                                    {actionsOptions === 'visitLink' ? 'Link' : 'Mobile Number'} :{" "}
                                 </label>
                                 <input
-                                    disabled={selectedOption === 'none'}
+                                    disabled={responseOptions === 'none'}
+                                    onChange={(e) => setMobileOrLink(e.target.value)}
                                     className="border mx-6 bg-zinc-800 p-2 h-8 w-[60%]"
                                     type="text"
                                 />
@@ -315,7 +488,8 @@ const CreateTemplate = () => {
                                     Button Text :{" "}
                                 </label>
                                 <input
-                                    disabled={selectedOption === 'none'}
+                                    disabled={responseOptions === 'none'}
+                                    onChange={(e) => setButtonText(e.target.value)}
                                     className="border mx-6 bg-zinc-800 p-2 h-8  w-[60%]"
                                     type="text"
                                 />
@@ -328,16 +502,16 @@ const CreateTemplate = () => {
                             <div className="flex items-center">
                                 <input
                                     type="radio"
-                                    onChange={() => setQckReplyButton(false)}
-                                    className="form-radio h-5 w-5 appearance-none border-2 rounded-full checked:border-primary checked:after:border-primary checked:after:bg-primary "
+                                    onChange={() => setQckReplyButton(true)}
+                                    className="form-radio h-5 w-5 appearance-none border-2 rounded-full checked:bg-green-600 "
                                 />
 
                                 <label htmlFor="none" className=" text-lg align-middle px-2">Quick Reply</label>
                             </div>
 
                             <div className="flex flex-row">
-                                <button onClick={addTextButton}
-                                    disabled={quickReplyButton}
+                                <button onClick={addquickReplyCount}
+                                    disabled={!quickReplyButton}
                                 >
                                     <svg
                                         className="h-6 w-6 text-green-500 mr-2"
@@ -360,7 +534,7 @@ const CreateTemplate = () => {
                             </div>
                         </div>
 
-                        {textButton.map((_, index) => (
+                        {quickReplyCount.map((_, index) => (
                             <div
                                 key={index}
                                 className="flex flex-row items-center mb-4">
@@ -368,14 +542,19 @@ const CreateTemplate = () => {
                                     Button Text :{" "}
                                 </label>
                                 <input
-                                    disabled={quickReplyButton}
+                                    disabled={!quickReplyButton}
+                                    onChange={(e) => {
+                                        const newBodyValues = [...quickReply];
+                                        newBodyValues[index] = e.target.value;
+                                        setQuickReply(newBodyValues);
+                                    }}
                                     className="border mx-6 bg-zinc-800 p-2 h-8  w-[60%]"
                                     type="text"
                                 />
                                 <button
-                                    onClick={() => removeTextButton(index)}
+                                    onClick={() => removequickReplyCount(index)}
                                     className="flex justify-end mt-2"
-                                    disabled={quickReplyButton}
+                                    disabled={!quickReplyButton}
                                 >
                                     <svg
                                         className="h-6 w-6 text-red-500"
@@ -396,7 +575,9 @@ const CreateTemplate = () => {
                     </div>
 
                     <div className="flex">
-                        <button className="p-2 bg-green-600 font-bold rounded-lg ">Save Template</button>
+                        <button className="p-2 bg-green-600 font-bold rounded-lg "
+                            onClick={handleSubmit}
+                        >Save Template</button>
                     </div>
 
 

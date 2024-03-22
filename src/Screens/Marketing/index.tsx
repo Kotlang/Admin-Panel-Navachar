@@ -15,20 +15,22 @@ import {
 import HandleImportedData from "./writeData";
 import TemplatesIndex from "./templatesIndex";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const MarketingIndex = () => {
-	const [activeComponent, setActiveComponent] = useState("LEADS");
+	const { component } = useParams();
+	const [activeComponent, setActiveComponent] = useState(component || "leads");
 	const [search, setSearch] = useState("");
 	const [filter, setfilter] = useState("");
 	const [isImporting, setIsImporting] = useState(false);
 	const navigate = useNavigate();
 	const renderComponent = () => {
 		switch (activeComponent) {
-			case "LEADS":
+			case "leads":
 				return <Leads search={search} filter={filter} />;
-			case "TEMPLATES":
+			case "templates":
 				return <TemplatesIndex />;
-			case "CAMPAIGNS":
+			case "campaigns":
 				return <Campaigns />;
 			default:
 				return <div>DEFAULT </div>;
@@ -64,29 +66,29 @@ const MarketingIndex = () => {
 				<nav className="text-slate-100 items-center justify-between hidden w-full md:flex md:w-auto md:order-1 mb-6">
 					<ul className="flex flex-col p-4 md:p-0 mt-4 font-medium rounded-lg md:space-x-10 rtl:space-x-reverse md:flex-row md:mt-0">
 						<p
-							className={`cursor-pointer text-base font-sans ${activeComponent === "LEADS"
+							className={`cursor-pointer text-base font-sans ${activeComponent === "leads"
 									? "underline underline-offset-8 text-green-500"
 									: ""
 								}`}
-							onClick={() => setActiveComponent("LEADS")}
+							onClick={() => setActiveComponent("leads")}
 						>
 							Leads
 						</p>
 						<p
-							className={`cursor-pointer text-base font-sans ${activeComponent === "TEMPLATES"
+							className={`cursor-pointer text-base font-sans ${activeComponent === "templates"
 									? "underline underline-offset-8 text-green-500"
 									: ""
 								}`}
-							onClick={() => setActiveComponent("TEMPLATES")}
+							onClick={() => setActiveComponent("templates")}
 						>
 							Templates
 						</p>
 						<p
-							className={`cursor-pointer text-base font-sans ${activeComponent === "CAMPAIGNS"
+							className={`cursor-pointer text-base font-sans ${activeComponent === "campaigns"
 									? "underline underline-offset-8 text-green-500"
 									: ""
 								}`}
-							onClick={() => setActiveComponent("CAMPAIGNS")}
+							onClick={() => setActiveComponent("campaigns")}
 						>
 							Campaigns
 						</p>
@@ -114,7 +116,7 @@ const MarketingIndex = () => {
 							</button>
 						</div>
 					</ul>
-					{activeComponent === "LEADS" && (
+					{activeComponent === "leads" && (
 						<div className="w-[50%] flex px-4 justify-end">
 							<div className="flex items-center">
 								<label htmlFor="file-upload">
@@ -227,7 +229,7 @@ const MarketingIndex = () => {
 							</div>
 						</div>
 					)}
-					{activeComponent === "TEMPLATES" && (
+					{activeComponent === "templates" && (
 						<div className="flex items-center">
 							<button className="mx-2"
 							onClick={ () => navigate('/marketing/createtemplate')}

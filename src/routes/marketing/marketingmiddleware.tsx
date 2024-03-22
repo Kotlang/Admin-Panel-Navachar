@@ -10,6 +10,7 @@ const MarketingMiddleware = () => {
 
 	return (
 		<Routes>
+			<Route path='/:component' element={<MarketingIndex />} />
 			<Route path='/' element={<MarketingIndex />} />
 			<Route path='/createtemplate' element={<CreateTemplate />} />
 			<Route path='leaddetails/:leadId' element={<LeadDetails />} />
