@@ -242,6 +242,9 @@ export class MesssageRequest extends jspb.Message {
   getWabaid(): string;
   setWabaid(value: string): MesssageRequest;
 
+  getPreview(): string;
+  setPreview(value: string): MesssageRequest;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): MesssageRequest.AsObject;
   static toObject(includeInstance: boolean, msg: MesssageRequest): MesssageRequest.AsObject;
@@ -259,24 +262,7 @@ export namespace MesssageRequest {
     mediaparameters?: MediaParameters.AsObject,
     recipientphonenumberList: Array<string>,
     wabaid: string,
-  }
-}
-
-export class IdRequest extends jspb.Message {
-  getId(): string;
-  setId(value: string): IdRequest;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): IdRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: IdRequest): IdRequest.AsObject;
-  static serializeBinaryToWriter(message: IdRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): IdRequest;
-  static deserializeBinaryFromReader(message: IdRequest, reader: jspb.BinaryReader): IdRequest;
-}
-
-export namespace IdRequest {
-  export type AsObject = {
-    id: string,
+    preview: string,
   }
 }
 
@@ -295,6 +281,60 @@ export class StatusResponse extends jspb.Message {
 export namespace StatusResponse {
   export type AsObject = {
     status: string,
+  }
+}
+
+export class MessagingTemplateList extends jspb.Message {
+  getTemplatesList(): Array<MessagingTemplate>;
+  setTemplatesList(value: Array<MessagingTemplate>): MessagingTemplateList;
+  clearTemplatesList(): MessagingTemplateList;
+  addTemplates(value?: MessagingTemplate, index?: number): MessagingTemplate;
+
+  getTotalcount(): number;
+  setTotalcount(value: number): MessagingTemplateList;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MessagingTemplateList.AsObject;
+  static toObject(includeInstance: boolean, msg: MessagingTemplateList): MessagingTemplateList.AsObject;
+  static serializeBinaryToWriter(message: MessagingTemplateList, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MessagingTemplateList;
+  static deserializeBinaryFromReader(message: MessagingTemplateList, reader: jspb.BinaryReader): MessagingTemplateList;
+}
+
+export namespace MessagingTemplateList {
+  export type AsObject = {
+    templatesList: Array<MessagingTemplate.AsObject>,
+    totalcount: number,
+  }
+}
+
+export class FetchTemplateRequest extends jspb.Message {
+  getTemplateid(): string;
+  setTemplateid(value: string): FetchTemplateRequest;
+
+  getTemplatename(): string;
+  setTemplatename(value: string): FetchTemplateRequest;
+
+  getPagenumber(): number;
+  setPagenumber(value: number): FetchTemplateRequest;
+
+  getPagesize(): number;
+  setPagesize(value: number): FetchTemplateRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): FetchTemplateRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: FetchTemplateRequest): FetchTemplateRequest.AsObject;
+  static serializeBinaryToWriter(message: FetchTemplateRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): FetchTemplateRequest;
+  static deserializeBinaryFromReader(message: FetchTemplateRequest, reader: jspb.BinaryReader): FetchTemplateRequest;
+}
+
+export namespace FetchTemplateRequest {
+  export type AsObject = {
+    templateid: string,
+    templatename: string,
+    pagenumber: number,
+    pagesize: number,
   }
 }
 

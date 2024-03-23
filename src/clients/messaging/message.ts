@@ -4,9 +4,9 @@
 
 import { Metadata, RpcError } from 'grpc-web';
 import { addJwtToken } from 'src/clients/utils';
-import { Button, MediaParameters, MessagingTemplate, StatusResponse } from 'src/generated/messaging-service_pb';
+import { Button, FetchTemplateRequest, MediaParameters, MessagingTemplate, MessagingTemplateList,StatusResponse } from 'src/generated/messaging-service_pb';
 import { MessagingServiceClient } from 'src/generated/Messaging-serviceServiceClientPb';
-import { IMessagingTemplate } from 'src/types';
+import { IFetchTemplateRequest,IMessagingTemplate } from 'src/types';
 
 export const getMessagingClient = (() => {
 	const notifyUrl = process.env.REACT_APP_NOTIFY_URL;
@@ -75,11 +75,30 @@ const getRegisterMessagingTemplateRequst = (template: IMessagingTemplate) => {
 	return registerMessagingTemplateRequest;
 };
 
+const getFetchTemplatesRequest = (fetchTeemplate: IFetchTemplateRequest) => {
+	const fetchTemplateRequest = new FetchTemplateRequest();
+	if(fetchTeemplate.templateId){
+		fetchTemplateRequest.setTemplateid(fetchTeemplate.templateId);
+	}
+	if(fetchTeemplate.templateName){
+		fetchTemplateRequest.setTemplatename(fetchTeemplate.templateName);
+	}
+	if(fetchTeemplate.pageNumber){
+		fetchTemplateRequest.setPagenumber(fetchTeemplate.pageNumber);
+	}
+	if(fetchTeemplate.pageSize){
+		fetchTemplateRequest.setPagesize(fetchTeemplate.pageSize);
+	}
+	return fetchTemplateRequest;
+};
+
 const messagingClient = {
+	FetchTemplates: (fetchTemplate: IFetchTemplateRequest, metaData: Metadata | null, callback: (err: RpcError, response: MessagingTemplateList) => void) => {
+		getMessagingClient().fetchMessagingTemplates(getFetchTemplatesRequest(fetchTemplate), addJwtToken(metaData), callback);
+	},
 	RegisterMessagingTemplate: (template: IMessagingTemplate, metaData: Metadata | null, callback: (err: RpcError, response: StatusResponse) => void) => {
 		getMessagingClient().registerMessagingTemplate(getRegisterMessagingTemplateRequst(template), addJwtToken(metaData), callback);
 	}
-
 };
 
 export default messagingClient;

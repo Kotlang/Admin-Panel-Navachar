@@ -168,47 +168,47 @@ export class MessagingServiceClient {
     this.methodDescriptorRegisterMessagingTemplate);
   }
 
-  methodDescriptorGetMessagingTemplateById = new grpcWeb.MethodDescriptor(
-    '/notification.MessagingService/GetMessagingTemplateById',
+  methodDescriptorFetchMessagingTemplates = new grpcWeb.MethodDescriptor(
+    '/notification.MessagingService/FetchMessagingTemplates',
     grpcWeb.MethodType.UNARY,
-    messaging$service_pb.IdRequest,
-    messaging$service_pb.MessagingTemplate,
-    (request: messaging$service_pb.IdRequest) => {
+    messaging$service_pb.FetchTemplateRequest,
+    messaging$service_pb.MessagingTemplateList,
+    (request: messaging$service_pb.FetchTemplateRequest) => {
       return request.serializeBinary();
     },
-    messaging$service_pb.MessagingTemplate.deserializeBinary
+    messaging$service_pb.MessagingTemplateList.deserializeBinary
   );
 
-  getMessagingTemplateById(
-    request: messaging$service_pb.IdRequest,
-    metadata?: grpcWeb.Metadata | null): Promise<messaging$service_pb.MessagingTemplate>;
+  fetchMessagingTemplates(
+    request: messaging$service_pb.FetchTemplateRequest,
+    metadata?: grpcWeb.Metadata | null): Promise<messaging$service_pb.MessagingTemplateList>;
 
-  getMessagingTemplateById(
-    request: messaging$service_pb.IdRequest,
+  fetchMessagingTemplates(
+    request: messaging$service_pb.FetchTemplateRequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.RpcError,
-               response: messaging$service_pb.MessagingTemplate) => void): grpcWeb.ClientReadableStream<messaging$service_pb.MessagingTemplate>;
+               response: messaging$service_pb.MessagingTemplateList) => void): grpcWeb.ClientReadableStream<messaging$service_pb.MessagingTemplateList>;
 
-  getMessagingTemplateById(
-    request: messaging$service_pb.IdRequest,
+  fetchMessagingTemplates(
+    request: messaging$service_pb.FetchTemplateRequest,
     metadata?: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.RpcError,
-               response: messaging$service_pb.MessagingTemplate) => void) {
+               response: messaging$service_pb.MessagingTemplateList) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
         this.hostname_ +
-          '/notification.MessagingService/GetMessagingTemplateById',
+          '/notification.MessagingService/FetchMessagingTemplates',
         request,
         metadata || {},
-        this.methodDescriptorGetMessagingTemplateById,
+        this.methodDescriptorFetchMessagingTemplates,
         callback);
     }
     return this.client_.unaryCall(
     this.hostname_ +
-      '/notification.MessagingService/GetMessagingTemplateById',
+      '/notification.MessagingService/FetchMessagingTemplates',
     request,
     metadata || {},
-    this.methodDescriptorGetMessagingTemplateById);
+    this.methodDescriptorFetchMessagingTemplates);
   }
 
 }
