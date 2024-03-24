@@ -1,13 +1,18 @@
 /* eslint-disable */
 
-import React, { useState, useCallback, useEffect} from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { List } from "antd";
 import { MessagingTemplate } from "src/generated/messaging-service_pb";
 import { IFetchTemplateRequest, templateCardDetails } from "src/types";
 import clients from "src/clients";
 import CardDetails from "./templateCardDetails";
+import { Link } from "react-router-dom";
 
-const TemplatesIndex = () => {
+interface props {
+    templateSelection: boolean;
+}
+
+const TemplatesIndex: React.FC<props> = ({ templateSelection }) => {
     const [data, setData] = useState<templateCardDetails[]>();
     const [pageNumber, setPageNumber] = useState(0);
     const [total, setTotal] = useState(0);
@@ -37,16 +42,6 @@ const TemplatesIndex = () => {
         });
     }, [pageNumber]);
 
-    
-// export interface templateCardDetails {
-//     templateData: IMessagingTemplate;
-//     TempalteName: string;
-//     Id: string;
-//     mediaUrl: string;
-//     Content: Map<string, String>;
-//     createdAt: string;
-// }
-
     useEffect(() => {
         fetchTemplates().then((templates) => {
             const templateData: templateCardDetails[] = templates.map((template) => {
@@ -60,7 +55,7 @@ const TemplatesIndex = () => {
                 };
             });
             setData(templateData);
-        });   
+        });
     }, [pageNumber])
 
     return (
@@ -82,7 +77,13 @@ const TemplatesIndex = () => {
                     extra={item.mediaUrl && <img width={272} alt="logo" src={item.mediaUrl} />}
                     className={`mb-8 border-l-8 bg-black_text rounded-lg border-green-500`}
                 >
-                    <CardDetails {...item} />
+                    {templateSelection ? (
+                        <Link to={`/marketing/createmessage/${item.Id}`} >
+                            <CardDetails {...item} />
+                        </Link>
+                    ) : (
+                        <CardDetails {...item} />
+                    )}
                 </List.Item>
             )}
         />

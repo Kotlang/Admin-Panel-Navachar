@@ -15,7 +15,7 @@ const CreateTemplate = () => {
     const [actionsOptions, setActionsOptions] = useState("visitLink");
     const [mediaOptions, setMediaOptions] = useState("none");
     const [quickReplyButton, setQckReplyButton] = useState(false);
-
+    const [uploading, setUploading] = useState(false);
     const [templateName, setTemplateName] = useState("");
     const [templateId, setTemplateId] = useState("");
     const [businessAccountId, setBusinessAccountId] = useState("");
@@ -63,6 +63,7 @@ const CreateTemplate = () => {
                 const fileName = files[0].name.split('.').pop();
                 if(fileName){
                     try {
+                        setUploading(true)
                         const preSignedUrl = await getPresignedUrl(fileName);
                         const response = await fetch(preSignedUrl.getUploadurl(), {
                             method: 'PUT',
@@ -79,7 +80,10 @@ const CreateTemplate = () => {
                         console.log('File uploaded successfully.');
                     } catch (error) {
                         console.error('An error occurred while uploading the file:', error);
+                    } finally {
+                        setUploading(false);
                     }
+
                 }
             }
         }
@@ -88,8 +92,8 @@ const CreateTemplate = () => {
     const registerMessagingTemplate = async () => {
         const media = {
             mediaType: getMediaType(mediaOptions),
-            link: "asdfadskfjasdflasdfadsf",
-            filename: fileName
+            link: "https://storage.googleapis.com/navachar-production-user-profile-photo/neptune/6ffce342-f626-41eb-9ce5-73b4dfccbfbc/1710572459.png",
+            filename: "fileName"
         }
         const headerMap = new Map();
         if(headers){
@@ -194,6 +198,13 @@ const CreateTemplate = () => {
     };
 
     return (
+        <>
+        
+        {uploading && (
+            <div className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-black bg-opacity-50 z-50">
+                <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-purple-500"></div>
+            </div>
+        )}
         <div className="mt-14">
             <div className="flex mb-6">
                 <div className="flex">
@@ -584,6 +595,7 @@ const CreateTemplate = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 

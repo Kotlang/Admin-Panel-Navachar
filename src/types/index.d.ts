@@ -5,7 +5,7 @@
 import { AddressProto, CertificationDetails,FarmingType, Gender, LandSizeInAcres } from 'src/generated/common_pb';
 import { EventType } from 'src/generated/events_pb';
 import { LeadChannel, LeadFilters,OperatorType } from 'src/generated/lead_pb';
-import { ActionType, ButtonType, CallToActionButtons, Category, MediaType, QuickReplyButtons, MessagingTemplate } from 'src/generated/messaging-service_pb';
+import { ActionType, ButtonType, CallToActionButtons, Category, MediaType, MessagingTemplate,QuickReplyButtons } from 'src/generated/messaging-service_pb';
 
 export interface IUserProfile {
     attributesList?: string[];
@@ -295,3 +295,14 @@ export interface templateCardDetails {
     Content: Map<string, String>;
     createdAt: string;
 }
+
+// message MesssageRequest {
+//     string templateId = 1;
+//     map<string, string> HeaderParameters = 2;
+//     map<string, string> BodyParameters = 3;
+//     map<string, string> ButtonParameters = 4;  // for dynamic urls
+//     MediaParameters mediaParameters = 5;
+//     repeated string recipientPhoneNumber = 6;
+//     string wabaid = 7; // WhatsApp Business Account ID
+//     string preview = 8; // The message preview
+//   }

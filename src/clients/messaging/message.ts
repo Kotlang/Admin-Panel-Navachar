@@ -4,9 +4,17 @@
 
 import { Metadata, RpcError } from 'grpc-web';
 import { addJwtToken } from 'src/clients/utils';
-import { Button, FetchTemplateRequest, MediaParameters, MessagingTemplate, MessagingTemplateList,StatusResponse } from 'src/generated/messaging-service_pb';
+import {
+	Button,
+	FetchTemplateRequest,
+	MediaParameters,
+	MessagingTemplate,
+	MessagingTemplateList,
+	MesssageRequest,
+	StatusResponse
+} from 'src/generated/messaging-service_pb';
 import { MessagingServiceClient } from 'src/generated/Messaging-serviceServiceClientPb';
-import { IFetchTemplateRequest,IMessagingTemplate } from 'src/types';
+import { IFetchTemplateRequest, IMessagingTemplate } from 'src/types';
 
 export const getMessagingClient = (() => {
 	const notifyUrl = process.env.REACT_APP_NOTIFY_URL;
@@ -53,13 +61,13 @@ const getRegisterMessagingTemplateRequst = (template: IMessagingTemplate) => {
 		registerMessagingTemplateRequest.setButtontype(template.buttonType);
 	}
 
-	if(template.headerParameters) {
+	if (template.headerParameters) {
 		template.headerParameters.forEach((value, key) => {
 			registerMessagingTemplateRequest.getHeaderparametersMap().set(key, value);
 		});
 	}
 
-	if(template.bodyParameters) {
+	if (template.bodyParameters) {
 		template.bodyParameters.forEach((value, key) => {
 			registerMessagingTemplateRequest.getBodyparametersMap().set(key, value);
 		});
@@ -77,27 +85,54 @@ const getRegisterMessagingTemplateRequst = (template: IMessagingTemplate) => {
 
 const getFetchTemplatesRequest = (fetchTeemplate: IFetchTemplateRequest) => {
 	const fetchTemplateRequest = new FetchTemplateRequest();
-	if(fetchTeemplate.templateId){
+	if (fetchTeemplate.templateId) {
 		fetchTemplateRequest.setTemplateid(fetchTeemplate.templateId);
 	}
-	if(fetchTeemplate.templateName){
+	if (fetchTeemplate.templateName) {
 		fetchTemplateRequest.setTemplatename(fetchTeemplate.templateName);
 	}
-	if(fetchTeemplate.pageNumber){
+	if (fetchTeemplate.pageNumber) {
 		fetchTemplateRequest.setPagenumber(fetchTeemplate.pageNumber);
 	}
-	if(fetchTeemplate.pageSize){
+	if (fetchTeemplate.pageSize) {
 		fetchTemplateRequest.setPagesize(fetchTeemplate.pageSize);
 	}
 	return fetchTemplateRequest;
 };
 
 const messagingClient = {
-	FetchTemplates: (fetchTemplate: IFetchTemplateRequest, metaData: Metadata | null, callback: (err: RpcError, response: MessagingTemplateList) => void) => {
-		getMessagingClient().fetchMessagingTemplates(getFetchTemplatesRequest(fetchTemplate), addJwtToken(metaData), callback);
+	BroadCastMessage: (
+		messageReq: MesssageRequest,
+		metaData: Metadata | null,
+		callback: (err: RpcError, response: StatusResponse) => void
+	) => {
+		getMessagingClient().broadcastMessage(
+			messageReq,
+			addJwtToken(metaData),
+			callback
+		);
 	},
-	RegisterMessagingTemplate: (template: IMessagingTemplate, metaData: Metadata | null, callback: (err: RpcError, response: StatusResponse) => void) => {
-		getMessagingClient().registerMessagingTemplate(getRegisterMessagingTemplateRequst(template), addJwtToken(metaData), callback);
+	FetchTemplates: (
+		fetchTemplate: IFetchTemplateRequest,
+		metaData: Metadata | null,
+		callback: (err: RpcError, response: MessagingTemplateList) => void
+	) => {
+		getMessagingClient().fetchMessagingTemplates(
+			getFetchTemplatesRequest(fetchTemplate),
+			addJwtToken(metaData),
+			callback
+		);
+	},
+	RegisterMessagingTemplate: (
+		template: IMessagingTemplate,
+		metaData: Metadata | null,
+		callback: (err: RpcError, response: StatusResponse) => void
+	) => {
+		getMessagingClient().registerMessagingTemplate(
+			getRegisterMessagingTemplateRequst(template),
+			addJwtToken(metaData),
+			callback
+		);
 	}
 };
 
