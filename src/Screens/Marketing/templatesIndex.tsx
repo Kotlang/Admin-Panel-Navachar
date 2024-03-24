@@ -55,6 +55,8 @@ const TemplatesIndex: React.FC<props> = ({ templateSelection }) => {
                 };
             });
             setData(templateData);
+        }).catch((err) => {
+            console.error(err);
         });
     }, [pageNumber])
 
