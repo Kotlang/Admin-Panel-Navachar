@@ -92,8 +92,8 @@ const CreateTemplate = () => {
     const registerMessagingTemplate = async () => {
         const media = {
             mediaType: getMediaType(mediaOptions),
-            link: "https://storage.googleapis.com/navachar-production-user-profile-photo/neptune/6ffce342-f626-41eb-9ce5-73b4dfccbfbc/1710572459.png",
-            filename: "fileName"
+            link: mediaUrl,
+            filename: fileName
         }
         const headerMap = new Map();
         if(headers){
