@@ -7,3 +7,6 @@
 [submodule "localization-model"]
 	path = localization-model
 	url = https://github.com/Kotlang/localization-model.git
+[submodule "notification-model"]
+	path = notification-model
+	url = https://github.com/Kotlang/notification-model.git
