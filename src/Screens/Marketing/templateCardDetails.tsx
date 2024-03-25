@@ -29,7 +29,7 @@ const CardDetails: React.FC<templateCardDetails> = ({
 	Content,
 }) => {
 	const contentArray = Content && Array.from(Content.values());
-	const actionsType = templateData.getButtons()?.getCalltoactionbuttonsList()
+	const actionsType = templateData.getButtons()?.getCalltoactionbuttonsList();
 	const navigate = useNavigate();
 	const handleClick = () => {
 		navigate(`/marketing/templatedetails/${Id}`, {
@@ -42,9 +42,10 @@ const CardDetails: React.FC<templateCardDetails> = ({
 				footer: templateData.getFooter &&  templateData.getFooter(),
 				mediaUrl: templateData.getMediaparameters()?.getLink(),
 				mediaType: templateData.getMediaparameters()?.getMediatype(),
-				actionsType: actionsType && actionsType[0].getActiontype() === 1 ? 1 : 0,
+				actionsType: actionsType && actionsType[0] && actionsType[0].getActiontype() === 1 ? 1 : 0,
 				actionsResponseLinkOrNumber: actionsType && actionsType[0] && (actionsType[0].getActiontype() === 1 ? actionsType[0].getUrl()?.getLink(): actionsType[0].getPhonenumber() || "no number found"),
 				quickReplies: templateData.getButtons()?.getQuickreplybuttonsList && templateData.getButtons()?.getQuickreplybuttonsList(),
+				body: templateData.getBody(),
 			},
 		});
 	};

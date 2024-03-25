@@ -216,6 +216,28 @@ export namespace UniqueMessageRequest {
   }
 }
 
+export class ScheduleInfo extends jspb.Message {
+  getIsscheduled(): boolean;
+  setIsscheduled(value: boolean): ScheduleInfo;
+
+  getScheduledtime(): number;
+  setScheduledtime(value: number): ScheduleInfo;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ScheduleInfo.AsObject;
+  static toObject(includeInstance: boolean, msg: ScheduleInfo): ScheduleInfo.AsObject;
+  static serializeBinaryToWriter(message: ScheduleInfo, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ScheduleInfo;
+  static deserializeBinaryFromReader(message: ScheduleInfo, reader: jspb.BinaryReader): ScheduleInfo;
+}
+
+export namespace ScheduleInfo {
+  export type AsObject = {
+    isscheduled: boolean,
+    scheduledtime: number,
+  }
+}
+
 export class MesssageRequest extends jspb.Message {
   getTemplateid(): string;
   setTemplateid(value: string): MesssageRequest;
@@ -245,6 +267,11 @@ export class MesssageRequest extends jspb.Message {
   getPreview(): string;
   setPreview(value: string): MesssageRequest;
 
+  getScheduleinfo(): ScheduleInfo | undefined;
+  setScheduleinfo(value?: ScheduleInfo): MesssageRequest;
+  hasScheduleinfo(): boolean;
+  clearScheduleinfo(): MesssageRequest;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): MesssageRequest.AsObject;
   static toObject(includeInstance: boolean, msg: MesssageRequest): MesssageRequest.AsObject;
@@ -263,6 +290,7 @@ export namespace MesssageRequest {
     recipientphonenumberList: Array<string>,
     wabaid: string,
     preview: string,
+    scheduleinfo?: ScheduleInfo.AsObject,
   }
 }
 
@@ -333,6 +361,164 @@ export namespace FetchTemplateRequest {
   export type AsObject = {
     templateid: string,
     templatename: string,
+    pagenumber: number,
+    pagesize: number,
+  }
+}
+
+export class MessageProto extends jspb.Message {
+  getMessageid(): string;
+  setMessageid(value: string): MessageProto;
+
+  getSender(): string;
+  setSender(value: string): MessageProto;
+
+  getRecipientsList(): Array<string>;
+  setRecipientsList(value: Array<string>): MessageProto;
+  clearRecipientsList(): MessageProto;
+  addRecipients(value: string, index?: number): MessageProto;
+
+  getMessage(): string;
+  setMessage(value: string): MessageProto;
+
+  getRecievedbyList(): Array<string>;
+  setRecievedbyList(value: Array<string>): MessageProto;
+  clearRecievedbyList(): MessageProto;
+  addRecievedby(value: string, index?: number): MessageProto;
+
+  getReadbyList(): Array<string>;
+  setReadbyList(value: Array<string>): MessageProto;
+  clearReadbyList(): MessageProto;
+  addReadby(value: string, index?: number): MessageProto;
+
+  getRespondedbyList(): Array<string>;
+  setRespondedbyList(value: Array<string>): MessageProto;
+  clearRespondedbyList(): MessageProto;
+  addRespondedby(value: string, index?: number): MessageProto;
+
+  getFailedrecipientsList(): Array<string>;
+  setFailedrecipientsList(value: Array<string>): MessageProto;
+  clearFailedrecipientsList(): MessageProto;
+  addFailedrecipients(value: string, index?: number): MessageProto;
+
+  getCreatedon(): number;
+  setCreatedon(value: number): MessageProto;
+
+  getScheduleinfo(): ScheduleInfo | undefined;
+  setScheduleinfo(value?: ScheduleInfo): MessageProto;
+  hasScheduleinfo(): boolean;
+  clearScheduleinfo(): MessageProto;
+
+  getMediaparameters(): MediaParameters | undefined;
+  setMediaparameters(value?: MediaParameters): MessageProto;
+  hasMediaparameters(): boolean;
+  clearMediaparameters(): MessageProto;
+
+  getButtonsMap(): jspb.Map<string, string>;
+  clearButtonsMap(): MessageProto;
+
+  getTransactionid(): string;
+  setTransactionid(value: string): MessageProto;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MessageProto.AsObject;
+  static toObject(includeInstance: boolean, msg: MessageProto): MessageProto.AsObject;
+  static serializeBinaryToWriter(message: MessageProto, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MessageProto;
+  static deserializeBinaryFromReader(message: MessageProto, reader: jspb.BinaryReader): MessageProto;
+}
+
+export namespace MessageProto {
+  export type AsObject = {
+    messageid: string,
+    sender: string,
+    recipientsList: Array<string>,
+    message: string,
+    recievedbyList: Array<string>,
+    readbyList: Array<string>,
+    respondedbyList: Array<string>,
+    failedrecipientsList: Array<string>,
+    createdon: number,
+    scheduleinfo?: ScheduleInfo.AsObject,
+    mediaparameters?: MediaParameters.AsObject,
+    buttonsMap: Array<[string, string]>,
+    transactionid: string,
+  }
+}
+
+export class MessageList extends jspb.Message {
+  getMessagesList(): Array<MessageProto>;
+  setMessagesList(value: Array<MessageProto>): MessageList;
+  clearMessagesList(): MessageList;
+  addMessages(value?: MessageProto, index?: number): MessageProto;
+
+  getTotalcount(): number;
+  setTotalcount(value: number): MessageList;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MessageList.AsObject;
+  static toObject(includeInstance: boolean, msg: MessageList): MessageList.AsObject;
+  static serializeBinaryToWriter(message: MessageList, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MessageList;
+  static deserializeBinaryFromReader(message: MessageList, reader: jspb.BinaryReader): MessageList;
+}
+
+export namespace MessageList {
+  export type AsObject = {
+    messagesList: Array<MessageProto.AsObject>,
+    totalcount: number,
+  }
+}
+
+export class MessageFilters extends jspb.Message {
+  getMessageid(): string;
+  setMessageid(value: string): MessageFilters;
+
+  getSender(): string;
+  setSender(value: string): MessageFilters;
+
+  getTransactionid(): string;
+  setTransactionid(value: string): MessageFilters;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MessageFilters.AsObject;
+  static toObject(includeInstance: boolean, msg: MessageFilters): MessageFilters.AsObject;
+  static serializeBinaryToWriter(message: MessageFilters, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MessageFilters;
+  static deserializeBinaryFromReader(message: MessageFilters, reader: jspb.BinaryReader): MessageFilters;
+}
+
+export namespace MessageFilters {
+  export type AsObject = {
+    messageid: string,
+    sender: string,
+    transactionid: string,
+  }
+}
+
+export class FetchMessageRequest extends jspb.Message {
+  getFilters(): MessageFilters | undefined;
+  setFilters(value?: MessageFilters): FetchMessageRequest;
+  hasFilters(): boolean;
+  clearFilters(): FetchMessageRequest;
+
+  getPagenumber(): number;
+  setPagenumber(value: number): FetchMessageRequest;
+
+  getPagesize(): number;
+  setPagesize(value: number): FetchMessageRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): FetchMessageRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: FetchMessageRequest): FetchMessageRequest.AsObject;
+  static serializeBinaryToWriter(message: FetchMessageRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): FetchMessageRequest;
+  static deserializeBinaryFromReader(message: FetchMessageRequest, reader: jspb.BinaryReader): FetchMessageRequest;
+}
+
+export namespace FetchMessageRequest {
+  export type AsObject = {
+    filters?: MessageFilters.AsObject,
     pagenumber: number,
     pagesize: number,
   }

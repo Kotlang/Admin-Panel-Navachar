@@ -7,11 +7,13 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import navArrowIcon from "src/assets/icons/navArrowIcon.svg";
+import { QuickReplyButtons } from "src/generated/messaging-service_pb";
 
 const TemplateDetailsPage = () => {
     const { state } = useLocation();
     const {
         name,
+        body,
         templateId,
         baid,
         bodyParams,
@@ -52,6 +54,11 @@ const TemplateDetailsPage = () => {
                             <p className="">{baid}</p>
                         </div>
 
+                        <div className="flex flex-row text-lg">
+                            <p className=" font-bold mr-2">Body: </p>
+                            <p className="">{body}</p>
+                        </div>
+
                         {headerParams &&
                             headerParams.map((item: string, index: any) => (
                                 <div className="flex flex-row mb-1 text-lg" key={index}>
@@ -77,42 +84,37 @@ const TemplateDetailsPage = () => {
                             </div>
                         )}
 
-                        {actionsType &&
-                            (actionsType === 1 ? (
-                                <div>
-                                    <div className="flex flex-row text-lg">
-                                        <p className=" font-bold mr-2">Reponse: </p>
-                                        <p className=" text-green-500">VISIT LINK</p>
-                                    </div>
-                                    <div className="flex flex-row text-lg">
-                                        <p className=" font-bold mr-2">LINK: </p>
-                                        <p>{actionsResponseLinkOrNumber.toString()}</p>
-                                    </div>
+                        {actionsType && actionsType === 1 ? (
+                            <div>
+                                <div className="flex flex-row text-lg">
+                                    <p className=" font-bold mr-2">Reponse: </p>
+                                    <p className=" text-green-500">VISIT LINK</p>
                                 </div>
-                            ) : (
-                                <div>
-                                    <div className="flex flex-row text-lg">
-                                        <p className=" font-bold mr-2">Response: </p>
-                                        <p className=" text-green-500">CALL ON NUMBER: </p>
-                                    </div>
-                                    <div className="flex flex-row text-lg">
-                                        <p className=" font-bold mr-2">Mobile Number: </p>
-                                        <p>{actionsResponseLinkOrNumber.toString()}</p>
-                                    </div>
+                                <div className="flex flex-row text-lg">
+                                    <p className=" font-bold mr-2">LINK: </p>
+                                    <p>{actionsResponseLinkOrNumber}</p>
                                 </div>
-                            ))
-                        }
+                            </div>
+                        ) : actionsType === 0 && actionsResponseLinkOrNumber ? (
+                            <div>
+                                <div className="flex flex-row text-lg">
+                                    <p className=" font-bold mr-2">Response: </p>
+                                    <p className=" text-green-500">CALL ON NUMBER: </p>
+                                </div>
+                                <div className="flex flex-row text-lg">
+                                    <p className=" font-bold mr-2">Mobile Number: </p>
+                                    <p>{actionsResponseLinkOrNumber}</p>
+                                </div>
+                            </div>
+                        ) : null}
 
                         {quickReplies && (
-                            <div>
-                                <p className=" text-lg font-bold mr-2">Quick Replies: </p>
-                                {quickReplies.map((item: string, index: any) => (
-                                    <div className="flex flex-row mb-1 text-lg" key={index}>
-                                        <div className=" font-bold mr-2">Replies : </div>
-                                        <div className="">{item}</div>
-                                    </div>
-                                ))}
-                            </div>
+                            quickReplies.map((item: any, index: any) => (
+                                <div className="flex flex-row mb-1 text-lg" key={index}>
+                                    <div className=" font-bold mr-2">Replies : </div>
+                                    <div className="">{item.array[0]}</div>
+                                </div>
+                            ))
                         )}
                     </div>
                     <div className="w-[40%] h-[60%] border-2 overflow-x-scroll overflow-y-hidden">

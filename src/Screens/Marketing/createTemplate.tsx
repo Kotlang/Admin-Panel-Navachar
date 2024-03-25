@@ -164,7 +164,9 @@ const CreateTemplate = () => {
      }
 
     const handleSubmit = async () => {
+        setUploading(true)
         await registerMessagingTemplate();
+        setUploading(false)
      }
 
     const addTextArea = () => {
