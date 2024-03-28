@@ -292,17 +292,6 @@ export interface templateCardDetails {
     TempalteName: string;
     Id: string;
     mediaUrl: string;
-    Content: Map<string, String>;
+    Content: string;
     createdAt: string;
 }
-
-// message MesssageRequest {
-//     string templateId = 1;
-//     map<string, string> HeaderParameters = 2;
-//     map<string, string> BodyParameters = 3;
-//     map<string, string> ButtonParameters = 4;  // for dynamic urls
-//     MediaParameters mediaParameters = 5;
-//     repeated string recipientPhoneNumber = 6;
-//     string wabaid = 7; // WhatsApp Business Account ID
-//     string preview = 8; // The message preview
-//   }

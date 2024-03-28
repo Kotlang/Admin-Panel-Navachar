@@ -7,20 +7,6 @@ import React from "react";
 import { templateCardDetails } from "src/types";
 import { useNavigate } from "react-router-dom";
 
-// const {
-// 	name,
-// 	templateId,
-// 	baid,
-// 	bodyParams,
-// 	headerParams,
-// 	footer,
-// 	mediaUrl,
-// 	mediaType,
-// 	actionsType,
-// 	actionsResponseLinkOrNumber,
-// 	quickReplies,
-// } = state;
-
 const CardDetails: React.FC<templateCardDetails> = ({
 	templateData,
 	TempalteName,
@@ -28,7 +14,6 @@ const CardDetails: React.FC<templateCardDetails> = ({
 	createdAt,
 	Content,
 }) => {
-	const contentArray = Content && Array.from(Content.values());
 	const actionsType = templateData.getButtons()?.getCalltoactionbuttonsList();
 	const navigate = useNavigate();
 	const handleClick = () => {
@@ -39,11 +24,11 @@ const CardDetails: React.FC<templateCardDetails> = ({
 				baid: templateData.getWabaid(),
 				bodyParams: templateData.getBodyparametersMap() && Array.from(templateData.getBodyparametersMap().values()),
 				headerParams: templateData.getHeaderparametersMap() && Array.from(templateData.getHeaderparametersMap().values()),
-				footer: templateData.getFooter &&  templateData.getFooter(),
+				footer: templateData.getFooter && templateData.getFooter(),
 				mediaUrl: templateData.getMediaparameters()?.getLink(),
 				mediaType: templateData.getMediaparameters()?.getMediatype(),
 				actionsType: actionsType && actionsType[0] && actionsType[0].getActiontype() === 1 ? 1 : 0,
-				actionsResponseLinkOrNumber: actionsType && actionsType[0] && (actionsType[0].getActiontype() === 1 ? actionsType[0].getUrl()?.getLink(): actionsType[0].getPhonenumber() || "no number found"),
+				actionsResponseLinkOrNumber: actionsType && actionsType[0] && (actionsType[0].getActiontype() === 1 ? actionsType[0].getUrl()?.getLink() : actionsType[0].getPhonenumber() || "no number found"),
 				quickReplies: templateData.getButtons()?.getQuickreplybuttonsList && templateData.getButtons()?.getQuickreplybuttonsList(),
 				body: templateData.getBody(),
 			},
@@ -60,12 +45,10 @@ const CardDetails: React.FC<templateCardDetails> = ({
 					<div className="mr-4">Id : </div>
 					<div className="text-base mb-1">{Id}</div>
 				</div>
-				{contentArray.map((item, index) => (
-					<div className="flex flex-row text-base mb-1" key={index}>
-						<div className="mr-4">Content : </div>
-						<div className="">{item}</div>
-					</div>
-				))}
+				<div className="flex flex-row text-base mb-1">
+					<div className="mr-4">Content</div>
+					<div className="">{Content}</div>
+				</div>
 
 				<div className="flex flex-row text-base mb-1">
 					<div className="mr-4">CreatedAt : </div>
