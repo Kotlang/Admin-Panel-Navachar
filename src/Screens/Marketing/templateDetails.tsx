@@ -16,9 +16,8 @@ const TemplateDetailsPage = () => {
         body,
         templateId,
         baid,
-        bodyParams,
-        headerParams,
         footer,
+        header,
         mediaUrl,
         mediaType,
         actionsType,
@@ -55,27 +54,14 @@ const TemplateDetailsPage = () => {
                         </div>
 
                         <div className="flex flex-row text-lg">
+                            <p className=" font-bold mr-2">Header: </p>
+                            <p className="">{header}</p>
+                        </div>
+
+                        <div className="flex flex-row text-lg">
                             <p className=" font-bold mr-2">Body: </p>
                             <p className="">{body}</p>
                         </div>
-
-                        {headerParams &&
-                            headerParams.map((item: string, index: any) => (
-                                <div className="flex flex-row mb-1 text-lg" key={index}>
-                                    <div className=" font-bold mr-2">Header Paramters : </div>
-                                    <div className="">{item}</div>
-                                </div>
-                            ))
-                        }
-
-                        {bodyParams &&
-                            bodyParams.map((item: string, index: any) => (
-                                <div className="flex flex-row mb-1 text-lg" key={index}>
-                                    <div className=" font-bold mr-2">Body Paramters : </div>
-                                    <div className="">{item}</div>
-                                </div>
-                            ))
-                        }
 
                         {footer && (
                             <div className="flex flex-row text-lg">

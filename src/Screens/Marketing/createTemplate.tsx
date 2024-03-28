@@ -6,6 +6,7 @@ import { IMessagingTemplate } from "src/types";
 import { CallToActionButtons, QuickReplyButtons, Url } from "src/generated/messaging-service_pb";
 import { ProfileImageUploadURL } from "src/generated/profile_pb";
 import { useNavigate } from "react-router-dom";
+import { readAndCompressImage } from 'browser-image-resizer';
 
 const CreateTemplate = () => {
     const [quickReplyCount, setquickReplyCount] = useState([0]);
@@ -56,34 +57,51 @@ const CreateTemplate = () => {
         });
     }
 
+    const handleMedia = async (file: any, type: string, filename: string) => {
+        setUploading(true)
+        const preSignedUrl = await getPresignedUrl('png');
+        const response = await fetch(preSignedUrl.getUploadurl(), {
+            method: 'PUT',
+            body: file,
+            headers: {
+                'Content-Type': type,
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Failed to upload file');
+        }
+        setMediaUrl(preSignedUrl.getMediaurl());
+        setFileName(filename);
+        console.log('File uploaded successfully.');
+    }
+
     const onUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const { type, files } = e.target;
         if (type === "file") {
             if (files) {
-                const fileName = files[0].name.split('.').pop();
-                if (fileName) {
+                const isJpeg = files[0].type === 'image/jpeg';
+                if (isJpeg) {
                     try {
-                        setUploading(true)
-                        const preSignedUrl = await getPresignedUrl(fileName);
-                        const response = await fetch(preSignedUrl.getUploadurl(), {
-                            method: 'PUT',
-                            body: files[0],
-                            headers: {
-                                'Content-Type': files[0].type,
-                            },
+                        const compressedFile = await readAndCompressImage(files[0], {
+                            mimeType: 'image/png',
                         });
-                        if (!response.ok) {
-                            throw new Error('Failed to upload file');
-                        }
-                        setMediaUrl(preSignedUrl.getMediaurl());
-                        setFileName(files[0].name);
-                        console.log('File uploaded successfully.');
+                        await handleMedia(compressedFile, 'image/png', files[0].name)
                     } catch (error) {
-                        console.error('An error occurred while uploading the file:', error);
+                        console.error('Error compressing image:', error);
                     } finally {
                         setUploading(false);
                     }
-
+                } else {
+                    const fileName = files[0].name.split('.').pop();
+                    if (fileName) {
+                        try {
+                            await handleMedia(files[0], files[0].type, files[0].name)
+                        } catch (error) {
+                            console.error('An error occurred while uploading the file:', error);
+                        } finally {
+                            setUploading(false);
+                        }
+                    }
                 }
             }
         }
@@ -124,14 +142,14 @@ const CreateTemplate = () => {
         const bodyParmas = new Map<string, string>();
         const headerParmas = new Map<string, string>();
 
-        if(bodyParamsCount > 1) {
-            for(let i = 1; i < bodyParamsCount; i++) {
+        if (bodyParamsCount > 1) {
+            for (let i = 1; i < bodyParamsCount; i++) {
                 bodyParmas.set(`variable${i}`, `value ${i}`);
             }
         }
 
-        if(headerParamsCount > 1) {
-            for(let i = 1; i < headerParamsCount; i++) {
+        if (headerParamsCount > 1) {
+            for (let i = 1; i < headerParamsCount; i++) {
                 headerParmas.set(`variable${i}`, `value ${i}`);
             }
         }
@@ -216,7 +234,7 @@ const CreateTemplate = () => {
             )}
             <div className="mt-14">
                 <div className="flex mb-6 items-center">
-                <a href="/marketing/templates">
+                    <a href="/marketing/templates">
                         <img className="h-6 w-6" src={navArrowIcon} alt="" />
                     </a>
                     <h2 className="flex w-full justify-center text-w_text font-barlow font-regular text-2xl leading-7 tracking-[10px] m-3 ">

@@ -15,6 +15,7 @@
     "@types/react-otp-input": "^2.0.5",
     "antd": "^5.14.1",
     "axios": "^1.6.2",
+    "browser-image-resizer": "^2.4.1",
     "chart.js": "^4.4.1",
     "classnames": "^2.3.2",
     "date-fns": "^3.3.1",
