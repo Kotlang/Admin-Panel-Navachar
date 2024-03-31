@@ -5,7 +5,7 @@
 import { AddressProto, CertificationDetails,FarmingType, Gender, LandSizeInAcres } from 'src/generated/common_pb';
 import { EventType } from 'src/generated/events_pb';
 import { LeadChannel, LeadFilters,OperatorType } from 'src/generated/lead_pb';
-import { ActionType, ButtonType, CallToActionButtons, Category, MediaType, MessagingTemplate,QuickReplyButtons } from 'src/generated/messaging-service_pb';
+import {  ButtonType, CallToActionButtons, Category, MediaType, MessagingTemplate,QuickReplyButtons } from 'src/generated/messaging-service_pb';
 
 export interface IUserProfile {
     attributesList?: string[];
@@ -253,7 +253,7 @@ export interface CampaignDetails {
     readBy: number;
 }
 
-export interface Button {
+export interface IButton {
     callToActionButtons: CallToActionButtons[];
     quickReplyButtons: QuickReplyButtons[];
 
@@ -277,7 +277,7 @@ export interface IMessagingTemplate {
     category?: Category;
     wabaId: string;
     buttonType?: ButtonType;
-    buttons?: Button;
+    buttons?: IButton;
 }
 
 export interface IFetchTemplateRequest {
@@ -294,4 +294,14 @@ export interface templateCardDetails {
     mediaUrl: string;
     Content: string;
     createdAt: string;
+}
+
+export interface IMessagePreview {
+    mediaParameters: MediaParameters;
+    headerParameters: [string, string][];
+    bodyParameters: [string, string][];
+    header: string,
+    body: string,
+    footer: string
+    Buttons?: IButton;
 }
