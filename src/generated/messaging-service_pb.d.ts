@@ -2,6 +2,24 @@ import * as jspb from 'google-protobuf'
 
 
 
+export class IdRequest extends jspb.Message {
+  getId(): string;
+  setId(value: string): IdRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): IdRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: IdRequest): IdRequest.AsObject;
+  static serializeBinaryToWriter(message: IdRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): IdRequest;
+  static deserializeBinaryFromReader(message: IdRequest, reader: jspb.BinaryReader): IdRequest;
+}
+
+export namespace IdRequest {
+  export type AsObject = {
+    id: string,
+  }
+}
+
 export class Url extends jspb.Message {
   getUrltype(): UrlType;
   setUrltype(value: UrlType): Url;
@@ -524,10 +542,50 @@ export namespace FetchMessageRequest {
   }
 }
 
+export class MediaUploadRequest extends jspb.Message {
+  getMediaextension(): string;
+  setMediaextension(value: string): MediaUploadRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MediaUploadRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: MediaUploadRequest): MediaUploadRequest.AsObject;
+  static serializeBinaryToWriter(message: MediaUploadRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MediaUploadRequest;
+  static deserializeBinaryFromReader(message: MediaUploadRequest, reader: jspb.BinaryReader): MediaUploadRequest;
+}
+
+export namespace MediaUploadRequest {
+  export type AsObject = {
+    mediaextension: string,
+  }
+}
+
+export class MediaUploadUrl extends jspb.Message {
+  getUploadurl(): string;
+  setUploadurl(value: string): MediaUploadUrl;
+
+  getMediaurl(): string;
+  setMediaurl(value: string): MediaUploadUrl;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MediaUploadUrl.AsObject;
+  static toObject(includeInstance: boolean, msg: MediaUploadUrl): MediaUploadUrl.AsObject;
+  static serializeBinaryToWriter(message: MediaUploadUrl, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MediaUploadUrl;
+  static deserializeBinaryFromReader(message: MediaUploadUrl, reader: jspb.BinaryReader): MediaUploadUrl;
+}
+
+export namespace MediaUploadUrl {
+  export type AsObject = {
+    uploadurl: string,
+    mediaurl: string,
+  }
+}
+
 export enum MediaType { 
   IMAGE = 0,
-  VIDEO = 1,
-  AUDIO = 2,
+  DOCUMENT = 1,
+  VIDEO = 2,
 }
 export enum Category { 
   AUTHENTICATION = 0,

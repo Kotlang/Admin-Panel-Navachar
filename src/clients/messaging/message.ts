@@ -7,7 +7,10 @@ import { addJwtToken } from 'src/clients/utils';
 import {
 	Button,
 	FetchTemplateRequest,
+	IdRequest,
 	MediaParameters,
+	MediaUploadRequest,
+	MediaUploadUrl,
 	MessagingTemplate,
 	MessagingTemplateList,
 	MesssageRequest,
@@ -112,6 +115,17 @@ const messagingClient = {
 			callback
 		);
 	},
+	DeleteMessagingTemplat: (
+		idRequest: IdRequest,
+		metaData: Metadata | null,
+		callback: (err: RpcError, response: StatusResponse) => void
+	) => {
+		getMessagingClient().deleteMessagingTemplate(
+			idRequest,
+			addJwtToken(metaData),
+			callback
+		);
+	},
 	FetchTemplates: (
 		fetchTemplate: IFetchTemplateRequest,
 		metaData: Metadata | null,
@@ -119,6 +133,17 @@ const messagingClient = {
 	) => {
 		getMessagingClient().fetchMessagingTemplates(
 			getFetchTemplatesRequest(fetchTemplate),
+			addJwtToken(metaData),
+			callback
+		);
+	},
+	GetMessageMediaUploadurl: (
+		mediaUploadRequest: MediaUploadRequest,
+		metaData: Metadata | null,
+		callback: (err: RpcError, response: MediaUploadUrl) => void
+	) => {
+		getMessagingClient().getMessageMediaUploadUrl(
+			mediaUploadRequest,
 			addJwtToken(metaData),
 			callback
 		);

@@ -1,6 +1,6 @@
 import * as jspb from 'google-protobuf'
 
-import * as common_pb from './common_pb'; // proto import: "common.proto"
+import * as common_pb from './common_pb';
 
 
 export class CreateOrUpdateLeadRequest extends jspb.Message {
