@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^5.3.5",
     "@material-tailwind/react": "^2.1.9",
     "@react-google-maps/api": "^2.19.2",
     "@testing-library/jest-dom": "^5.16.5",
