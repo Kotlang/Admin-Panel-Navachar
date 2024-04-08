@@ -6,11 +6,14 @@ import { Metadata, RpcError } from 'grpc-web';
 import { addJwtToken } from 'src/clients/utils';
 import {
 	Button,
+	FetchMessageRequest,
 	FetchTemplateRequest,
 	IdRequest,
 	MediaParameters,
 	MediaUploadRequest,
 	MediaUploadUrl,
+	MessageList,
+	MessageProto,
 	MessagingTemplate,
 	MessagingTemplateList,
 	MesssageRequest,
@@ -126,6 +129,28 @@ const messagingClient = {
 			callback
 		);
 	},
+	FetchMessageById: (
+		IdRequest: IdRequest,
+		metaData: Metadata | null,
+		callback: (err: RpcError, response: MessageProto) => void
+	) => {
+		getMessagingClient().fetchMessageById(
+			IdRequest,
+			addJwtToken(metaData),
+			callback
+		);
+	},
+	FetchMessages: (
+		fetchMessageRequest: FetchMessageRequest,
+		metaData: Metadata | null,
+		callback: (err: RpcError, response: MessageList) => void
+	) => {
+		getMessagingClient().fetchMessages(
+			fetchMessageRequest,
+			addJwtToken(metaData),
+			callback
+		);
+	},
 	FetchTemplates: (
 		fetchTemplate: IFetchTemplateRequest,
 		metaData: Metadata | null,
@@ -159,6 +184,7 @@ const messagingClient = {
 			callback
 		);
 	}
+
 };
 
 export default messagingClient;
