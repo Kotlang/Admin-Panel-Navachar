@@ -96,9 +96,12 @@ function RemoveCountryCode(phoneNumbers: string[]): string[] {
 	}
 
 	return phoneNumbers.map((phoneNumber) => {
-		if (phoneNumber.length === 10) return phoneNumber;
-
-		return phoneNumber.replace(/^\+91|91/, '');
+		if(phoneNumber.length === 13 && phoneNumber.startsWith('+91')){
+			return phoneNumber.slice(3);
+		} else if(phoneNumber.length === 12 && phoneNumber.startsWith('91')){
+			return phoneNumber.slice(2);
+		}
+		return phoneNumber;
 	});
 }
 
@@ -109,8 +112,13 @@ function AddCountryCode(phoneNumbers: string[]): string[] {
 	}
 
 	return phoneNumbers.map((phoneNumber) => {
-		if (phoneNumber.length === 10) return `+91${phoneNumber}`;
-
+		if (phoneNumber.length === 10) {
+			return '+91' + phoneNumber;
+		} else if (phoneNumber.length === 11 && phoneNumber.startsWith('0')) {
+			return '+91' + phoneNumber.slice(1);
+		} else if (phoneNumber.length === 12 && phoneNumber.startsWith('91')) {
+			return '+' + phoneNumber;
+		}
 		return phoneNumber;
 	});
 }

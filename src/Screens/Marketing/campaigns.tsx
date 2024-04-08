@@ -41,7 +41,7 @@ const Campaigns = () => {
 
         clients.messaging.messaging.FetchMessages(fetchMessageReq, {} , (err, res) => {
             if (err) {
-                console.log(err);
+                console.error(err);
             } else {
                 const messages: IMessage[] = res.getMessagesList().map((message) => {
                     return {

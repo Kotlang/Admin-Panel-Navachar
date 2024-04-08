@@ -45,8 +45,6 @@ const MessageDetails = () => {
 
         const idRequest = new IdRequest();
         idRequest.setId(id);
-        console.log(id);
-        
 
         clients.messaging.messaging.FetchMessageById(idRequest, {} , (err, res) => {
             if (err) {
