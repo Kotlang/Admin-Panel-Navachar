@@ -7,6 +7,7 @@ import MarketingIndex from 'src/Screens/Marketing';
 import CreateMessage from 'src/Screens/Marketing/createMessage';
 import CreateTemplate from 'src/Screens/Marketing/createTemplate';
 import LeadDetails from 'src/Screens/Marketing/leadDetails';
+import MessageDetails from 'src/Screens/Marketing/messageDetails';
 import TemplateDetailsPage from 'src/Screens/Marketing/templateDetails';
 
 const MarketingMiddleware = () => {
@@ -21,6 +22,7 @@ const MarketingMiddleware = () => {
 			<Route path='templatedetails/:templateId' element={<TemplateDetailsPage />} />
 			<Route path='createmessage/:templateId' element={<CreateMessage />} />
 			<Route path='createmessage' element={<CreateMessage />} />
+			<Route path='campaigns/message/:messageId' element = {<MessageDetails />} />  {/* Message details requires IMessage state */}
 		</Routes>
 	);
 };

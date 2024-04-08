@@ -1,6 +1,6 @@
 import * as jspb from 'google-protobuf'
 
-import * as common_pb from './common_pb'; // proto import: "common.proto"
+import * as common_pb from './common_pb';
 
 
 export class CreateOrUpdateLeadRequest extends jspb.Message {
@@ -248,6 +248,11 @@ export class LeadFilters extends jspb.Message {
   hasAddressfilters(): boolean;
   clearAddressfilters(): LeadFilters;
 
+  getPhonenumbersList(): Array<string>;
+  setPhonenumbersList(value: Array<string>): LeadFilters;
+  clearPhonenumbersList(): LeadFilters;
+  addPhonenumbers(value: string, index?: number): LeadFilters;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): LeadFilters.AsObject;
   static toObject(includeInstance: boolean, msg: LeadFilters): LeadFilters.AsObject;
@@ -270,6 +275,7 @@ export namespace LeadFilters {
     education: string,
     status: Status,
     addressfilters?: AddressFilters.AsObject,
+    phonenumbersList: Array<string>,
   }
 }
 

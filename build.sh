@@ -24,5 +24,5 @@ protoc --js_out=import_style=commonjs,binary:../src/generated \
     *.proto
 cd ..
 
-# yarn install
-# yarn build
+yarn install
+yarn build
