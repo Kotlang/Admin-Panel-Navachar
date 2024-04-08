@@ -102,10 +102,8 @@ const CreateMessage = () => {
 	async function broadCastMessage() {
 
 		if (templateId && recepients.length > 0 && template) {
-			console.log('Sending Message');
 
 			const messageRequest = new MesssageRequest();
-
 			messageRequest.setTemplateid(template.getTemplateid());
 
 			// Add country code to the phone numbers and set the recepients
@@ -144,7 +142,7 @@ const CreateMessage = () => {
 					if (err) {
 						console.error('Error While Sending Message', err);
 					} else {
-						console.log('Message Sent', res);
+						console.debug('Message Sent', res.getStatus);
 					}
 				}
 			);
@@ -260,8 +258,6 @@ const CreateMessage = () => {
 
 						// set Unregistered users
 						const unregisteredUsers = recepientsPhoneNum.filter((phone) => !response.getLeadsList().find((lead) => lead.getPhonenumber() === phone));
-						console.log('Unregistered Users:', unregisteredUsers);
-
 						setUnRegisteredRecepients(unregisteredUsers);
 					}
 				}

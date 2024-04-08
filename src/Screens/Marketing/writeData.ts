@@ -8,17 +8,18 @@ import { LeadChannel, LeadProto, OperatorType } from 'src/generated/lead_pb';
 import { ICreateLeads } from 'src/types';
 import * as XLSX from 'xlsx';
 
+import { RemoveCountryCode } from './utils';
+
 async function CreateLead(lead: ICreateLeads): Promise<void> {
-	return new Promise<void>((resolve, reject) => {
+	return new Promise<void>((resolve) => {
 		const metaData: Metadata | null = null;
 		clients.auth.marketing.CreateLead(lead, metaData, (err: RpcError, response: LeadProto) => {
 			if (err) {
 				console.error('Error While Creating Lead', err);
-				reject(err); // Reject the promise if there's an error
 			} else {
-				console.log('Lead Created', response);
-				resolve(); // Resolve the promise when lead creation is successful
+				console.log('Lead Created', response.getName);
 			}
+			resolve(); // Resolve the promise irrespective of the error
 		});
 	});
 }
@@ -109,7 +110,7 @@ async function GetLeadsFromExcelData(file: any): Promise<ICreateLeads[]> {
 				if (colName[1] === undefined || colName[1] === '') {
 					return;
 				}
-				const phoneNum = colName[0].toString().replace(/^\+91|91/, '');
+				const phoneNum = RemoveCountryCode([colName[0].toString()])[0];
 				const address = new AddressProto();
 				address.setType('Default');
 				address.setCity(colName[5]);

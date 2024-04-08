@@ -126,6 +126,7 @@ const Leads: React.FC<LeadsProps> = ({ search, filter }) => {
 			if (files) {
 				setLoading(true);
 		
+				// TODO: Use Single call to add all leads
 				try {
 					// Convert the raw file data into ICreateLeads array
 					const leadsData: ICreateLeads[] = await GetLeadsFromExcelData(files[0]);
@@ -137,12 +138,12 @@ const Leads: React.FC<LeadsProps> = ({ search, filter }) => {
 			
 					// Wait for all CreateLead promises to resolve
 					await Promise.all(createLeadPromises);
-					setLoading(false);
 				} catch (error) {
 					console.error("Error:", error);
-					setLoading(false);
-
 				}
+				console.debug("Imported Leads");
+				setLoading(false);
+				window.location.reload();
 
 			}
 		}
