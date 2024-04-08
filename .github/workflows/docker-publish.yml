@@ -5,6 +5,7 @@ on:
     # Publish `release` as Docker `latest` image.
     branches:
       - main
+      - dev
 
     # Publish `v1.2.3` tags as releases.
     tags:
@@ -83,8 +84,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Push image
+      - name: Push production image
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            docker push navachar/$IMAGE_NAME:$IMAGE_TAG
+          fi
+
+      - name: Push dev image
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/dev" ]; then
             docker push navachar/$IMAGE_NAME:$IMAGE_TAG
           fi
