@@ -248,6 +248,11 @@ export class LeadFilters extends jspb.Message {
   hasAddressfilters(): boolean;
   clearAddressfilters(): LeadFilters;
 
+  getPhonenumbersList(): Array<string>;
+  setPhonenumbersList(value: Array<string>): LeadFilters;
+  clearPhonenumbersList(): LeadFilters;
+  addPhonenumbers(value: string, index?: number): LeadFilters;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): LeadFilters.AsObject;
   static toObject(includeInstance: boolean, msg: LeadFilters): LeadFilters.AsObject;
@@ -270,6 +275,7 @@ export namespace LeadFilters {
     education: string,
     status: Status,
     addressfilters?: AddressFilters.AsObject,
+    phonenumbersList: Array<string>,
   }
 }
 

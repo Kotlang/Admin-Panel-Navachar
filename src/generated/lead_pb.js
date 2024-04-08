@@ -102,7 +102,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.login.LeadFilters = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.login.LeadFilters.repeatedFields_, null);
 };
 goog.inherits(proto.login.LeadFilters, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -1768,6 +1768,13 @@ proto.login.FetchLeadsRequest.prototype.setPagesize = function(value) {
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.login.LeadFilters.repeatedFields_ = [13];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -1810,7 +1817,8 @@ proto.login.LeadFilters.toObject = function(includeInstance, msg) {
     sideprofession: jspb.Message.getFieldWithDefault(msg, 9, ""),
     education: jspb.Message.getFieldWithDefault(msg, 10, ""),
     status: jspb.Message.getFieldWithDefault(msg, 11, 0),
-    addressfilters: (f = msg.getAddressfilters()) && proto.login.AddressFilters.toObject(includeInstance, f)
+    addressfilters: (f = msg.getAddressfilters()) && proto.login.AddressFilters.toObject(includeInstance, f),
+    phonenumbersList: (f = jspb.Message.getRepeatedField(msg, 13)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -1896,6 +1904,10 @@ proto.login.LeadFilters.deserializeBinaryFromReader = function(msg, reader) {
       var value = new proto.login.AddressFilters;
       reader.readMessage(value,proto.login.AddressFilters.deserializeBinaryFromReader);
       msg.setAddressfilters(value);
+      break;
+    case 13:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addPhonenumbers(value);
       break;
     default:
       reader.skipField();
@@ -2010,6 +2022,13 @@ proto.login.LeadFilters.serializeBinaryToWriter = function(message, writer) {
       12,
       f,
       proto.login.AddressFilters.serializeBinaryToWriter
+    );
+  }
+  f = message.getPhonenumbersList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      13,
+      f
     );
   }
 };
@@ -2266,6 +2285,43 @@ proto.login.LeadFilters.prototype.clearAddressfilters = function() {
  */
 proto.login.LeadFilters.prototype.hasAddressfilters = function() {
   return jspb.Message.getField(this, 12) != null;
+};
+
+
+/**
+ * repeated string phoneNumbers = 13;
+ * @return {!Array<string>}
+ */
+proto.login.LeadFilters.prototype.getPhonenumbersList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 13));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.login.LeadFilters} returns this
+ */
+proto.login.LeadFilters.prototype.setPhonenumbersList = function(value) {
+  return jspb.Message.setField(this, 13, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.login.LeadFilters} returns this
+ */
+proto.login.LeadFilters.prototype.addPhonenumbers = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 13, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.login.LeadFilters} returns this
+ */
+proto.login.LeadFilters.prototype.clearPhonenumbersList = function() {
+  return this.setPhonenumbersList([]);
 };
 
 

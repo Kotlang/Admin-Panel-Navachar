@@ -125,6 +125,49 @@ export class MessagingServiceClient {
     this.methodDescriptorFetchMessages);
   }
 
+  methodDescriptorFetchMessageById = new grpcWeb.MethodDescriptor(
+    '/notification.MessagingService/FetchMessageById',
+    grpcWeb.MethodType.UNARY,
+    messaging$service_pb.IdRequest,
+    messaging$service_pb.MessageProto,
+    (request: messaging$service_pb.IdRequest) => {
+      return request.serializeBinary();
+    },
+    messaging$service_pb.MessageProto.deserializeBinary
+  );
+
+  fetchMessageById(
+    request: messaging$service_pb.IdRequest,
+    metadata: grpcWeb.Metadata | null): Promise<messaging$service_pb.MessageProto>;
+
+  fetchMessageById(
+    request: messaging$service_pb.IdRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.RpcError,
+               response: messaging$service_pb.MessageProto) => void): grpcWeb.ClientReadableStream<messaging$service_pb.MessageProto>;
+
+  fetchMessageById(
+    request: messaging$service_pb.IdRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.RpcError,
+               response: messaging$service_pb.MessageProto) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/notification.MessagingService/FetchMessageById',
+        request,
+        metadata || {},
+        this.methodDescriptorFetchMessageById,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/notification.MessagingService/FetchMessageById',
+    request,
+    metadata || {},
+    this.methodDescriptorFetchMessageById);
+  }
+
   methodDescriptorSendUniqueMessage = new grpcWeb.MethodDescriptor(
     '/notification.MessagingService/SendUniqueMessage',
     grpcWeb.MethodType.UNARY,
