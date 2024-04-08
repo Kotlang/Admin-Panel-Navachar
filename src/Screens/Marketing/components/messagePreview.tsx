@@ -62,7 +62,7 @@ const MessageComponent: React.FC<PreviewMessageComponentProps> = ({ message }) =
 const RenderMedia = ({ mediaParameteres }: { mediaParameteres: MediaParameters | undefined}) => {
 
 	if (mediaParameteres?.mediaType === MediaType.IMAGE) {
-		return <img src={mediaParameteres?.link} alt="media" />;
+		return <img className='max-w-xs' src={mediaParameteres?.link} alt="media" />;
 	} else if (mediaParameteres?.mediaType === MediaType.VIDEO) {
 		return <video src={mediaParameteres.link} controls />;
 	} else if (mediaParameteres?.mediaType == MediaType.DOCUMENT) {
@@ -80,7 +80,7 @@ const RenderButton = ({ buttons }: { buttons: IButton | undefined }) => {
 				if (button.getActiontype() === 0) {
 					return (
 						button.getText() &&
-							<Button type="primary" style={{ margin: '5px' }} size='large' href=''>
+							<Button key={button.getText()} type="primary" style={{ margin: '5px' }} size='large' href=''>
 								<Row style={{ alignContent : 'center' }}>
 									<CallIconFilled/>{button.getText()}
 								</Row>
@@ -89,7 +89,7 @@ const RenderButton = ({ buttons }: { buttons: IButton | undefined }) => {
 				}else {
 					return (
 						button.getText() &&
-							<Button type="primary" style={{ margin: '5px' }} size='large' href={button.getUrl()?.getLink()} target="_blank">
+							<Button key={button.getText()} type="primary" style={{ margin: '5px' }} size='large' href={button.getUrl()?.getLink()} target="_blank">
 								<Row style={{ alignContent : 'center' }}>
 									<OpenLinkIcon/> { button.getText()}
 								</Row>
@@ -100,7 +100,7 @@ const RenderButton = ({ buttons }: { buttons: IButton | undefined }) => {
 			{buttons?.quickReplyButtons?.map((button) => {
 				return (
 					button.getText() &&
-						<Button type="primary" style={{ margin: '5px' }} size='large' href=''>{button.getText()}</Button>
+						<Button key={button.getText()} type="primary" style={{ margin: '5px' }} size='large' href=''>{button.getText()}</Button>
 				);
 			})}
 		</Row>

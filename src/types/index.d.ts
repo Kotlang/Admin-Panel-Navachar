@@ -5,7 +5,7 @@
 import { AddressProto, CertificationDetails,FarmingType, Gender, LandSizeInAcres } from 'src/generated/common_pb';
 import { EventType } from 'src/generated/events_pb';
 import { LeadChannel, LeadFilters,OperatorType } from 'src/generated/lead_pb';
-import {  ButtonType, CallToActionButtons, Category, MediaType, MessagingTemplate,QuickReplyButtons } from 'src/generated/messaging-service_pb';
+import {  ButtonType, CallToActionButtons, Category, MediaType, MessagingTemplate,QuickReplyButtons, Reply, ScheduleInfo } from 'src/generated/messaging-service_pb';
 
 export interface IUserProfile {
     attributesList?: string[];
@@ -304,4 +304,30 @@ export interface IMessagePreview {
     body: string,
     footer: string
     Buttons?: IButton;
+}
+
+export interface IMessage {
+    messageId: string;
+    templateId: string;
+    sender: string;
+    recipients: string[];
+    recievedBy: string[];
+    readBy: string[];
+    responses: Map<string, Reply>;
+    failedRecipients: s1711880071tring[];
+    createdOn: number;
+    scheduleInfo?: ScheduleInfo;
+    mediaParameters?: MediaParameters;
+    headerParameters: Map<string, string>;
+    bodyParameters: Map<string, string>;
+    buttons: Map<string, string>;
+    transactionId: string;
+    status: string;
+}
+
+export interface TableParams {
+	pagination?: TablePaginationConfig;
+	sortField?: string;
+	sortOrder?: string;
+	filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
 }

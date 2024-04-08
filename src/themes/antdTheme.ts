@@ -13,9 +13,7 @@ export const lightTheme: ThemeConfig = {
 export const darkTheme: ThemeConfig = {
 	algorithm : theme.darkAlgorithm,
 	components: {
-		Button: {
-		}
-		,Tabs: {
+		Tabs: {
 			inkBarColor: '#34C06E',
 			itemHoverColor: '#34C06E',
 			itemSelectedColor: '#34C06E'

@@ -249,7 +249,7 @@ const CreateTemplate = () => {
             const regex = /\$\((.*?)\)/g;
             let match;
             while ((match = regex.exec(body)) !== null) {
-                bodyParams.set(match[1], "sampleValue")
+                bodyParams.set(match[1], match[1] + "_value")
             }
         }
         template.bodyParameters = bodyParams;
@@ -260,7 +260,7 @@ const CreateTemplate = () => {
             const regex = /\$\((.*?)\)/g;
             let match;
             while ((match = regex.exec(headerText)) !== null) {
-                headerParams.set(match[1], "sampleValue")
+                headerParams.set(match[1], match[1] + "_value")
             }
         }
         template.headerParameters = headerParams;
@@ -342,12 +342,24 @@ const CreateTemplate = () => {
         switch (e.key) {
             case '1':
                 setButtonType("None");
+                setCallPhoneButtonContent([["", ""]]);
+                setVisitWebsiteButtonContent([["", ""]]);
+                setActionButtonType(0);
+                setQuickReply([""]);
                 break;
             case '2':
                 setButtonType("CallToAction");
+                setCallPhoneButtonContent([["", ""]]);
+                setVisitWebsiteButtonContent([["", ""]]);
+                setActionButtonType(0);
+                setQuickReply([""]);
                 break;
             case '3':
                 setButtonType("QuickReply");
+                setCallPhoneButtonContent([["", ""]]);
+                setVisitWebsiteButtonContent([["", ""]]);
+                setActionButtonType(0);
+                setQuickReply([""]);
                 break;
             default:
                 break;
@@ -411,9 +423,6 @@ const CreateTemplate = () => {
             callToAction.setText(value[0])
             callPhoneButtons.push(callToAction)
         })
-
-        console.log(messagePreview?.Buttons);
-        
 
         setMessagePreview(messagePreview => ({
             ...messagePreview,
