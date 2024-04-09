@@ -27,7 +27,6 @@ const AppLayout: FC<IAppLayoutProps> = ({ className }) => {
 	}));
 
 	useEffect(() => {
-		console.log(authResponse);
 		if (!isLogin()) {
 			navigate('/login');
 		}
