@@ -9,5 +9,5 @@ export interface ILeadTableDataType {
 	type?: string;
 	lastMessage?: string;
 	consent?: string;
-	userId: string;
+	userId?: string;
 }

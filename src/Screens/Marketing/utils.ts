@@ -123,4 +123,17 @@ function AddCountryCode(phoneNumbers: string[]): string[] {
 	});
 }
 
-export { operatorTypeMapping, getDateAndTimeFromUnixTimestamp, getCurrentUnixTimestamp, ExportLeadToExcel, RemoveCountryCode, AddCountryCode };
+function FilterDuplicatesByKey<T>(array: T[], key: keyof T): T[] {
+	const seen = new Set<any>();
+	return array.filter(item => {
+		const itemKey = item[key];
+		if (seen.has(itemKey)) {
+			return false;
+		} else {
+			seen.add(itemKey);
+			return true;
+		}
+	});
+}
+
+export { operatorTypeMapping, getDateAndTimeFromUnixTimestamp, getCurrentUnixTimestamp, ExportLeadToExcel, RemoveCountryCode, AddCountryCode, FilterDuplicatesByKey };

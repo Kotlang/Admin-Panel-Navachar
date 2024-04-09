@@ -218,7 +218,7 @@ export interface CommentItems {
 
 export interface ICreateLeads {
 	name: string;
-	phoneNumber?: string;
+	phoneNumber: string;
 	operatorType?: OperatorType;
 	channel?: LeadChannel;
 	source?: string ;
