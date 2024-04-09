@@ -7,11 +7,11 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { RpcError, Metadata } from "grpc-web";
 import type {  TableProps } from "antd";
-import { Col, Divider, Row } from "antd";
+import { Button, Col, Divider, Modal, Row } from "antd";
 import { ICreateLeads, IFetchLeads, TableParams } from "src/types";
 import clients from "src/clients";
 import { LeadListResponse } from "src/generated/lead_pb";
-import { ExportLeadToExcel, operatorTypeMapping } from "./utils";
+import { ExportLeadToExcel, FilterDuplicatesByKey, operatorTypeMapping } from "./utils";
 import LeadsTable from "./components/LeadTable";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import { CreateLead, GetLeadsFromExcelData } from "./writeData";
@@ -34,16 +34,61 @@ interface LeadsProps {
 const Leads: React.FC<LeadsProps> = ({ search, filter }) => {
 	const [data, setData] = useState<DataType[]>();
 	const [loading, setLoading] = useState<boolean>(false);
+	const [modalOpen, setModalOpen] = useState(false);
+	const [leadImportData, setLeadImportData] = useState<ICreateLeads[]>([]);
+	const [modalLoading, setModalLoading] = useState<boolean>(false);
 	const [tableParams, setTableParams] = useState<TableParams>({
 		pagination: {
 			current: 1,
-			pageSize: 14,
+			pageSize: 10,
 		},
 	});
+	const [modalTableParams, setModalTableParams] = useState<TableParams>({
+		pagination: {
+			current: 1,
+			pageSize: 8,
+		},
+	});
+
+	const showModal = () => {
+		console.log("Show Modal");
+		
+		setModalOpen(true);
+	};
+
+	const handleOk = async () => {
+		setModalLoading(true);
+		// Array to store all promises returned by CreateLead function
+		const createLeadPromises: Promise<void>[] = leadImportData.map(async (lead: ICreateLeads) => {
+			await CreateLead(lead);
+		});
+
+		// Wait for all CreateLead promises to resolve
+		await Promise.all(createLeadPromises);
+		setModalLoading(false);
+		window.location.reload()
+	};
+
+	const handleCancel = () => {
+		setLeadImportData([]);
+		setModalOpen(false);
+		window.location.reload()
+	};
 
 	// Handle table change event to update the table params
 	const handleTableChange: TableProps["onChange"] = (pagination) => {
 		setTableParams({
+			pagination: pagination,
+		});
+
+		if (pagination.pageSize !== tableParams.pagination?.pageSize) {
+			setData([]);
+		}
+	};
+
+	// Handle table change event to update the table params
+	const handleModalTableChange: TableProps["onChange"] = (pagination) => {
+		setModalTableParams({
 			pagination: pagination,
 		});
 
@@ -121,6 +166,8 @@ const Leads: React.FC<LeadsProps> = ({ search, filter }) => {
 
 	// Handle Import of leads
 	const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		console.log("Import Leads");
+		
 		const { type, files } = e.target;
 		if (type === "file") {
 			if (files) {
@@ -130,21 +177,13 @@ const Leads: React.FC<LeadsProps> = ({ search, filter }) => {
 				try {
 					// Convert the raw file data into ICreateLeads array
 					const leadsData: ICreateLeads[] = await GetLeadsFromExcelData(files[0]);
+					setLeadImportData(FilterDuplicatesByKey(leadsData, 'phoneNumber'));
 			
-					// Array to store all promises returned by CreateLead function
-					const createLeadPromises: Promise<void>[] = leadsData.map(async (lead: ICreateLeads) => {
-						await CreateLead(lead);
-					});
-			
-					// Wait for all CreateLead promises to resolve
-					await Promise.all(createLeadPromises);
+					showModal();
 				} catch (error) {
 					console.error("Error:", error);
 				}
-				console.debug("Imported Leads");
 				setLoading(false);
-				window.location.reload();
-
 			}
 		}
 	};
@@ -197,6 +236,39 @@ const Leads: React.FC<LeadsProps> = ({ search, filter }) => {
 				columnsToDisplay={[ 'userName', 'phoneNo', 'appStatus', 'type', 'lastMessage', 'consent', 'userId' ]}
 				onChange={handleTableChange}
 			/>
+			<Modal
+				open={modalOpen}
+				title="Update Lead"
+				onOk={handleOk}
+				onCancel={handleCancel}
+				width={"70%"}
+				footer={[
+					<Button key="back" type="primary" danger onClick={handleCancel}>
+            Cancel
+					</Button>,
+					<Button key="submit" type="primary" loading={modalLoading} onClick={handleOk}>
+            Confirm
+					</Button>
+				]}
+			>
+				<LeadsTable 
+				data={
+					leadImportData.map((lead) => {
+						return {
+							userName: lead.name,
+							phoneNo: lead.phoneNumber,
+							appStatus: "Not Installed",
+							type: "NA",
+							lastMessage: "Not Implemented"
+						};
+					})
+				}
+				loading={modalLoading}
+				pagination={modalTableParams.pagination}
+				columnsToDisplay={[ 'userName', 'phoneNo', 'appStatus', 'type', 'lastMessage' ]}
+				onChange={handleModalTableChange}
+				/>
+			</Modal>
 		</div>
 		
 	);

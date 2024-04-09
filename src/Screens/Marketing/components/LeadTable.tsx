@@ -113,7 +113,7 @@ const LeadsTable: React.FC<LeadsTableProps> = ({
   return (
       <Table
         columns={columns}
-        rowKey={(record) => record.userId}
+        rowKey={(record) => record.phoneNo}
         dataSource={data}
         pagination={pagination}
         loading={loading}
