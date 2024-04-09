@@ -1,130 +1,150 @@
-/* eslint-disable */
-import { useState } from 'react';
-import * as XLSX from 'xlsx';
-import { ICreateLeads } from 'src/types';
-import clients from 'src/clients';
-import { AddressProto, CertificationDetails, LandSizeInAcres, FarmingType } from 'src/generated/common_pb';
+// Copyright 2022-2023 @Kotlang/navachaar-admin-portal authors & contributors
+// This software may be modified and distributed under the terms
+// of the Apache-2.0 license. See the LICENSE file for details.
 import { Metadata, RpcError } from 'grpc-web';
-import { LeadProto, LeadChannel, OperatorType } from 'src/generated/lead_pb';
+import clients from 'src/clients';
+import { AddressProto, CertificationDetails, FarmingType,LandSizeInAcres } from 'src/generated/common_pb';
+import { LeadChannel, LeadProto, OperatorType } from 'src/generated/lead_pb';
+import { ICreateLeads } from 'src/types';
+import * as XLSX from 'xlsx';
 
-async function createLead(lead: ICreateLeads) {
-    const metaData: Metadata | null = null;
-    clients.auth.marketing.CreateLead(lead, metaData, (err: RpcError, response: LeadProto) => {
-        if (err) {
-            console.error("Error While Creating Lead", err)
-        } else {
-            console.log("Lead Created", response)
-        }
-    });
+import { RemoveCountryCode } from './utils';
+
+async function CreateLead(lead: ICreateLeads): Promise<void> {
+	return new Promise<void>((resolve) => {
+		const metaData: Metadata | null = null;
+		clients.auth.marketing.CreateLead(lead, metaData, (err: RpcError, response: LeadProto) => {
+			if (err) {
+				console.error('Error While Creating Lead', err);
+			} else {
+				console.log('Lead Created', response.getName);
+			}
+			resolve(); // Resolve the promise irrespective of the error
+		});
+	});
 }
 
+const operatorTypeMapping = (operatorType: string | undefined) => {
 
-const operatorTypeMapping = (operatorType: string) => {
-    switch (operatorType) {
-        case 'UNSPECIFIED_OPERATOR':
-            return OperatorType.UNSPECIFIED_OPERATOR;
-        case 'FARMER':
-            return OperatorType.FARMER;
-        case 'INPUT_PROVIDER':
-            return OperatorType.INPUT_PROVIDER;
-        case 'AGRI_CONSULTANT':
-            return OperatorType.AGRI_CONSULTANT;
-        case 'TRACENET_CONSULTANT':
-            return OperatorType.TRACENET_CONSULTANT;
-        default:
-            return OperatorType.UNSPECIFIED_OPERATOR;
-    }
+	if(operatorType === undefined || operatorType === '') {
+		return OperatorType.UNSPECIFIED_OPERATOR;
+	}
+
+	switch (operatorType.toUpperCase()) {
+	case 'FARMER':
+		return OperatorType.FARMER;
+	case 'INPUT_PROVIDER':
+		return OperatorType.INPUT_PROVIDER;
+	case 'AGRI_CONSULTANT':
+		return OperatorType.AGRI_CONSULTANT;
+	case 'TRACENET_CONSULTANT':
+		return OperatorType.TRACENET_CONSULTANT;
+	default:
+		return OperatorType.UNSPECIFIED_OPERATOR;
+	}
+};
+
+const leadChannelMapping = (channel: string | undefined) => {
+	if (channel === undefined || channel === '') {
+		return LeadChannel.UNSPECIFIED_CHANNEL;
+	}
+	switch (channel.toUpperCase()) {
+	case 'WHATSAPP_GROUP':
+		return LeadChannel.WHATSAPP_GROUP;
+	case 'FACEBOOK_GROUP':
+		return LeadChannel.FACEBOOK_GROUP;
+	case 'FACEBOOK_AD':
+		return LeadChannel.FACEBOOK_AD;
+	default:
+		return LeadChannel.UNSPECIFIED_CHANNEL;
+	}
+};
+
+const landsizeInAcresMapping = (landSize: string | undefined) => {
+	if (landSize === undefined || landSize === '') {
+		return LandSizeInAcres.UNSPECIFIEDLANDSIZE;
+	}
+
+	switch (landSize.toUpperCase()) {
+	case 'LESSTHAN2':
+		return LandSizeInAcres.LESSTHAN2;
+	case 'BETWEEN2AND10':
+		return LandSizeInAcres.BETWEEN2AND10;
+	case 'GREATERTHAN10':
+		return LandSizeInAcres.GREATERTHAN10;
+	default:
+		return LandSizeInAcres.UNSPECIFIEDLANDSIZE;
+	}
+
+};
+
+const farmingTypeMapping = (farmingType: string | undefined) => {
+	if (farmingType === undefined || farmingType === '') {
+		return FarmingType.UNSPECIFIEDFARMING;
+	}
+	switch (farmingType) {
+	case 'ORGANIC':
+		return FarmingType.ORGANIC;
+	case 'CHEMICAL':
+		return FarmingType.CHEMICAL;
+	case 'MIX':
+		return FarmingType.MIX;
+	default:
+		return FarmingType.UNSPECIFIEDFARMING;
+	}
+};
+
+async function GetLeadsFromExcelData(file: any): Promise<ICreateLeads[]> {
+	const leads: ICreateLeads[] = [];
+	if (file) {
+		try {
+			const ab = await file.arrayBuffer();
+			const wb = XLSX.read(ab);
+			const wsname = wb.SheetNames[0];
+			const ws = wb.Sheets[wsname];
+			const rows: ICreateLeads[] = XLSX.utils.sheet_to_json<ICreateLeads>(ws, { header: 1 });
+			rows.slice(1).forEach(async (colName: any) => {
+				if (colName[0] === undefined || colName[0] === '') {
+					return;
+				}
+				if (colName[1] === undefined || colName[1] === '') {
+					return;
+				}
+				const phoneNum = RemoveCountryCode([colName[0].toString()])[0];
+				const address = new AddressProto();
+				address.setType('Default');
+				address.setCity(colName[5]);
+				const certification = new CertificationDetails();
+
+				if (colName[8]) {
+					certification.setCertificationid(colName[8].split(',')[0]);
+					certification.setCertificationname(colName[8].split(',')[1]);
+					certification.setCertificationagency(colName[8].split(',')[2]);
+					certification.setIscertified(true);
+				}
+				const lead: ICreateLeads = {
+					addresses: [address],
+					certificationDetails: certification,
+					channel: leadChannelMapping(colName[3]),
+					crops: colName[9] ? colName[9].split(',') : [],
+					education: colName[14] || 'NA',
+					farmingType: farmingTypeMapping(colName[7]),
+					landSizeInAcres: landsizeInAcresMapping(colName[6]),
+					mainProfession: colName[10] || 'NA',
+					name: colName[1],
+					operatorType: operatorTypeMapping(colName[2]),
+					organizationName: colName[11] || 'NA',
+					phoneNumber: phoneNum,
+					sideProfession: colName[12] || 'NA',
+					source: colName[4]?.toString(),
+					userInterviewNotes: colName[13] || 'NA'
+				};
+				leads.push(lead);
+			});
+		} catch (err) {
+			console.error('Error While Extracting Data', err);
+		}
+	}
+	return leads;
 }
-
-const leadChannelMapping = (channel: string) => {
-    switch (channel) {
-        case 'UNSPECIFIED_CHANNEL':
-            return LeadChannel.UNSPECIFIED_CHANNEL;
-        case 'WHATSAPP_GROUP':
-            return LeadChannel.WHATSAPP_GROUP;
-        case 'FACEBOOK_GROUP':
-            return LeadChannel.FACEBOOK_GROUP;
-        case 'FACEBOOK_AD':
-            return LeadChannel.FACEBOOK_AD;
-        default:
-            return LeadChannel.UNSPECIFIED_CHANNEL;
-    }
-}
-
-
-const landsizeInAcresMapping = (landSize: string) => {
-    switch (landSize) {
-        case 'UnspecifiedLandSize':
-            return LandSizeInAcres.UNSPECIFIEDLANDSIZE;
-        case 'LESSTHAN2':
-            return LandSizeInAcres.LESSTHAN2;
-        case 'BETWEEN2AND10':
-            return LandSizeInAcres.BETWEEN2AND10;
-        case 'GREATERTHAN10':
-            return LandSizeInAcres.GREATERTHAN10;
-        default:
-            return LandSizeInAcres.UNSPECIFIEDLANDSIZE;
-    }
-
-}
-
-const farmingTypeMapping = (farmingType: string) => {
-    switch (farmingType) {
-        case 'UnspecifiedFarming':
-            return FarmingType.UNSPECIFIEDFARMING;
-        case 'ORGANIC':
-            return FarmingType.ORGANIC;
-        case 'CHEMICAL':
-            return FarmingType.CHEMICAL;
-        case 'MIX':
-            return FarmingType.MIX;
-        default:
-            return FarmingType.UNSPECIFIEDFARMING;
-    }
-}
-
-async function HandleImportedData(file: any) {
-    if (file) {
-        try {
-            const ab = await file.arrayBuffer();
-            const wb = XLSX.read(ab);
-            const wsname = wb.SheetNames[0];
-            const ws = wb.Sheets[wsname];
-            const rows: ICreateLeads[] = XLSX.utils.sheet_to_json<ICreateLeads>(ws, { header: 1 });
-            rows.slice(1).forEach(async (colName: any) => {
-                const address = new AddressProto();
-                address.setType('Default')
-                address.setCity(colName[5]);
-                const certification = new CertificationDetails();
-                if (colName[8]) {
-                    certification.setCertificationid(colName[8].split(',')[0]);
-                    certification.setCertificationname(colName[8].split(',')[1]);
-                    certification.setCertificationagency(colName[8].split(',')[2]);
-                    certification.setIscertified(true);
-                }
-                const lead: ICreateLeads = {
-                    name: colName[1],
-                    phoneNumber: colName[0].toString(),
-                    operatorType: operatorTypeMapping(colName[2]),
-                    channel: leadChannelMapping(colName[3]),
-                    source: colName[4].toString(),
-                    addresses: [address],
-                    landSizeInAcres: landsizeInAcresMapping(colName[6]),
-                    farmingType: farmingTypeMapping(colName[7]),
-                    certificationDetails: certification,
-                    crops: colName[9] ? colName[9].split(',') : [],
-                    mainProfession: colName[10] || 'NA',
-                    organizationName: colName[11] || 'NA',
-                    sideProfession: colName[12] || 'NA',
-                    userInterviewNotes: colName[13] || 'NA',
-                    education: colName[14] || 'NA'
-                }
-                console.log(lead);
-                await createLead(lead);
-            });
-        } catch (err) {
-            console.error("Error While Extracting Data", err)
-        }
-    }
-}
-export default HandleImportedData;
+export { GetLeadsFromExcelData, CreateLead };

@@ -22,7 +22,6 @@ import { addJwtToken } from '../utils';
 
 export const getEventsClient = (() => {
 	const socialURL = process.env.REACT_APP_SOCIAL_URL;
-	console.log(socialURL);
 	let client: EventsClient;
 	if (socialURL) {
 		client = new EventsClient(socialURL);

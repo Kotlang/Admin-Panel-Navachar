@@ -2,6 +2,24 @@ import * as jspb from 'google-protobuf'
 
 
 
+export class IdRequest extends jspb.Message {
+  getId(): string;
+  setId(value: string): IdRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): IdRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: IdRequest): IdRequest.AsObject;
+  static serializeBinaryToWriter(message: IdRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): IdRequest;
+  static deserializeBinaryFromReader(message: IdRequest, reader: jspb.BinaryReader): IdRequest;
+}
+
+export namespace IdRequest {
+  export type AsObject = {
+    id: string,
+  }
+}
+
 export class Url extends jspb.Message {
   getUrltype(): UrlType;
   setUrltype(value: UrlType): Url;
@@ -264,9 +282,6 @@ export class MesssageRequest extends jspb.Message {
   getWabaid(): string;
   setWabaid(value: string): MesssageRequest;
 
-  getPreview(): string;
-  setPreview(value: string): MesssageRequest;
-
   getScheduleinfo(): ScheduleInfo | undefined;
   setScheduleinfo(value?: ScheduleInfo): MesssageRequest;
   hasScheduleinfo(): boolean;
@@ -289,7 +304,6 @@ export namespace MesssageRequest {
     mediaparameters?: MediaParameters.AsObject,
     recipientphonenumberList: Array<string>,
     wabaid: string,
-    preview: string,
     scheduleinfo?: ScheduleInfo.AsObject,
   }
 }
@@ -366,9 +380,32 @@ export namespace FetchTemplateRequest {
   }
 }
 
+export class Reply extends jspb.Message {
+  getRepliesList(): Array<string>;
+  setRepliesList(value: Array<string>): Reply;
+  clearRepliesList(): Reply;
+  addReplies(value: string, index?: number): Reply;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Reply.AsObject;
+  static toObject(includeInstance: boolean, msg: Reply): Reply.AsObject;
+  static serializeBinaryToWriter(message: Reply, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Reply;
+  static deserializeBinaryFromReader(message: Reply, reader: jspb.BinaryReader): Reply;
+}
+
+export namespace Reply {
+  export type AsObject = {
+    repliesList: Array<string>,
+  }
+}
+
 export class MessageProto extends jspb.Message {
   getMessageid(): string;
   setMessageid(value: string): MessageProto;
+
+  getTemplateid(): string;
+  setTemplateid(value: string): MessageProto;
 
   getSender(): string;
   setSender(value: string): MessageProto;
@@ -377,9 +414,6 @@ export class MessageProto extends jspb.Message {
   setRecipientsList(value: Array<string>): MessageProto;
   clearRecipientsList(): MessageProto;
   addRecipients(value: string, index?: number): MessageProto;
-
-  getMessage(): string;
-  setMessage(value: string): MessageProto;
 
   getRecievedbyList(): Array<string>;
   setRecievedbyList(value: Array<string>): MessageProto;
@@ -391,10 +425,8 @@ export class MessageProto extends jspb.Message {
   clearReadbyList(): MessageProto;
   addReadby(value: string, index?: number): MessageProto;
 
-  getRespondedbyList(): Array<string>;
-  setRespondedbyList(value: Array<string>): MessageProto;
-  clearRespondedbyList(): MessageProto;
-  addRespondedby(value: string, index?: number): MessageProto;
+  getResponsesMap(): jspb.Map<string, Reply>;
+  clearResponsesMap(): MessageProto;
 
   getFailedrecipientsList(): Array<string>;
   setFailedrecipientsList(value: Array<string>): MessageProto;
@@ -409,10 +441,16 @@ export class MessageProto extends jspb.Message {
   hasScheduleinfo(): boolean;
   clearScheduleinfo(): MessageProto;
 
+  getHeaderparametersMap(): jspb.Map<string, string>;
+  clearHeaderparametersMap(): MessageProto;
+
   getMediaparameters(): MediaParameters | undefined;
   setMediaparameters(value?: MediaParameters): MessageProto;
   hasMediaparameters(): boolean;
   clearMediaparameters(): MessageProto;
+
+  getBodyparametersMap(): jspb.Map<string, string>;
+  clearBodyparametersMap(): MessageProto;
 
   getButtonsMap(): jspb.Map<string, string>;
   clearButtonsMap(): MessageProto;
@@ -431,16 +469,18 @@ export class MessageProto extends jspb.Message {
 export namespace MessageProto {
   export type AsObject = {
     messageid: string,
+    templateid: string,
     sender: string,
     recipientsList: Array<string>,
-    message: string,
     recievedbyList: Array<string>,
     readbyList: Array<string>,
-    respondedbyList: Array<string>,
+    responsesMap: Array<[string, Reply.AsObject]>,
     failedrecipientsList: Array<string>,
     createdon: number,
     scheduleinfo?: ScheduleInfo.AsObject,
+    headerparametersMap: Array<[string, string]>,
     mediaparameters?: MediaParameters.AsObject,
+    bodyparametersMap: Array<[string, string]>,
     buttonsMap: Array<[string, string]>,
     transactionid: string,
   }
@@ -524,10 +564,50 @@ export namespace FetchMessageRequest {
   }
 }
 
+export class MediaUploadRequest extends jspb.Message {
+  getMediaextension(): string;
+  setMediaextension(value: string): MediaUploadRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MediaUploadRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: MediaUploadRequest): MediaUploadRequest.AsObject;
+  static serializeBinaryToWriter(message: MediaUploadRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MediaUploadRequest;
+  static deserializeBinaryFromReader(message: MediaUploadRequest, reader: jspb.BinaryReader): MediaUploadRequest;
+}
+
+export namespace MediaUploadRequest {
+  export type AsObject = {
+    mediaextension: string,
+  }
+}
+
+export class MediaUploadUrl extends jspb.Message {
+  getUploadurl(): string;
+  setUploadurl(value: string): MediaUploadUrl;
+
+  getMediaurl(): string;
+  setMediaurl(value: string): MediaUploadUrl;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MediaUploadUrl.AsObject;
+  static toObject(includeInstance: boolean, msg: MediaUploadUrl): MediaUploadUrl.AsObject;
+  static serializeBinaryToWriter(message: MediaUploadUrl, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MediaUploadUrl;
+  static deserializeBinaryFromReader(message: MediaUploadUrl, reader: jspb.BinaryReader): MediaUploadUrl;
+}
+
+export namespace MediaUploadUrl {
+  export type AsObject = {
+    uploadurl: string,
+    mediaurl: string,
+  }
+}
+
 export enum MediaType { 
   IMAGE = 0,
-  VIDEO = 1,
-  AUDIO = 2,
+  DOCUMENT = 1,
+  VIDEO = 2,
 }
 export enum Category { 
   AUTHENTICATION = 0,
@@ -544,6 +624,6 @@ export enum ActionType {
   VISITWEBSITE = 1,
 }
 export enum UrlType { 
-  STATIC = 0,
-  DYNAMIC = 1,
+  STATICURL = 0,
+  DYNAMICURL = 1,
 }

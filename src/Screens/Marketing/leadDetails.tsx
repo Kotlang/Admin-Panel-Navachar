@@ -62,12 +62,11 @@ const LeadDetails = () => {
             getLead(leadId);
         } else {
             setLoading(false);
-            console.log("no id found");
+            console.debug("no id found");
         }
     }, [leadId]);
 
     const handleDelete = () => {
-        console.log('delete hit')
         const metaData: Metadata | null = null;
         if (leadId) {
             clients.auth.marketing.DeleteLeadById(
@@ -77,7 +76,7 @@ const LeadDetails = () => {
                     if (err) {
                         console.error("Error deleting lead:", err);
                     } else {
-                        console.log("Lead deleted successfully");
+                        console.debug("Lead deleted successfully");
                         navigate("/marketing");
                     }
                 }

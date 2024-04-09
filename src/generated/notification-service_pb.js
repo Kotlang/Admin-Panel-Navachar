@@ -13,13 +13,7 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global =
-    (typeof globalThis !== 'undefined' && globalThis) ||
-    (typeof window !== 'undefined' && window) ||
-    (typeof global !== 'undefined' && global) ||
-    (typeof self !== 'undefined' && self) ||
-    (function () { return this; }).call(null) ||
-    Function('return this')();
+var global = (function() { return this || window || global || self || Function('return this')(); }).call(null);
 
 goog.exportSymbol('proto.notification.FCMTopicsResponse', null, global);
 goog.exportSymbol('proto.notification.GetFCMTopicsRequest', null, global);
@@ -799,8 +793,7 @@ proto.notification.RegisterEventRequest.prototype.getTemplateparametersMap = fun
  */
 proto.notification.RegisterEventRequest.prototype.clearTemplateparametersMap = function() {
   this.getTemplateparametersMap().clear();
-  return this;
-};
+  return this;};
 
 
 /**
