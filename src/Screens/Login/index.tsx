@@ -16,7 +16,6 @@ const Login = () => {
 	}));
 	const getOTP = async (values: any) => {
 		await form.validateFields();
-		console.log(values);
 		if (values.emailOrPhone && values.domainType) {
 			localStorage.setItem('DOMAIN_TYPE', values.domainType);
 			setLoading(true);

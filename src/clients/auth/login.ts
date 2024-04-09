@@ -21,7 +21,7 @@ const getLoginClient = (() => {
 const getLoginRequest = (emailOrPhone: string) => {
 	const loginRequest = new LoginRequest();
 	const authDomain = localStorage.getItem('DOMAIN_TYPE') === 'PROD' ? process.env.REACT_APP_AUTH_DOMAIN_PROD : process.env.REACT_APP_AUTH_DOMAIN_DEV;
-	console.log(authDomain);
+
 	if (authDomain) {
 		loginRequest.setDomain(authDomain);
 	}
